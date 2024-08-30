@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: crm-gym-app
+
+storage:
+  file-path:
+    trainee:
+    trainer:
+    training:
