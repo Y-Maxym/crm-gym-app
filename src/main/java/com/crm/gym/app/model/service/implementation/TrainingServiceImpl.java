@@ -9,10 +9,11 @@ public class TrainingServiceImpl implements TrainingService {
 
     // by ?
     public Training find(int id) {
+        // TODO: implement
         return null;
     }
 
     public void save(Training training) {
-
+        // TODO: implement
     }
 }

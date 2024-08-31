@@ -15,11 +15,11 @@ public class TrainerParser implements Parser<String, Trainer> {
         return Trainer.builder()
                 .firstName(data[0])
                 .lastName(data[1])
-                .username(data[2])
-                .password(data[3])
-                .isActive(Boolean.parseBoolean(data[4]))
-                .specialization(TrainingType.valueOf(data[5].toUpperCase()))
-                .userId(Long.parseLong(data[6]))
+                .username(data[0] + "." + data[1])
+                .password(data[2])
+                .isActive(Boolean.parseBoolean(data[3]))
+                .specialization(TrainingType.valueOf(data[4].toUpperCase()))
+                .userId(Long.parseLong(data[5]))
                 .build();
     }
 }

@@ -1,6 +1,5 @@
 package com.crm.gym.app.model.storage.implementation;
 
-import com.crm.gym.app.model.entity.Trainee;
 import com.crm.gym.app.model.entity.Training;
 import com.crm.gym.app.model.parser.implementation.TrainingParser;
 import com.crm.gym.app.model.storage.Storage;
@@ -22,7 +21,7 @@ public class TrainingStorage implements Storage<Long, Training> {
     private final Map<Long, Training> storage = new HashMap<>();
     private final TrainingParser parser;
 
-    @Value("${storage.file-path.trainee}")
+    @Value("${storage.file-path.training}")
     private Resource fileResource;
 
     @Override

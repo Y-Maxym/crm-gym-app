@@ -9,21 +9,22 @@ public class TraineeDaoImpl implements TraineeDao {
 
     @Override
     public Trainee findById(Long id) {
+        // TODO: implement
         return null;
     }
 
     @Override
     public void save(Trainee trainee) {
-
+        // TODO: implement
     }
 
     @Override
     public void update(Trainee trainee) {
-
+        // TODO: implement
     }
 
     @Override
     public void deleteById(Long id) {
-
+        // TODO: implement
     }
 }

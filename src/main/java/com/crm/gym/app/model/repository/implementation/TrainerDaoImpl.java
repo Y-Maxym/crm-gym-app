@@ -9,16 +9,17 @@ public class TrainerDaoImpl implements TrainerDao {
 
     @Override
     public Trainer findById(Long id) {
+        // TODO: implement
         return null;
     }
 
     @Override
     public void save(Trainer trainer) {
-
+        // TODO: implement
     }
 
     @Override
     public void update(Trainer trainer) {
-
+        // TODO: implement
     }
 }

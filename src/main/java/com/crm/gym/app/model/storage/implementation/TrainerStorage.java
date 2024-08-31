@@ -21,7 +21,7 @@ public class TrainerStorage implements Storage<Long, Trainer> {
     private final Map<Long, Trainer> storage = new HashMap<>();
     private final TrainerParser parser;
 
-    @Value("${storage.file-path.trainee}")
+    @Value("${storage.file-path.trainer}")
     private Resource fileResource;
 
     @Override

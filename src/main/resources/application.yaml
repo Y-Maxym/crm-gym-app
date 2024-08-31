@@ -2,8 +2,11 @@ spring:
   application:
     name: crm-gym-app
 
+  config:
+    import: optional:file:.env[.properties]
+
 storage:
   file-path:
-    trainee:
-    trainer:
-    training:
+    trainee: ${INIT_DATA_TRAINEE_PATH}
+    trainer: ${INIT_DATA_TRAINER_PATH}
+    training: ${INIT_DATA_TRAINING_PATH}

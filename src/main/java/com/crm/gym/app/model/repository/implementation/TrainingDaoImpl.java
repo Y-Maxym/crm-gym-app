@@ -9,11 +9,12 @@ public class TrainingDaoImpl implements TrainingDao {
 
     @Override
     public Training findById(Long id) {
+        // TODO: implement
         return null;
     }
 
     @Override
     public void save(Training training) {
-
+        // TODO: implement
     }
 }
