@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class TrainingServiceImpl implements TrainingService {
 
-    // by ?
+    // TODO: by ?
     public Training find(int id) {
         // TODO: implement
         return null;
     }
 
+    // TODO: by ?
     public void save(Training training) {
         // TODO: implement
     }

@@ -1,26 +1,30 @@
 package com.crm.gym.app.model.service.implementation;
 
 import com.crm.gym.app.model.entity.Trainee;
+import com.crm.gym.app.model.repository.TraineeDao;
 import com.crm.gym.app.model.service.TraineeService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class TraineeServiceImpl implements TraineeService {
 
+    private final TraineeDao traineeDao;
+
     public Trainee findById(Long id) {
-        // TODO: implement
-        return null;
+        return traineeDao.findById(id);
     }
 
     public void save(Trainee trainee) {
-        // TODO: implement
+        traineeDao.save(trainee);
     }
 
     public void update(Trainee trainee) {
-        // TODO: implement
+        traineeDao.update(trainee);
     }
 
     public void deleteById(Long id) {
-        // TODO: implement
+        traineeDao.deleteById(id);
     }
 }

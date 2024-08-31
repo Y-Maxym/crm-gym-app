@@ -7,12 +7,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class TrainingDaoImpl implements TrainingDao {
 
+    // TODO: by ?
     @Override
     public Training findById(Long id) {
         // TODO: implement
         return null;
     }
 
+    // TODO: by ?
     @Override
     public void save(Training training) {
         // TODO: implement
