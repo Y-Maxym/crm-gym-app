@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class TrainerParser implements Parser<String, Trainer> {
 
-    private static final int TRAINER_ID_INDEX = 5;
+    private static final int TRAINER_ID_INDEX = 4;
     private static final int USER_ID_INDEX = 0;
-    private static final int SPECIALIZATION_ID_INDEX = 6;
+    private static final int SPECIALIZATION_ID_INDEX = 5;
 
     @Override
     public Trainer parse(String input) {

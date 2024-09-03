@@ -6,6 +6,8 @@ import com.crm.gym.app.model.storage.Storage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class UserDaoImpl implements EntityDao<Long, User> {
@@ -15,6 +17,11 @@ public class UserDaoImpl implements EntityDao<Long, User> {
     @Override
     public User findById(Long id) {
         return storage.get(id);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return storage.getAll();
     }
 
     @Override

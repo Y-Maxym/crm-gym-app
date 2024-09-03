@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -29,6 +31,11 @@ public class TrainingStorage implements Storage<Long, Training> {
     @Override
     public Training get(Long key) {
         return storage.get(key);
+    }
+
+    @Override
+    public List<Training> getAll() {
+        return new ArrayList<>(storage.values());
     }
 
     @Override

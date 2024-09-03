@@ -6,6 +6,8 @@ import com.crm.gym.app.model.storage.Storage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class TrainerDaoImpl implements EntityDao<Long, Trainer> {
@@ -15,6 +17,11 @@ public class TrainerDaoImpl implements EntityDao<Long, Trainer> {
     @Override
     public Trainer findById(Long id) {
         return storage.get(id);
+    }
+
+    @Override
+    public List<Trainer> findAll() {
+        return storage.getAll();
     }
 
     @Override

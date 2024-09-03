@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -35,6 +37,11 @@ public class TraineeStorage implements Storage<Long, Trainee> {
     @Override
     public Trainee get(Long key) {
         return traineeStorage.get(key);
+    }
+
+    @Override
+    public List<Trainee> getAll() {
+        return new ArrayList<>(traineeStorage.values());
     }
 
     @Override
