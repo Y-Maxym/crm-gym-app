@@ -7,7 +7,6 @@ spring:
 
 storage:
   file-path:
-    user: ${INIT_DATA_USER_PATH}
     trainee: ${INIT_DATA_TRAINEE_PATH}
     trainer: ${INIT_DATA_TRAINER_PATH}
     training: ${INIT_DATA_TRAINING_PATH}

@@ -1,8 +1,10 @@
 package com.crm.gym.app.model.storage.implementation;
 
 import com.crm.gym.app.model.entity.Trainer;
+import com.crm.gym.app.model.entity.User;
 import com.crm.gym.app.model.exception.ReadCSVFileException;
 import com.crm.gym.app.model.parser.implementation.TrainerParser;
+import com.crm.gym.app.model.parser.implementation.UserParser;
 import com.crm.gym.app.model.storage.Storage;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -20,25 +22,28 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class TrainerStorage implements Storage<Long, Trainer> {
 
-    private final Map<Long, Trainer> storage = new HashMap<>();
-    private final TrainerParser parser;
+    private final Map<Long, Trainer> trainerStorage = new HashMap<>();
+    private final TrainerParser trainerParser;
+
+    private final UserStorage userStorage;
+    private final UserParser userParser;
 
     @Value("${storage.file-path.trainer}")
     private Resource fileResource;
 
     @Override
     public Trainer get(Long key) {
-        return storage.get(key);
+        return trainerStorage.get(key);
     }
 
     @Override
     public Trainer put(Long key, Trainer value) {
-        return storage.put(key, value);
+        return trainerStorage.put(key, value);
     }
 
     @Override
     public void remove(Long key) {
-        storage.remove(key);
+        trainerStorage.remove(key);
     }
 
     @PostConstruct
@@ -47,9 +52,11 @@ public class TrainerStorage implements Storage<Long, Trainer> {
 
             lines.skip(1).toList().forEach(line -> {
 
-                Trainer trainer = parser.parse(line);
+                User user = userParser.parse(line);
+                userStorage.put(user.getId(), user);
 
-                storage.put(trainer.getId(), trainer);
+                Trainer trainer = trainerParser.parse(line);
+                trainerStorage.put(trainer.getId(), trainer);
             });
 
         } catch (IOException e) {

@@ -1,30 +1,18 @@
 package com.crm.gym.app.model.storage.implementation;
 
 import com.crm.gym.app.model.entity.User;
-import com.crm.gym.app.model.exception.ReadCSVFileException;
-import com.crm.gym.app.model.parser.implementation.UserParser;
 import com.crm.gym.app.model.storage.Storage;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor
 public class UserStorage implements Storage<Long, User> {
 
     private final Map<Long, User> storage = new HashMap<>();
-    private final UserParser parser;
-
-    @Value("${storage.file-path.user}")
-    private Resource fileResource;
 
     @Override
     public User get(Long key) {
@@ -32,8 +20,11 @@ public class UserStorage implements Storage<Long, User> {
     }
 
     @Override
-    public User put(Long key, User value) {
-        return storage.put(key, value);
+    public User put(Long key, User user) {
+        if (isDuplicatedUsername(user.getUsername())) {
+            user.setUsername(user.getUsername() + User.getAndIncrementSerialNumber());
+        }
+        return storage.put(key, user);
     }
 
     @Override
@@ -41,19 +32,7 @@ public class UserStorage implements Storage<Long, User> {
         storage.remove(key);
     }
 
-    @PostConstruct
-    private void init() {
-        try (Stream<String> lines = Files.lines(fileResource.getFile().toPath())) {
-
-            lines.skip(1).toList().forEach(line -> {
-
-                User user = parser.parse(line);
-
-                storage.put(user.getId(), user);
-            });
-
-        } catch (IOException e) {
-            throw new ReadCSVFileException("Failed to read user file", e);
-        }
+    private boolean isDuplicatedUsername(String username) {
+        return storage.values().stream().anyMatch(user -> user.getUsername().equals(username));
     }
 }
