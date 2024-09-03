@@ -1,8 +1,8 @@
 package com.crm.gym.app.model.storage.implementation;
 
-import com.crm.gym.app.model.entity.Training;
+import com.crm.gym.app.model.entity.User;
 import com.crm.gym.app.model.exception.ReadCSVFileException;
-import com.crm.gym.app.model.parser.implementation.TrainingParser;
+import com.crm.gym.app.model.parser.implementation.UserParser;
 import com.crm.gym.app.model.storage.Storage;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -18,21 +18,21 @@ import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor
-public class TrainingStorage implements Storage<Long, Training> {
+public class UserStorage implements Storage<Long, User> {
 
-    private final Map<Long, Training> storage = new HashMap<>();
-    private final TrainingParser parser;
+    private final Map<Long, User> storage = new HashMap<>();
+    private final UserParser parser;
 
-    @Value("${storage.file-path.training}")
+    @Value("${storage.file-path.user}")
     private Resource fileResource;
 
     @Override
-    public Training get(Long key) {
+    public User get(Long key) {
         return storage.get(key);
     }
 
     @Override
-    public Training put(Long key, Training value) {
+    public User put(Long key, User value) {
         return storage.put(key, value);
     }
 
@@ -47,13 +47,13 @@ public class TrainingStorage implements Storage<Long, Training> {
 
             lines.skip(1).toList().forEach(line -> {
 
-                Training training = parser.parse(line);
+                User user = parser.parse(line);
 
-                storage.put(training.getId(), training);
+                storage.put(user.getId(), user);
             });
 
         } catch (IOException e) {
-            throw new ReadCSVFileException("Failed to read training file", e);
+            throw new ReadCSVFileException("Failed to read user file", e);
         }
     }
 }

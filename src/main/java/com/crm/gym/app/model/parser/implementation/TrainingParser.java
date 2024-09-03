@@ -1,7 +1,6 @@
 package com.crm.gym.app.model.parser.implementation;
 
 import com.crm.gym.app.model.entity.Training;
-import com.crm.gym.app.model.entity.TrainingType;
 import com.crm.gym.app.model.parser.Parser;
 import org.springframework.stereotype.Component;
 
@@ -16,12 +15,13 @@ public class TrainingParser implements Parser<String, Training> {
         String[] data = input.split(",");
 
         return Training.builder()
-                .traineeId(Long.parseLong(data[0]))
-                .trainerId(Long.parseLong(data[1]))
-                .trainingName(data[2])
-                .trainingType(TrainingType.valueOf(data[3].toUpperCase()))
-                .trainingDate(LocalDateTime.parse(data[4]))
-                .trainingDuration(Duration.parse(data[5]))
+                .id(Long.parseLong(data[0]))
+                .traineeId(Long.parseLong(data[1]))
+                .trainerId(Long.parseLong(data[2]))
+                .trainingName(data[3])
+                .trainingTypeId(Long.parseLong(data[4]))
+                .trainingDate(LocalDateTime.parse(data[5]))
+                .trainingDuration(Duration.ofHours(Integer.parseInt(data[6])))
                 .build();
     }
 }

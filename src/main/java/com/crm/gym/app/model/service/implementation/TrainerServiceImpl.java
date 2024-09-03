@@ -1,7 +1,7 @@
 package com.crm.gym.app.model.service.implementation;
 
 import com.crm.gym.app.model.entity.Trainer;
-import com.crm.gym.app.model.repository.TrainerDao;
+import com.crm.gym.app.model.repository.EntityDao;
 import com.crm.gym.app.model.service.TrainerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,17 +10,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TrainerServiceImpl implements TrainerService {
 
-    private final TrainerDao trainerDao;
+    private final EntityDao<Long, Trainer> repository;
 
     public Trainer findById(Long id) {
-        return trainerDao.findById(id);
+        return repository.findById(id);
     }
 
     public void save(Trainer trainer) {
-        trainerDao.save(trainer);
+        repository.save(trainer);
     }
 
     public void update(Trainer trainer) {
-        trainerDao.update(trainer);
+        repository.update(trainer);
     }
 }

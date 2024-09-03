@@ -1,16 +1,17 @@
 package com.crm.gym.app.model.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
-public abstract class User {
+@Builder
+public class User {
 
+    private Long id;
     private String firstName;
     private String lastName;
     private String username;

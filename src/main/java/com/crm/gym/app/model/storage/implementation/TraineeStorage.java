@@ -1,18 +1,21 @@
 package com.crm.gym.app.model.storage.implementation;
 
 import com.crm.gym.app.model.entity.Trainee;
+import com.crm.gym.app.model.exception.ReadCSVFileException;
 import com.crm.gym.app.model.parser.implementation.TraineeParser;
 import com.crm.gym.app.model.storage.Storage;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
+import java.util.stream.Stream;
+
 
 @Component
 @RequiredArgsConstructor
@@ -40,16 +43,18 @@ public class TraineeStorage implements Storage<Long, Trainee> {
     }
 
     @PostConstruct
-    @SneakyThrows
     private void init() {
-        Properties properties = new Properties();
-        properties.load(fileResource.getInputStream());
+        try (Stream<String> lines = Files.lines(fileResource.getFile().toPath())) {
 
-        for (String key : properties.stringPropertyNames()) {
+            lines.skip(1).toList().forEach(line -> {
 
-            Trainee trainee = parser.parse(properties.getProperty(key));
+                Trainee trainee = parser.parse(line);
 
-            storage.put(Long.parseLong(key), trainee);
+                storage.put(trainee.getId(), trainee);
+            });
+
+        } catch (IOException e) {
+            throw new ReadCSVFileException("Failed to read trainee file", e);
         }
     }
 }

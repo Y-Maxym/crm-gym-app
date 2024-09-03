@@ -1,6 +1,6 @@
 package com.crm.gym.app.model.repository.implementation;
 
-import com.crm.gym.app.model.entity.Trainer;
+import com.crm.gym.app.model.entity.User;
 import com.crm.gym.app.model.repository.EntityDao;
 import com.crm.gym.app.model.storage.Storage;
 import lombok.RequiredArgsConstructor;
@@ -8,23 +8,23 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class TrainerDaoImpl implements EntityDao<Long, Trainer> {
+public class UserDaoImpl implements EntityDao<Long, User> {
 
-    private final Storage<Long, Trainer> storage;
+    private final Storage<Long, User> storage;
 
     @Override
-    public Trainer findById(Long id) {
+    public User findById(Long id) {
         return storage.get(id);
     }
 
     @Override
-    public void save(Trainer trainer) {
-        storage.put(trainer.getId(), trainer);
+    public void save(User user) {
+        storage.put(user.getId(), user);
     }
 
     @Override
-    public void update(Trainer trainer) {
-        storage.put(trainer.getId(), trainer);
+    public void update(User user) {
+        storage.put(user.getId(), user);
     }
 
     @Override

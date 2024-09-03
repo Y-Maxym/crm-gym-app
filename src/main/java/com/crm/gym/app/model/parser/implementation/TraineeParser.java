@@ -14,14 +14,10 @@ public class TraineeParser implements Parser<String, Trainee> {
         String[] data = input.split(",");
 
         return Trainee.builder()
-                .firstName(data[0])
-                .lastName(data[1])
-                .username(data[0] + "." + data[1])
-                .password(data[2])
-                .isActive(Boolean.parseBoolean(data[3]))
-                .dateOfBirth(LocalDate.parse(data[4]))
-                .address(data[5])
-                .userId(Long.parseLong(data[6]))
+                .id(Long.parseLong(data[0]))
+                .userId(Long.parseLong(data[1]))
+                .dateOfBirth(LocalDate.parse(data[2]))
+                .address(data[3])
                 .build();
     }
 }
