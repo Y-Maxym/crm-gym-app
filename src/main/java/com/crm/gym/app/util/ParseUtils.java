@@ -25,7 +25,7 @@ public class ParseUtils {
 
     public void checkNotNull(String value) {
         if (isNull(value)) {
-            throw logAndReturnParseException(messageUtils.getMessage(PARSE_NULL_VALUE));
+            throw new ParseException(messageUtils.getMessage(PARSE_NULL_VALUE));
         }
     }
 
@@ -34,9 +34,8 @@ public class ParseUtils {
 
         try {
             return Integer.parseInt(value);
-
         } catch (NumberFormatException e) {
-            throw logAndReturnParseException(messageUtils.getMessage(PARSE_INVALID_NUMBER, value));
+            throw new ParseException(messageUtils.getMessage(PARSE_INVALID_NUMBER, value));
         }
     }
 
@@ -45,9 +44,8 @@ public class ParseUtils {
 
         try {
             return Long.parseLong(value);
-
         } catch (NumberFormatException e) {
-            throw logAndReturnParseException(messageUtils.getMessage(PARSE_INVALID_NUMBER, value));
+            throw new ParseException(messageUtils.getMessage(PARSE_INVALID_NUMBER, value));
         }
     }
 
@@ -56,9 +54,8 @@ public class ParseUtils {
 
         try {
             return Boolean.parseBoolean(value);
-
         } catch (NumberFormatException e) {
-            throw logAndReturnParseException(messageUtils.getMessage(PARSE_INVALID_BOOLEAN, value));
+            throw new ParseException(messageUtils.getMessage(PARSE_INVALID_BOOLEAN, value));
         }
     }
 
@@ -67,9 +64,8 @@ public class ParseUtils {
 
         try {
             return LocalDate.parse(value);
-
         } catch (DateTimeParseException e) {
-            throw logAndReturnParseException(messageUtils.getMessage(PARSE_INVALID_FORMAT_DATE, value));
+            throw new ParseException(messageUtils.getMessage(PARSE_INVALID_FORMAT_DATE, value));
         }
     }
 
@@ -78,15 +74,8 @@ public class ParseUtils {
 
         try {
             return LocalDateTime.parse(value);
-
         } catch (DateTimeParseException e) {
-            throw logAndReturnParseException(messageUtils.getMessage(PARSE_INVALID_FORMAT_DATETIME, value));
+            throw new ParseException(messageUtils.getMessage(PARSE_INVALID_FORMAT_DATETIME, value));
         }
-    }
-
-    private ParseException logAndReturnParseException(String message) {
-        log.error(message);
-
-        return new ParseException(message);
     }
 }

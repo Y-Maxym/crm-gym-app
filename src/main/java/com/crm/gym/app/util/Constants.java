@@ -9,10 +9,6 @@ public class Constants {
     public static final String PARSE_INVALID_FORMAT_DATETIME = "PARSE.INVALID.FORMAT.DATETIME";
 
     public static final String PARSING_INPUT = "PARSING.INPUT";
-    public static final String PARSED_TRAINEE = "PARSED.TRAINEE";
-    public static final String PARSED_TRAINER = "PARSED.TRAINER";
-    public static final String PARSED_TRAINING = "PARSED.TRAINING";
-    public static final String PARSED_USER = "PARSED.USER";
-
+    public static final String PARSED_RESULT = "PARSED.RESULT";
 
 }
