@@ -1,4 +1,4 @@
-package com.crm.gym.app.model.exception;
+package com.crm.gym.app.exception;
 
 public class ReadCSVFileException extends RuntimeException {
 

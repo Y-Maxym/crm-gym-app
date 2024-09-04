@@ -1,4 +1,4 @@
-package com.crm.gym.app.model.aspect;
+package com.crm.gym.app.aspect;
 
 import com.crm.gym.app.util.LoggingMessageUtils;
 import lombok.RequiredArgsConstructor;
@@ -37,14 +37,14 @@ public class ServiceLoggingAspect {
         log.info(messageUtils.getMessage(SERVICE_INPUT, methodName, arguments));
     }
 
-    @AfterReturning(value = "serviceMethods()", returning = "result")
+    @AfterReturning(pointcut = "serviceMethods()", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
         String methodName = joinPoint.getSignature().getName();
 
         log.info(messageUtils.getMessage(SERVICE_RESULT, methodName, result));
     }
 
-    @AfterThrowing(value = "serviceMethods()", throwing = "exception")
+    @AfterThrowing(pointcut = "serviceMethods()", throwing = "exception")
     public void logAfterThrowing(JoinPoint joinPoint, Exception exception) {
         String methodName = joinPoint.getSignature().getName();
         String message = exception.getMessage();

@@ -1,6 +1,6 @@
 package com.crm.gym.app.util;
 
-import com.crm.gym.app.model.exception.ParseException;
+import com.crm.gym.app.exception.ParseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

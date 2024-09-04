@@ -28,13 +28,13 @@ public class TrainingParser implements Parser<String, Training> {
     public Training parse(@NonNull String input) {
         String[] data = input.split(",");
 
-        Long id = utils.parseLong(data[TRAINING_ID_INDEX]);
-        Long traineeId = utils.parseLong(data[TRAINEE_ID_INDEX]);
-        Long trainerId = utils.parseLong(data[TRAINER_ID_INDEX]);
-        String trainingName = data[TRAINING_NAME_INDEX];
-        Long trainingTypeId = utils.parseLong(data[TRAINING_TYPE_ID_INDEX]);
-        LocalDateTime trainingDate = utils.parseDateTime(data[TRAINING_DATE_INDEX]);
-        Duration trainingDuration = Duration.ofHours(utils.parseInt(data[TRAINING_DURATION_INDEX]));
+        Long id = getValue(data, TRAINING_ID_INDEX, utils::parseLong);
+        Long traineeId = getValue(data, TRAINEE_ID_INDEX, utils::parseLong);
+        Long trainerId = getValue(data, TRAINER_ID_INDEX, utils::parseLong);
+        String trainingName = getStringValue(data, TRAINING_NAME_INDEX);
+        Long trainingTypeId = getValue(data, TRAINING_TYPE_ID_INDEX, utils::parseLong);
+        LocalDateTime trainingDate = getValue(data, TRAINING_DATE_INDEX, utils::parseDateTime);
+        Duration trainingDuration = Duration.ofHours(getValue(data, TRAINING_DURATION_INDEX, utils::parseInt));
 
         return Training.builder()
                 .id(id)

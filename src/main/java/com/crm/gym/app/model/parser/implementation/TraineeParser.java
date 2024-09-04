@@ -24,10 +24,10 @@ public class TraineeParser implements Parser<String, Trainee> {
     public Trainee parse(@NonNull String input) {
         String[] data = input.split(",");
 
-        Long id = utils.parseLong(data[TRAINEE_ID_INDEX]);
-        Long userId = utils.parseLong(data[USER_ID_INDEX]);
-        LocalDate dateOfBirth = utils.parseDate(data[DATE_OF_BIRTH_INDEX]);
-        String address = data[ADDRESS_INDEX];
+        Long id = getValue(data, TRAINEE_ID_INDEX, utils::parseLong);
+        Long userId = getValue(data, USER_ID_INDEX, utils::parseLong);
+        LocalDate dateOfBirth = getValue(data, DATE_OF_BIRTH_INDEX, utils::parseDate);
+        String address = getStringValue(data, ADDRESS_INDEX);
 
         return Trainee.builder()
                 .id(id)

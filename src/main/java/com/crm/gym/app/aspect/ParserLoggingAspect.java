@@ -1,4 +1,4 @@
-package com.crm.gym.app.model.aspect;
+package com.crm.gym.app.aspect;
 
 import com.crm.gym.app.util.LoggingMessageUtils;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class ParserLoggingAspect {
         log.debug(messageUtils.getMessage(PARSING_INPUT, className, methodName, input));
     }
 
-    @AfterReturning(pointcut = "execution(* com.crm.gym.app.model.parser.implementation..*.*(..))", returning = "result")
+    @AfterReturning(pointcut = "parserMethods()", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
         String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getSignature().getDeclaringTypeName();

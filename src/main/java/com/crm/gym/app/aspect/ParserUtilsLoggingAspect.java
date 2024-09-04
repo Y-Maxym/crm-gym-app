@@ -1,4 +1,4 @@
-package com.crm.gym.app.model.aspect;
+package com.crm.gym.app.aspect;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -15,7 +15,7 @@ public class ParserUtilsLoggingAspect {
     public void parserMethods() {
     }
 
-    @AfterThrowing(value = "parserMethods()", throwing = "ex")
+    @AfterThrowing(pointcut = "parserMethods()", throwing = "ex")
     public void logAfterThrowing(Exception ex) {
         String message = ex.getMessage();
 

@@ -21,9 +21,9 @@ public class TrainerParser implements Parser<String, Trainer> {
     public Trainer parse(@NonNull String input) {
         String[] data = input.split(",");
 
-        Long id = utils.parseLong(data[TRAINER_ID_INDEX]);
-        Long userId = utils.parseLong(data[USER_ID_INDEX]);
-        Long specializationId = utils.parseLong(data[SPECIALIZATION_ID_INDEX]);
+        Long id = getValue(data, TRAINER_ID_INDEX, utils::parseLong);
+        Long userId = getValue(data, USER_ID_INDEX, utils::parseLong);
+        Long specializationId = getValue(data, SPECIALIZATION_ID_INDEX, utils::parseLong);
 
         return Trainer.builder()
                 .id(id)

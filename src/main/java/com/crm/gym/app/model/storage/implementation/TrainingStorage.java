@@ -1,7 +1,7 @@
 package com.crm.gym.app.model.storage.implementation;
 
 import com.crm.gym.app.model.entity.Training;
-import com.crm.gym.app.model.exception.ReadCSVFileException;
+import com.crm.gym.app.exception.ReadCSVFileException;
 import com.crm.gym.app.model.parser.implementation.TrainingParser;
 import com.crm.gym.app.model.storage.Storage;
 import jakarta.annotation.PostConstruct;
