@@ -3,17 +3,20 @@ package com.crm.gym.app.model.service.implementation;
 import com.crm.gym.app.model.entity.User;
 import com.crm.gym.app.model.repository.EntityDao;
 import com.crm.gym.app.model.service.UserService;
+import com.crm.gym.app.util.UserUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import static com.crm.gym.app.util.PasswordGenerator.generatePassword;
 import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final EntityDao<Long, User> repository;
+    private final UserUtils userUtils;
 
     @Override
     public User findById(Long id) {
@@ -23,15 +26,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(User user) {
         if (isNull(user.getUsername())) {
-            user.setUsername(generateUsername(user));
-        }
 
-        if (isDuplicatedUsername(user.getUsername())) {
-            user.setUsername(user.getUsername() + User.getAndIncrementSerialNumber());
+            String username = userUtils.generateUsername(user.getFirstName(), user.getLastName());
+            user.setUsername(username);
         }
 
         if (isNull(user.getPassword())) {
-            user.setPassword(generatePassword(10));
+
+            String password = userUtils.generatePassword(10);
+            user.setPassword(password);
         }
 
         repository.save(user);
@@ -47,11 +50,4 @@ public class UserServiceImpl implements UserService {
         repository.deleteById(id);
     }
 
-    private String generateUsername(User user) {
-        return user.getFirstName() + "." + user.getLastName();
-    }
-
-    private boolean isDuplicatedUsername(String username) {
-        return repository.findAll().stream().anyMatch(user -> user.getUsername().equals(username));
-    }
 }

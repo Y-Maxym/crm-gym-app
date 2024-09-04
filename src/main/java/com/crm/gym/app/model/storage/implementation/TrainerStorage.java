@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +65,7 @@ public class TrainerStorage implements Storage<Long, Trainer> {
                 trainerStorage.put(trainer.getId(), trainer);
             });
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ReadCSVFileException("Failed to read trainer file", e);
         }
     }

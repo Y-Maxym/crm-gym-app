@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,11 +54,10 @@ public class TrainingStorage implements Storage<Long, Training> {
             lines.skip(1).toList().forEach(line -> {
 
                 Training training = parser.parse(line);
-
                 storage.put(training.getId(), training);
             });
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ReadCSVFileException("Failed to read training file", e);
         }
     }

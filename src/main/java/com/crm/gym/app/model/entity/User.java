@@ -11,16 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class User {
 
-    private static long serialNumber = 1L;
-
     private Long id;
     private String firstName;
     private String lastName;
     private String username;
     private String password;
     private boolean isActive;
-
-    public static long getAndIncrementSerialNumber() {
-        return serialNumber++;
-    }
 }
