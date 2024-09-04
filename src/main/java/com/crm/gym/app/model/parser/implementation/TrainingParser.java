@@ -2,16 +2,22 @@ package com.crm.gym.app.model.parser.implementation;
 
 import com.crm.gym.app.model.entity.Training;
 import com.crm.gym.app.model.parser.Parser;
+import com.crm.gym.app.util.LoggingMessageUtils;
 import com.crm.gym.app.util.ParseUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+import static com.crm.gym.app.util.Constants.PARSED_TRAINING;
+import static com.crm.gym.app.util.Constants.PARSING_INPUT;
+
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class TrainingParser implements Parser<String, Training> {
 
     private static final int TRAINING_ID_INDEX = 0;
@@ -23,9 +29,12 @@ public class TrainingParser implements Parser<String, Training> {
     private static final int TRAINING_DURATION_INDEX = 6;
 
     private final ParseUtils utils;
+    private final LoggingMessageUtils messageUtils;
 
     @Override
     public Training parse(@NonNull String input) {
+        log.debug(messageUtils.getMessage(PARSING_INPUT, input));
+
         String[] data = input.split(",");
 
         Long id = utils.parseLong(data[TRAINING_ID_INDEX]);
@@ -36,7 +45,7 @@ public class TrainingParser implements Parser<String, Training> {
         LocalDateTime trainingDate = utils.parseDateTime(data[TRAINING_DATE_INDEX]);
         Duration trainingDuration = Duration.ofHours(utils.parseInt(data[TRAINING_DURATION_INDEX]));
 
-        return Training.builder()
+        Training training = Training.builder()
                 .id(id)
                 .traineeId(traineeId)
                 .trainerId(trainerId)
@@ -45,5 +54,9 @@ public class TrainingParser implements Parser<String, Training> {
                 .trainingDate(trainingDate)
                 .trainingDuration(trainingDuration)
                 .build();
+
+        log.debug(messageUtils.getMessage(PARSED_TRAINING, training));
+
+        return training;
     }
 }

@@ -1,6 +1,7 @@
 package com.crm.gym.app.util;
 
 import com.crm.gym.app.model.exception.ParseException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -8,15 +9,23 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
+import static com.crm.gym.app.util.Constants.PARSE_INVALID_BOOLEAN;
+import static com.crm.gym.app.util.Constants.PARSE_INVALID_FORMAT_DATE;
+import static com.crm.gym.app.util.Constants.PARSE_INVALID_FORMAT_DATETIME;
+import static com.crm.gym.app.util.Constants.PARSE_INVALID_NUMBER;
+import static com.crm.gym.app.util.Constants.PARSE_NULL_VALUE;
 import static java.util.Objects.isNull;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class ParseUtils {
+
+    private final LoggingMessageUtils messageUtils;
 
     public void checkNotNull(String value) {
         if (isNull(value)) {
-            throw logAndReturnParseException("Value cannot be null");
+            throw logAndReturnParseException(messageUtils.getMessage(PARSE_NULL_VALUE));
         }
     }
 
@@ -27,7 +36,7 @@ public class ParseUtils {
             return Integer.parseInt(value);
 
         } catch (NumberFormatException e) {
-            throw logAndReturnParseException("{} is not a valid number", value);
+            throw logAndReturnParseException(messageUtils.getMessage(PARSE_INVALID_NUMBER, value));
         }
     }
 
@@ -38,7 +47,7 @@ public class ParseUtils {
             return Long.parseLong(value);
 
         } catch (NumberFormatException e) {
-            throw logAndReturnParseException("{} is not a valid number", value);
+            throw logAndReturnParseException(messageUtils.getMessage(PARSE_INVALID_NUMBER, value));
         }
     }
 
@@ -49,7 +58,7 @@ public class ParseUtils {
             return Boolean.parseBoolean(value);
 
         } catch (NumberFormatException e) {
-            throw logAndReturnParseException("{} is not a valid boolean", value);
+            throw logAndReturnParseException(messageUtils.getMessage(PARSE_INVALID_BOOLEAN, value));
         }
     }
 
@@ -60,7 +69,7 @@ public class ParseUtils {
             return LocalDate.parse(value);
 
         } catch (DateTimeParseException e) {
-            throw logAndReturnParseException("Date is not in a valid format: {}", value);
+            throw logAndReturnParseException(messageUtils.getMessage(PARSE_INVALID_FORMAT_DATE, value));
         }
     }
 
@@ -71,12 +80,12 @@ public class ParseUtils {
             return LocalDateTime.parse(value);
 
         } catch (DateTimeParseException e) {
-            throw logAndReturnParseException("DateTime is not in a valid format: {}", value);
+            throw logAndReturnParseException(messageUtils.getMessage(PARSE_INVALID_FORMAT_DATETIME, value));
         }
     }
 
-    private ParseException logAndReturnParseException(String message, Object... args) {
-        log.error(message, args);
+    private ParseException logAndReturnParseException(String message) {
+        log.error(message);
 
         return new ParseException(message);
     }
