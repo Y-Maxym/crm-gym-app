@@ -1,5 +1,7 @@
 package com.crm.gym.app.model.aspect;
 
+import com.crm.gym.app.util.LoggingMessageUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -11,26 +13,42 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
+import static com.crm.gym.app.util.Constants.SERVICE_EXCEPTION;
+import static com.crm.gym.app.util.Constants.SERVICE_INPUT;
+import static com.crm.gym.app.util.Constants.SERVICE_RESULT;
+
 @Slf4j
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class ServiceLoggingAspect {
 
-    @Pointcut("execution(* com.crm.gym.app.model.service.implementation..*(..))")
-    public void serviceMethods() {}
+    private final LoggingMessageUtils messageUtils;
 
-    @Before("serviceMethods()")
-    public void logBefore(JoinPoint joinPoint) {
-        log.info("Entering method: {} with arguments: {}", joinPoint.getSignature().toShortString(), Arrays.toString(joinPoint.getArgs()));
+    @Pointcut("execution(* com.crm.gym.app.model.service.implementation..*(..))")
+    public void serviceMethods() {
+    }
+
+    @Before("serviceMethods() && args(args)")
+    public void logBefore(JoinPoint joinPoint, Object[] args) {
+        String methodName = joinPoint.getSignature().getName();
+        String arguments = Arrays.toString(args);
+
+        log.info(messageUtils.getMessage(SERVICE_INPUT, methodName, arguments));
     }
 
     @AfterReturning(value = "serviceMethods()", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
-        log.info("Method: {} returned: {}", joinPoint.getSignature().toShortString(), result);
+        String methodName = joinPoint.getSignature().getName();
+
+        log.info(messageUtils.getMessage(SERVICE_RESULT, methodName, result));
     }
 
     @AfterThrowing(value = "serviceMethods()", throwing = "exception")
     public void logAfterThrowing(JoinPoint joinPoint, Exception exception) {
-        log.error("Method: {} threw exception: {}", joinPoint.getSignature().toShortString(), exception.getMessage(), exception);
+        String methodName = joinPoint.getSignature().getName();
+        String message = exception.getMessage();
+
+        log.error(messageUtils.getMessage(SERVICE_EXCEPTION, methodName, message));
     }
 }

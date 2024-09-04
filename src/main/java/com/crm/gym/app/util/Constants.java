@@ -11,4 +11,7 @@ public class Constants {
     public static final String PARSING_INPUT = "PARSING.INPUT";
     public static final String PARSED_RESULT = "PARSED.RESULT";
 
+    public static final String SERVICE_INPUT = "SERVICE.INPUT";
+    public static final String SERVICE_RESULT = "SERVICE.RESULT";
+    public static final String SERVICE_EXCEPTION = "SERVICE.EXCEPTION";
 }
