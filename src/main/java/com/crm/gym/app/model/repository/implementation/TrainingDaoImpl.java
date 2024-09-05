@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -15,8 +16,8 @@ public class TrainingDaoImpl implements EntityDao<Long, Training> {
     private final Storage<Long, Training> storage;
 
     @Override
-    public Training findById(Long id) {
-        return storage.get(id);
+    public Optional<Training> findById(Long id) {
+        return Optional.ofNullable(storage.get(id));
     }
 
     @Override

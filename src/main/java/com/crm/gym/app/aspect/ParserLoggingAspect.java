@@ -1,6 +1,6 @@
 package com.crm.gym.app.aspect;
 
-import com.crm.gym.app.util.LoggingMessageUtils;
+import com.crm.gym.app.util.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -11,12 +11,12 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static com.crm.gym.app.util.LoggingConstants.DEBUG_PARSER_EXCEPTION;
-import static com.crm.gym.app.util.LoggingConstants.DEBUG_PARSER_INPUT;
-import static com.crm.gym.app.util.LoggingConstants.DEBUG_PARSER_RESULT;
-import static com.crm.gym.app.util.LoggingConstants.INFO_PARSER_EXCEPTION;
-import static com.crm.gym.app.util.LoggingConstants.INFO_PARSER_INPUT;
-import static com.crm.gym.app.util.LoggingConstants.INFO_PARSER_RESULT;
+import static com.crm.gym.app.util.Constants.DEBUG_PARSER_EXCEPTION;
+import static com.crm.gym.app.util.Constants.DEBUG_PARSER_INPUT;
+import static com.crm.gym.app.util.Constants.DEBUG_PARSER_RESULT;
+import static com.crm.gym.app.util.Constants.INFO_PARSER_EXCEPTION;
+import static com.crm.gym.app.util.Constants.INFO_PARSER_INPUT;
+import static com.crm.gym.app.util.Constants.INFO_PARSER_RESULT;
 
 @Slf4j
 @Aspect
@@ -24,7 +24,7 @@ import static com.crm.gym.app.util.LoggingConstants.INFO_PARSER_RESULT;
 public class ParserLoggingAspect extends BaseLoggingAspect {
 
     @Autowired
-    public ParserLoggingAspect(LoggingMessageUtils messageUtils) {
+    public ParserLoggingAspect(MessageUtils messageUtils) {
         super(messageUtils);
     }
 

@@ -1,13 +1,16 @@
 package com.crm.gym.app.model.service.implementation;
 
+import com.crm.gym.app.exception.EntityNotFoundException;
 import com.crm.gym.app.model.entity.User;
 import com.crm.gym.app.model.repository.EntityDao;
 import com.crm.gym.app.model.service.UserService;
+import com.crm.gym.app.util.MessageUtils;
 import com.crm.gym.app.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import static com.crm.gym.app.util.Constants.ERROR_USER_WITH_ID_NOT_FOUND;
 import static java.util.Objects.isNull;
 
 @Service
@@ -16,11 +19,13 @@ import static java.util.Objects.isNull;
 public class UserServiceImpl implements UserService {
 
     private final EntityDao<Long, User> repository;
+    private final MessageUtils messageUtils;
     private final UserUtils userUtils;
 
     @Override
     public User findById(Long id) {
-        return repository.findById(id);
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(messageUtils.getMessage(ERROR_USER_WITH_ID_NOT_FOUND, id)));
     }
 
     @Override

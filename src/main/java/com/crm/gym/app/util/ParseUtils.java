@@ -9,10 +9,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
-import static com.crm.gym.app.util.LoggingConstants.ERROR_PARSE_UTILS_INVALID_FORMAT_DATETIME;
-import static com.crm.gym.app.util.LoggingConstants.ERROR_PARSE_UTILS_INVALID_FORMAT_DATE;
-import static com.crm.gym.app.util.LoggingConstants.ERROR_PARSE_UTILS_INVALID_NUMBER;
-import static com.crm.gym.app.util.LoggingConstants.ERROR_PARSE_UTILS_NULL_VALUE;
+import static com.crm.gym.app.util.Constants.ERROR_PARSE_UTILS_INVALID_FORMAT_DATETIME;
+import static com.crm.gym.app.util.Constants.ERROR_PARSE_UTILS_INVALID_FORMAT_DATE;
+import static com.crm.gym.app.util.Constants.ERROR_PARSE_UTILS_INVALID_NUMBER;
+import static com.crm.gym.app.util.Constants.ERROR_PARSE_UTILS_NULL_VALUE;
 import static java.util.Objects.isNull;
 
 @Component
@@ -20,7 +20,7 @@ import static java.util.Objects.isNull;
 @RequiredArgsConstructor
 public class ParseUtils {
 
-    private final LoggingMessageUtils messageUtils;
+    private final MessageUtils messageUtils;
 
     public void checkNotNull(String value) {
         if (isNull(value)) {

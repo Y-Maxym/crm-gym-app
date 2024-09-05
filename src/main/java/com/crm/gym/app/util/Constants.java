@@ -1,6 +1,6 @@
 package com.crm.gym.app.util;
 
-public class LoggingConstants {
+public class Constants {
 
     public static final String INFO_USER_UTILS_INPUT = "INFO.USER.UTILS.INPUT";
     public static final String INFO_USER_UTILS_RESULT = "INFO.USER.UTILS.RESULT";
@@ -54,4 +54,9 @@ public class LoggingConstants {
     public static final String ERROR_PARSE_UTILS_INVALID_NUMBER = "ERROR.PARSE.UTILS.INVALID.NUMBER";
     public static final String ERROR_PARSE_UTILS_INVALID_FORMAT_DATE = "ERROR.PARSE.UTILS.INVALID.FORMAT.DATE";
     public static final String ERROR_PARSE_UTILS_INVALID_FORMAT_DATETIME = "ERROR.PARSE.UTILS.INVALID.FORMAT.DATETIME";
+
+    public static final String ERROR_TRAINEE_WITH_ID_NOT_FOUND = "ERROR.TRAINEE.WITH.ID.NOT.FOUND";
+    public static final String ERROR_TRAINER_WITH_ID_NOT_FOUND = "ERROR.TRAINER.WITH.ID.NOT.FOUND";
+    public static final String ERROR_TRAINING_WITH_ID_NOT_FOUND = "ERROR.TRAINING.WITH.ID.NOT.FOUND";
+    public static final String ERROR_USER_WITH_ID_NOT_FOUND = "ERROR.USER.WITH.ID.NOT.FOUND";
 }

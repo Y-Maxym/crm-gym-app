@@ -1,6 +1,6 @@
 package com.crm.gym.app.aspect;
 
-import com.crm.gym.app.util.LoggingMessageUtils;
+import com.crm.gym.app.util.MessageUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public abstract class BaseLoggingAspect {
 
-    private final LoggingMessageUtils messageUtils;
+    private final MessageUtils messageUtils;
 
     protected void logBefore(JoinPoint joinPoint, String infoMessageCode, String debugMessageCode) {
         String className = joinPoint.getSignature().getDeclaringTypeName();
