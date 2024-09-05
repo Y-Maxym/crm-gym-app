@@ -1,7 +1,6 @@
 package com.crm.gym.app.aspect;
 
 import com.crm.gym.app.util.LoggingMessageUtils;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -9,21 +8,25 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-
-import static com.crm.gym.app.util.Constants.STORAGE_EXCEPTION;
-import static com.crm.gym.app.util.Constants.STORAGE_INPUT;
-import static com.crm.gym.app.util.Constants.STORAGE_RESULT;
+import static com.crm.gym.app.util.LoggingConstants.DEBUG_STORAGE_EXCEPTION;
+import static com.crm.gym.app.util.LoggingConstants.DEBUG_STORAGE_INPUT;
+import static com.crm.gym.app.util.LoggingConstants.DEBUG_STORAGE_RESULT;
+import static com.crm.gym.app.util.LoggingConstants.INFO_STORAGE_EXCEPTION;
+import static com.crm.gym.app.util.LoggingConstants.INFO_STORAGE_INPUT;
+import static com.crm.gym.app.util.LoggingConstants.INFO_STORAGE_RESULT;
 
 @Slf4j
 @Aspect
 @Component
-@RequiredArgsConstructor
-public class StorageLoggingAspect {
+public class StorageLoggingAspect extends BaseLoggingAspect {
 
-    private final LoggingMessageUtils messageUtils;
+    @Autowired
+    public StorageLoggingAspect(LoggingMessageUtils messageUtils) {
+        super(messageUtils);
+    }
 
     @Pointcut("execution(* com.crm.gym.app.model.storage.implementation..*(..))")
     public void storageMethods() {
@@ -31,29 +34,16 @@ public class StorageLoggingAspect {
 
     @Before("storageMethods() && args(*)")
     public void logBefore(JoinPoint joinPoint) {
-        String className = joinPoint.getSignature().getDeclaringTypeName();
-        String methodName = joinPoint.getSignature().getName();
-
-        Object[] args = joinPoint.getArgs();
-        String stringArgs = Arrays.toString(args);
-
-        log.debug(messageUtils.getMessage(STORAGE_INPUT, className, methodName, stringArgs));
+        logBefore(joinPoint, INFO_STORAGE_INPUT, DEBUG_STORAGE_INPUT);
     }
 
     @AfterReturning(pointcut = "storageMethods()", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
-        String className = joinPoint.getSignature().getDeclaringTypeName();
-        String methodName = joinPoint.getSignature().getName();
-
-        log.debug(messageUtils.getMessage(STORAGE_RESULT, className, methodName, result));
+        logAfterReturning(joinPoint, result, INFO_STORAGE_RESULT, DEBUG_STORAGE_RESULT);
     }
 
     @AfterThrowing(pointcut = "storageMethods()", throwing = "ex")
     public void logAfterThrowing(JoinPoint joinPoint, Exception ex) {
-        String className = joinPoint.getSignature().getDeclaringTypeName();
-        String methodName = joinPoint.getSignature().getName();
-        String message = ex.getMessage();
-
-        log.error(messageUtils.getMessage(STORAGE_EXCEPTION, className, methodName, message));
+        logAfterThrowing(joinPoint, ex, INFO_STORAGE_EXCEPTION, DEBUG_STORAGE_EXCEPTION);
     }
 }

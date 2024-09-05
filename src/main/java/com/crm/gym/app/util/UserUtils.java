@@ -36,7 +36,7 @@ public class UserUtils {
         return username;
     }
 
-    private boolean isDuplicatedUsername(String username) {
+    public boolean isDuplicatedUsername(String username) {
         return repository.findAll().stream().anyMatch(user -> user.getUsername().equals(username));
     }
 }

@@ -13,10 +13,10 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class TraineeParser implements Parser<String, Trainee> {
 
-    private static final int TRAINEE_ID_INDEX = 4;
+    private static final int TRAINEE_ID_INDEX = 3;
     private static final int USER_ID_INDEX = 0;
-    private static final int DATE_OF_BIRTH_INDEX = 5;
-    private static final int ADDRESS_INDEX = 6;
+    private static final int DATE_OF_BIRTH_INDEX = 4;
+    private static final int ADDRESS_INDEX = 5;
 
     private final ParseUtils utils;
 
