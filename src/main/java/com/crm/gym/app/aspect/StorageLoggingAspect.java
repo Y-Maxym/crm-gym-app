@@ -13,43 +13,43 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
-import static com.crm.gym.app.util.Constants.REPOSITORY_EXCEPTION;
-import static com.crm.gym.app.util.Constants.REPOSITORY_INPUT;
-import static com.crm.gym.app.util.Constants.REPOSITORY_RESULT;
+import static com.crm.gym.app.util.Constants.STORAGE_EXCEPTION;
+import static com.crm.gym.app.util.Constants.STORAGE_INPUT;
+import static com.crm.gym.app.util.Constants.STORAGE_RESULT;
 
 @Slf4j
 @Aspect
 @Component
 @RequiredArgsConstructor
-public class DaoLoggingAspect {
+public class StorageLoggingAspect {
 
     private final LoggingMessageUtils messageUtils;
 
-    @Pointcut("execution(* com.crm.gym.app.model.repository.implementation..*(..))")
-    public void daoMethods() {
+    @Pointcut("execution(* com.crm.gym.app.model.storage.implementation..*(..))")
+    public void storageMethods() {
     }
 
-    @Before("daoMethods() && args(..)")
+    @Before("storageMethods() && args(..)")
     public void logBefore(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
         Object[] args = joinPoint.getArgs();
         String stringArgs = Arrays.toString(args);
 
-        log.info(messageUtils.getMessage(REPOSITORY_INPUT, methodName, stringArgs));
+        log.info(messageUtils.getMessage(STORAGE_INPUT, methodName, stringArgs));
     }
 
-    @AfterReturning(pointcut = "daoMethods()", returning = "result")
+    @AfterReturning(pointcut = "storageMethods()", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
         String methodName = joinPoint.getSignature().getName();
 
-        log.info(messageUtils.getMessage(REPOSITORY_RESULT, methodName, result));
+        log.info(messageUtils.getMessage(STORAGE_RESULT, methodName, result));
     }
 
-    @AfterThrowing(pointcut = "daoMethods()", throwing = "ex")
+    @AfterThrowing(pointcut = "storageMethods()", throwing = "ex")
     public void logAfterThrowing(JoinPoint joinPoint, Exception ex) {
         String methodName = joinPoint.getSignature().getName();
         String message = ex.getMessage();
 
-        log.error(messageUtils.getMessage(REPOSITORY_EXCEPTION, methodName, message));
+        log.error(messageUtils.getMessage(STORAGE_EXCEPTION, methodName, message));
     }
 }

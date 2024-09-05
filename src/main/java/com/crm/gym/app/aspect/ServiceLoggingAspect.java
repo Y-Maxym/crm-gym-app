@@ -33,9 +33,9 @@ public class ServiceLoggingAspect {
     public void logBefore(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
         Object[] args = joinPoint.getArgs();
-        String arguments = Arrays.toString(args);
+        String stringArgs = Arrays.toString(args);
 
-        log.info(messageUtils.getMessage(SERVICE_INPUT, methodName, arguments));
+        log.info(messageUtils.getMessage(SERVICE_INPUT, methodName, stringArgs));
     }
 
     @AfterReturning(pointcut = "serviceMethods()", returning = "result")
@@ -45,10 +45,10 @@ public class ServiceLoggingAspect {
         log.info(messageUtils.getMessage(SERVICE_RESULT, methodName, result));
     }
 
-    @AfterThrowing(pointcut = "serviceMethods()", throwing = "exception")
-    public void logAfterThrowing(JoinPoint joinPoint, Exception exception) {
+    @AfterThrowing(pointcut = "serviceMethods()", throwing = "ex")
+    public void logAfterThrowing(JoinPoint joinPoint, Exception ex) {
         String methodName = joinPoint.getSignature().getName();
-        String message = exception.getMessage();
+        String message = ex.getMessage();
 
         log.error(messageUtils.getMessage(SERVICE_EXCEPTION, methodName, message));
     }

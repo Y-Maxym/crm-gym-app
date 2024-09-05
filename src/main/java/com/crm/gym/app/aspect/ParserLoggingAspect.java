@@ -5,13 +5,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-import static com.crm.gym.app.util.Constants.PARSED_RESULT;
+import static com.crm.gym.app.util.Constants.PARSING_EXCEPTION;
 import static com.crm.gym.app.util.Constants.PARSING_INPUT;
+import static com.crm.gym.app.util.Constants.PARSING_RESULT;
 
 @Slf4j
 @Aspect
@@ -38,6 +40,14 @@ public class ParserLoggingAspect {
         String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getSignature().getDeclaringTypeName();
 
-        log.debug(messageUtils.getMessage(PARSED_RESULT, className, methodName, result));
+        log.debug(messageUtils.getMessage(PARSING_RESULT, className, methodName, result));
+    }
+
+    @AfterThrowing(pointcut = "parserMethods()", throwing = "ex")
+    public void logAfterThrowing(JoinPoint joinPoint, Throwable ex) {
+        String methodName = joinPoint.getSignature().getName();
+        String message = ex.getMessage();
+
+        log.error(messageUtils.getMessage(PARSING_EXCEPTION, methodName, message));
     }
 }
