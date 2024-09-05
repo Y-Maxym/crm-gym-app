@@ -14,4 +14,8 @@ public class Constants {
     public static final String SERVICE_INPUT = "SERVICE.INPUT";
     public static final String SERVICE_RESULT = "SERVICE.RESULT";
     public static final String SERVICE_EXCEPTION = "SERVICE.EXCEPTION";
+
+    public static final String REPOSITORY_INPUT = "REPOSITORY.INPUT";
+    public static final String REPOSITORY_RESULT = "REPOSITORY.RESULT";
+    public static final String REPOSITORY_EXCEPTION = "REPOSITORY.EXCEPTION";
 }

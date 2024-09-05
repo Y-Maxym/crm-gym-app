@@ -29,9 +29,10 @@ public class ServiceLoggingAspect {
     public void serviceMethods() {
     }
 
-    @Before("serviceMethods() && args(args)")
-    public void logBefore(JoinPoint joinPoint, Object[] args) {
+    @Before("serviceMethods() && args(..)")
+    public void logBefore(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
+        Object[] args = joinPoint.getArgs();
         String arguments = Arrays.toString(args);
 
         log.info(messageUtils.getMessage(SERVICE_INPUT, methodName, arguments));
