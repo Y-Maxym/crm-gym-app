@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
 import static com.crm.gym.app.util.Constants.PARSE_INVALID_FORMAT_DATETIME;
-import static com.crm.gym.app.util.Constants.PARSE_UTILS_INVALID_BOOLEAN;
 import static com.crm.gym.app.util.Constants.PARSE_UTILS_INVALID_FORMAT_DATE;
 import static com.crm.gym.app.util.Constants.PARSE_UTILS_INVALID_NUMBER;
 import static com.crm.gym.app.util.Constants.PARSE_UTILS_NULL_VALUE;
@@ -46,16 +45,6 @@ public class ParseUtils {
             return Long.parseLong(value);
         } catch (NumberFormatException e) {
             throw new ParseException(messageUtils.getMessage(PARSE_UTILS_INVALID_NUMBER, value));
-        }
-    }
-
-    public boolean parseBoolean(String value) {
-        checkNotNull(value);
-
-        try {
-            return Boolean.parseBoolean(value);
-        } catch (NumberFormatException e) {
-            throw new ParseException(messageUtils.getMessage(PARSE_UTILS_INVALID_BOOLEAN, value));
         }
     }
 

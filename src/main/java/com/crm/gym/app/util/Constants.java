@@ -12,7 +12,6 @@ public class Constants {
 
     public static final String PARSE_UTILS_NULL_VALUE = "PARSE.UTILS.NULL.VALUE";
     public static final String PARSE_UTILS_INVALID_NUMBER = "PARSE.UTILS.INVALID.NUMBER";
-    public static final String PARSE_UTILS_INVALID_BOOLEAN = "PARSE.UTILS.INVALID.BOOLEAN";
     public static final String PARSE_UTILS_INVALID_FORMAT_DATE = "PARSE.UTILS.INVALID.FORMAT.DATE";
     public static final String PARSE_INVALID_FORMAT_DATETIME = "PARSE.UTILS.INVALID.FORMAT.DATETIME";
 

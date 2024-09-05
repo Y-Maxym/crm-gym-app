@@ -1,4 +1,4 @@
-User Id,First Name,Last Name,Is Active,Id,Date of Birth,Address
-1,John,Doe,true,1,2000-01-01,Address1
-2,Jane,Smith,false,2,2000-01-01,Address2
-3,Michael,Johnson,true,3,2000-01-01,Address3
+User Id,First Name,Last Name,Id,Date of Birth,Address
+1,John,Doe,1,2000-01-01,Address1
+2,Jane,Smith,2,2000-01-01,Address2
+3,Michael,Johnson,3,2000-01-01,Address3

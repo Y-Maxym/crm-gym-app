@@ -1,3 +1,3 @@
-User Id,First Name,Last Name,Is Active,Id,Specialization Id
-4,Emily,Davis,true,1,1
-5,David,Brown,false,2,2
+User Id,First Name,Last Name,Id,Specialization Id
+4,Emily,Davis,1,1
+5,David,Brown,2,2
