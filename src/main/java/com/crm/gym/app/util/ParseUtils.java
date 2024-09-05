@@ -9,9 +9,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
+import static com.crm.gym.app.util.Constants.PARSE_INVALID_FORMAT_DATETIME;
 import static com.crm.gym.app.util.Constants.PARSE_UTILS_INVALID_BOOLEAN;
 import static com.crm.gym.app.util.Constants.PARSE_UTILS_INVALID_FORMAT_DATE;
-import static com.crm.gym.app.util.Constants.PARSE_INVALID_FORMAT_DATETIME;
 import static com.crm.gym.app.util.Constants.PARSE_UTILS_INVALID_NUMBER;
 import static com.crm.gym.app.util.Constants.PARSE_UTILS_NULL_VALUE;
 import static java.util.Objects.isNull;

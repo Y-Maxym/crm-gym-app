@@ -29,16 +29,16 @@ public class ParserLoggingAspect {
 
     @Before("parserMethods() && args(input)")
     public void logBeforeParse(JoinPoint joinPoint, String input) {
-        String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getSignature().getDeclaringTypeName();
+        String methodName = joinPoint.getSignature().getName();
 
         log.debug(messageUtils.getMessage(PARSING_INPUT, className, methodName, input));
     }
 
     @AfterReturning(pointcut = "parserMethods()", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
-        String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getSignature().getDeclaringTypeName();
+        String methodName = joinPoint.getSignature().getName();
 
         log.debug(messageUtils.getMessage(PARSING_RESULT, className, methodName, result));
     }

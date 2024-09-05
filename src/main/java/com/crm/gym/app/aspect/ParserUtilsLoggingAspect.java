@@ -29,23 +29,26 @@ public class ParserUtilsLoggingAspect {
 
     @Before("parserMethods() && args(input)")
     public void logBefore(JoinPoint joinPoint, Object input) {
+        String className = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();
 
-        log.debug(messageUtils.getMessage(PARSE_UTILS_INPUT, methodName, input));
+        log.debug(messageUtils.getMessage(PARSE_UTILS_INPUT, className, methodName, input));
     }
 
     @AfterReturning(pointcut = "parserMethods()", returning = "result")
     public void logAfter(JoinPoint joinPoint, Object result) {
+        String className = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();
 
-        log.debug(messageUtils.getMessage(PARSE_UTILS_RESULT, methodName, result));
+        log.debug(messageUtils.getMessage(PARSE_UTILS_RESULT, className, methodName, result));
     }
 
     @AfterThrowing(pointcut = "parserMethods()", throwing = "ex")
-    public void logAfterThrowing(Exception ex) {
-        String methodName = ex.getStackTrace()[0].getMethodName();
+    public void logAfterThrowing(JoinPoint joinPoint, Exception ex) {
+        String className = joinPoint.getSignature().getDeclaringTypeName();
+        String methodName = joinPoint.getSignature().getName();
         String message = ex.getMessage();
 
-        log.error(messageUtils.getMessage(PARSE_UTILS_EXCEPTION, methodName, message));
+        log.error(messageUtils.getMessage(PARSE_UTILS_EXCEPTION, className, methodName, message));
     }
 }

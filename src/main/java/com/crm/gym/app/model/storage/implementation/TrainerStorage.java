@@ -1,8 +1,8 @@
 package com.crm.gym.app.model.storage.implementation;
 
+import com.crm.gym.app.exception.ReadCSVFileException;
 import com.crm.gym.app.model.entity.Trainer;
 import com.crm.gym.app.model.entity.User;
-import com.crm.gym.app.exception.ReadCSVFileException;
 import com.crm.gym.app.model.parser.implementation.TrainerParser;
 import com.crm.gym.app.model.parser.implementation.UserParser;
 import com.crm.gym.app.model.storage.Storage;

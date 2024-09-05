@@ -2,6 +2,10 @@ package com.crm.gym.app.util;
 
 public class Constants {
 
+    public static final String USER_UTILS_INPUT = "USER.UTILS.INPUT";
+    public static final String USER_UTILS_RESULT = "USER.UTILS.RESULT";
+    public static final String USER_UTILS_EXCEPTION = "USER.UTILS.EXCEPTION";
+
     public static final String PARSE_UTILS_INPUT = "PARSE.UTILS.INPUT";
     public static final String PARSE_UTILS_RESULT = "PARSE.UTILS.RESULT";
     public static final String PARSE_UTILS_EXCEPTION = "PARSE.UTILS.EXCEPTION";

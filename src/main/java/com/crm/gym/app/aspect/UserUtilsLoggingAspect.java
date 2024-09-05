@@ -13,23 +13,23 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
-import static com.crm.gym.app.util.Constants.STORAGE_EXCEPTION;
-import static com.crm.gym.app.util.Constants.STORAGE_INPUT;
-import static com.crm.gym.app.util.Constants.STORAGE_RESULT;
+import static com.crm.gym.app.util.Constants.USER_UTILS_EXCEPTION;
+import static com.crm.gym.app.util.Constants.USER_UTILS_INPUT;
+import static com.crm.gym.app.util.Constants.USER_UTILS_RESULT;
 
 @Slf4j
 @Aspect
 @Component
 @RequiredArgsConstructor
-public class StorageLoggingAspect {
+public class UserUtilsLoggingAspect {
 
     private final LoggingMessageUtils messageUtils;
 
-    @Pointcut("execution(* com.crm.gym.app.model.storage.implementation..*(..))")
-    public void storageMethods() {
+    @Pointcut("execution(* com.crm.gym.app.util.UserUtils.*(..))")
+    public void userUtilsMethods() {
     }
 
-    @Before("storageMethods() && args(*)")
+    @Before("userUtilsMethods() && args(..)")
     public void logBefore(JoinPoint joinPoint) {
         String className = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();
@@ -37,23 +37,23 @@ public class StorageLoggingAspect {
         Object[] args = joinPoint.getArgs();
         String stringArgs = Arrays.toString(args);
 
-        log.debug(messageUtils.getMessage(STORAGE_INPUT, className, methodName, stringArgs));
+        log.debug(messageUtils.getMessage(USER_UTILS_INPUT, className, methodName, stringArgs));
     }
 
-    @AfterReturning(pointcut = "storageMethods()", returning = "result")
-    public void logAfterReturning(JoinPoint joinPoint, Object result) {
+    @AfterReturning(pointcut = "userUtilsMethods()", returning = "result")
+    public void logAfter(JoinPoint joinPoint, Object result) {
         String className = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();
 
-        log.debug(messageUtils.getMessage(STORAGE_RESULT, className, methodName, result));
+        log.debug(messageUtils.getMessage(USER_UTILS_RESULT, className, methodName, result));
     }
 
-    @AfterThrowing(pointcut = "storageMethods()", throwing = "ex")
+    @AfterThrowing(pointcut = "userUtilsMethods()", throwing = "ex")
     public void logAfterThrowing(JoinPoint joinPoint, Exception ex) {
         String className = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();
         String message = ex.getMessage();
 
-        log.error(messageUtils.getMessage(STORAGE_EXCEPTION, className, methodName, message));
+        log.error(messageUtils.getMessage(USER_UTILS_EXCEPTION, className, methodName, message));
     }
 }
