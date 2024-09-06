@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class TraineeStorage implements Storage<Long, Trainee> {
 
-    private final Map<Long, Trainee> traineeStorage = new HashMap<>();
+    private final Map<Long, Trainee> storage = new HashMap<>();
     private final TraineeParser traineeParser;
 
     private final UserStorage userStorage;
@@ -35,22 +35,27 @@ public class TraineeStorage implements Storage<Long, Trainee> {
 
     @Override
     public Trainee get(Long key) {
-        return traineeStorage.get(key);
+        return storage.get(key);
     }
 
     @Override
     public List<Trainee> getAll() {
-        return new ArrayList<>(traineeStorage.values());
+        return new ArrayList<>(storage.values());
     }
 
     @Override
     public Trainee put(Long key, Trainee value) {
-        return traineeStorage.put(key, value);
+        return storage.put(key, value);
     }
 
     @Override
     public void remove(Long key) {
-        traineeStorage.remove(key);
+        storage.remove(key);
+    }
+
+    @Override
+    public void clear() {
+        storage.clear();
     }
 
     @PostConstruct
@@ -63,7 +68,7 @@ public class TraineeStorage implements Storage<Long, Trainee> {
                 userStorage.put(user.getId(), user);
 
                 Trainee trainee = traineeParser.parse(line);
-                traineeStorage.put(trainee.getId(), trainee);
+                storage.put(trainee.getId(), trainee);
             });
 
         } catch (Exception e) {

@@ -11,4 +11,6 @@ public interface Storage<K, V> {
     V put(K key, V value);
 
     void remove(K key);
+
+    void clear();
 }

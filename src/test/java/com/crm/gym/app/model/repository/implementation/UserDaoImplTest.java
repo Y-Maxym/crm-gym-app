@@ -33,8 +33,8 @@ class UserDaoImplTest {
     @DisplayName("Test find user by id functionality")
     public void givenId_whenFindById_thenUserIsReturned() {
         // given
-        Long id = 1L;
         User expected = DataUtils.getUserJohnDoe();
+        Long id = expected.getId();
 
         BDDMockito.given(storage.get(id))
                 .willReturn(expected);

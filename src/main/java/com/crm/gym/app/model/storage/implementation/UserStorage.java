@@ -35,4 +35,9 @@ public class UserStorage implements Storage<Long, User> {
     public void remove(Long key) {
         storage.remove(key);
     }
+
+    @Override
+    public void clear() {
+        storage.clear();
+    }
 }

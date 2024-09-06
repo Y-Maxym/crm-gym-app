@@ -33,8 +33,8 @@ class TraineeDaoImplTest {
     @DisplayName("Test find trainee by id functionality")
     public void givenId_whenFindById_thenTraineeIsReturned() {
         // given
-        Long id = 1L;
         Trainee expected = DataUtils.getTraineeJohnDoe();
+        Long id = expected.getId();
 
         BDDMockito.given(storage.get(id))
                 .willReturn(expected);

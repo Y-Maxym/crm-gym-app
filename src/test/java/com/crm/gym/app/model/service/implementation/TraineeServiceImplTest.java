@@ -39,8 +39,8 @@ class TraineeServiceImplTest {
     @DisplayName("Test find trainee by id functionality")
     public void givenId_whenFindById_thenTraineeIsReturned() {
         // given
-        Long id = 1L;
         Trainee expected = DataUtils.getTraineeJohnDoe();
+        Long id = expected.getId();
 
         BDDMockito.given(repository.findById(anyLong()))
                 .willReturn(Optional.of(expected));

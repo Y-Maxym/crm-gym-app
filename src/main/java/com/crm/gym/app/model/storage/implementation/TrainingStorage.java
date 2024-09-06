@@ -47,6 +47,11 @@ public class TrainingStorage implements Storage<Long, Training> {
         storage.remove(key);
     }
 
+    @Override
+    public void clear() {
+        storage.clear();
+    }
+
     @PostConstruct
     private void init() {
         try (Stream<String> lines = Files.lines(fileResource.getFile().toPath())) {

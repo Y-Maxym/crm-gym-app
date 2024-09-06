@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class TrainerStorage implements Storage<Long, Trainer> {
 
-    private final Map<Long, Trainer> trainerStorage = new HashMap<>();
+    private final Map<Long, Trainer> storage = new HashMap<>();
     private final TrainerParser trainerParser;
 
     private final UserStorage userStorage;
@@ -34,22 +34,27 @@ public class TrainerStorage implements Storage<Long, Trainer> {
 
     @Override
     public Trainer get(Long key) {
-        return trainerStorage.get(key);
+        return storage.get(key);
     }
 
     @Override
     public List<Trainer> getAll() {
-        return new ArrayList<>(trainerStorage.values());
+        return new ArrayList<>(storage.values());
     }
 
     @Override
     public Trainer put(Long key, Trainer value) {
-        return trainerStorage.put(key, value);
+        return storage.put(key, value);
     }
 
     @Override
     public void remove(Long key) {
-        trainerStorage.remove(key);
+        storage.remove(key);
+    }
+
+    @Override
+    public void clear() {
+        storage.clear();
     }
 
     @PostConstruct
@@ -62,7 +67,7 @@ public class TrainerStorage implements Storage<Long, Trainer> {
                 userStorage.put(user.getId(), user);
 
                 Trainer trainer = trainerParser.parse(line);
-                trainerStorage.put(trainer.getId(), trainer);
+                storage.put(trainer.getId(), trainer);
             });
 
         } catch (Exception e) {
