@@ -1,5 +1,7 @@
 package com.crm.gym.app.model.storage.implementation;
 
+import com.crm.gym.app.exception.ParseException;
+import com.crm.gym.app.exception.ReadCSVFileException;
 import com.crm.gym.app.model.entity.Training;
 import com.crm.gym.app.model.parser.implementation.TrainingParser;
 import com.crm.gym.app.utils.DataUtils;
@@ -9,10 +11,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class TrainingStorageTest {
@@ -106,5 +116,63 @@ class TrainingStorageTest {
 
         // then
         assertThat(actual).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Test init storage via correct file path functionality")
+    public void givenCorrectPath_whenInitStorage_thenStorageIsInitialized() {
+        // given
+        Training training = DataUtils.getTrainingEmilyDavis();
+
+        given(trainingParser.parse(anyString()))
+                .willReturn(training);
+
+        Resource resource = new ClassPathResource("init/training-test.csv");
+        ReflectionTestUtils.setField(trainingStorage, "fileResource", resource);
+
+        // when
+        ReflectionTestUtils.invokeMethod(trainingStorage, "init");
+
+        List<Training> trainings = trainingStorage.getAll();
+
+        // then
+        assertThat(trainings).isNotNull();
+        assertThat(trainings).hasSize(1);
+        assertThat(trainings).extracting("id").contains(training.getId());
+    }
+
+    @Test
+    @DisplayName("Test init storage via incorrect file path functionality")
+    public void givenIncorrectFilePath_whenInitStorage_thenExceptionIsThrown() {
+        // given
+        Resource resource = new ClassPathResource("init/incorrect-training-test.csv");
+        ReflectionTestUtils.setField(trainingStorage, "fileResource", resource);
+
+        // when
+        ReadCSVFileException ex = assertThrows(ReadCSVFileException.class, () -> ReflectionTestUtils.invokeMethod(trainingStorage, "init"));
+
+        // then
+        assertThat(ex.getMessage()).isEqualTo("Failed to read training file");
+
+        verify(trainingParser, never()).parse(anyString());
+    }
+
+    @Test
+    @DisplayName("Test init storage via incorrect training data functionality")
+    public void givenIncorrectTrainingData_whenInitStorage_thenExceptionIsThrown() {
+        // given
+        Resource resource = new ClassPathResource("init/training-test.csv");
+        ReflectionTestUtils.setField(trainingStorage, "fileResource", resource);
+
+        given(trainingParser.parse(anyString()))
+                .willThrow(new ParseException("Value cannot be null"));
+
+        // when
+        ReadCSVFileException ex = assertThrows(ReadCSVFileException.class, () -> ReflectionTestUtils.invokeMethod(trainingStorage, "init"));
+
+        // then
+        assertThat(ex.getMessage()).isEqualTo("Failed to read training file");
+        assertThat(ex.getCause()).isInstanceOf(ParseException.class);
+        assertThat(ex.getCause().getMessage()).isEqualTo("Value cannot be null");
     }
 }
