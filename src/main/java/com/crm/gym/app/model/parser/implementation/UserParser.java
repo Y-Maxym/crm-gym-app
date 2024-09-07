@@ -19,14 +19,13 @@ public class UserParser implements Parser<String, User> {
     private final ParseUtils parseUtils;
     private final UserUtils userUtils;
 
-
     @Override
     public User parse(@NonNull String input) {
         String[] data = input.split(",");
 
-        Long id = getValue(data, USER_ID_INDEX, parseUtils::parseLong);
-        String firstName = getStringValue(data, FIRST_NAME_INDEX);
-        String lastName = getStringValue(data, LAST_NAME_INDEX);
+        Long id = extractAndParseValue(data, USER_ID_INDEX, parseUtils::parseLong);
+        String firstName = extractStringValue(data, FIRST_NAME_INDEX);
+        String lastName = extractStringValue(data, LAST_NAME_INDEX);
         String username = userUtils.generateUsername(firstName, lastName);
         String password = userUtils.generatePassword(10);
 

@@ -8,7 +8,6 @@ import com.crm.gym.app.utils.DataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 
@@ -42,7 +43,7 @@ class TraineeServiceImplTest {
         Trainee expected = DataUtils.getTraineeJohnDoe();
         Long id = expected.getId();
 
-        BDDMockito.given(repository.findById(anyLong()))
+        given(repository.findById(anyLong()))
                 .willReturn(Optional.of(expected));
 
         // when
@@ -60,10 +61,10 @@ class TraineeServiceImplTest {
         Long id = 1L;
         String message = "Trainee with id %s not found".formatted(id);
 
-        BDDMockito.given(repository.findById(anyLong()))
+        given(repository.findById(anyLong()))
                 .willReturn(Optional.empty());
 
-        BDDMockito.given(messageUtils.getMessage(anyString(), any()))
+        given(messageUtils.getMessage(anyString(), any()))
                 .willReturn(message);
 
         // when
@@ -79,7 +80,7 @@ class TraineeServiceImplTest {
         // given
         Trainee trainee = DataUtils.getTraineeJohnDoe();
 
-        BDDMockito.doNothing().when(repository).save(any(Trainee.class));
+        doNothing().when(repository).save(any(Trainee.class));
 
         // when
         service.save(trainee);
@@ -94,7 +95,7 @@ class TraineeServiceImplTest {
         // given
         Trainee trainee = DataUtils.getTraineeJohnDoe();
 
-        BDDMockito.doNothing().when(repository).update(any(Trainee.class));
+        doNothing().when(repository).update(any(Trainee.class));
 
         // when
         service.update(trainee);
@@ -109,7 +110,7 @@ class TraineeServiceImplTest {
         // given
         Long id = 1L;
 
-        BDDMockito.doNothing().when(repository).deleteById(anyLong());
+        doNothing().when(repository).deleteById(anyLong());
 
         // when
         service.deleteById(id);

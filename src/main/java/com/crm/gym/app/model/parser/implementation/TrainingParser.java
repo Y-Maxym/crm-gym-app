@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -28,13 +29,16 @@ public class TrainingParser implements Parser<String, Training> {
     public Training parse(@NonNull String input) {
         String[] data = input.split(",");
 
-        Long id = getValue(data, TRAINING_ID_INDEX, utils::parseLong);
-        Long traineeId = getValue(data, TRAINEE_ID_INDEX, utils::parseLong);
-        Long trainerId = getValue(data, TRAINER_ID_INDEX, utils::parseLong);
-        String trainingName = getStringValue(data, TRAINING_NAME_INDEX);
-        Long trainingTypeId = getValue(data, TRAINING_TYPE_ID_INDEX, utils::parseLong);
-        LocalDateTime trainingDate = getValue(data, TRAINING_DATE_INDEX, utils::parseDateTime);
-        Duration trainingDuration = Duration.ofHours(getValue(data, TRAINING_DURATION_INDEX, utils::parseInt));
+        Long id = extractAndParseValue(data, TRAINING_ID_INDEX, utils::parseLong);
+        Long traineeId = extractAndParseValue(data, TRAINEE_ID_INDEX, utils::parseLong);
+        Long trainerId = extractAndParseValue(data, TRAINER_ID_INDEX, utils::parseLong);
+        String trainingName = extractStringValue(data, TRAINING_NAME_INDEX);
+        Long trainingTypeId = extractAndParseValue(data, TRAINING_TYPE_ID_INDEX, utils::parseLong);
+        LocalDateTime trainingDate = extractAndParseValue(data, TRAINING_DATE_INDEX, utils::parseDateTime);
+
+        Duration trainingDuration = Optional.ofNullable(extractAndParseValue(data, TRAINING_DURATION_INDEX, utils::parseInt))
+                .map(Duration::ofHours)
+                .orElse(null);
 
         return Training.builder()
                 .id(id)

@@ -6,7 +6,6 @@ import com.crm.gym.app.utils.DataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,6 +16,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 
@@ -36,7 +37,7 @@ class TrainingDaoImplTest {
         Training expected = DataUtils.getTrainingEmilyDavis();
         Long id = expected.getId();
 
-        BDDMockito.given(storage.get(id))
+        given(storage.get(id))
                 .willReturn(expected);
 
         // when
@@ -53,7 +54,7 @@ class TrainingDaoImplTest {
         // given
         Long id = 1L;
 
-        BDDMockito.given(storage.get(id))
+        given(storage.get(id))
                 .willReturn(null);
 
         // when
@@ -72,7 +73,7 @@ class TrainingDaoImplTest {
 
         List<Training> expected = List.of(training1, training2);
 
-        BDDMockito.given(storage.getAll())
+        given(storage.getAll())
                 .willReturn(expected);
 
         // when
@@ -89,7 +90,7 @@ class TrainingDaoImplTest {
         // given
         Training trainingToSave = DataUtils.getTrainingDavidBrown();
 
-        BDDMockito.given(storage.put(anyLong(), any(Training.class)))
+        given(storage.put(anyLong(), any(Training.class)))
                 .willReturn(null);
 
         // when
@@ -106,7 +107,7 @@ class TrainingDaoImplTest {
         Training trainingToUpdate = DataUtils.getTrainingDavidBrown();
         Training previous = DataUtils.getTrainingEmilyDavis();
 
-        BDDMockito.given(storage.put(anyLong(), any(Training.class)))
+        given(storage.put(anyLong(), any(Training.class)))
                 .willReturn(previous);
 
         // when
@@ -122,7 +123,7 @@ class TrainingDaoImplTest {
         // given
         Long id = 1L;
 
-        BDDMockito.doNothing().when(storage).remove(anyLong());
+        doNothing().when(storage).remove(anyLong());
 
         // when
         repository.deleteById(id);

@@ -9,7 +9,6 @@ import com.crm.gym.app.utils.DataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,6 +21,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -48,7 +49,7 @@ class UserServiceImplTest {
         User expected = DataUtils.getUserJohnDoe();
         Long id = expected.getId();
 
-        BDDMockito.given(repository.findById(anyLong()))
+        given(repository.findById(anyLong()))
                 .willReturn(Optional.of(expected));
 
         // when
@@ -66,10 +67,10 @@ class UserServiceImplTest {
         Long id = 1L;
         String message = "User with id %s not found".formatted(id);
 
-        BDDMockito.given(repository.findById(anyLong()))
+        given(repository.findById(anyLong()))
                 .willReturn(Optional.empty());
 
-        BDDMockito.given(messageUtils.getMessage(anyString(), any()))
+        given(messageUtils.getMessage(anyString(), any()))
                 .willReturn(message);
 
         // when
@@ -89,7 +90,7 @@ class UserServiceImplTest {
         user.setUsername(username);
         user.setPassword(password);
 
-        BDDMockito.doNothing().when(repository).save(any(User.class));
+        doNothing().when(repository).save(any(User.class));
 
         // when
         service.save(user);
@@ -106,12 +107,12 @@ class UserServiceImplTest {
         String username = user.getFirstName() + "." + user.getLastName();
         String password = "1234567890";
 
-        BDDMockito.doNothing().when(repository).save(any(User.class));
+        doNothing().when(repository).save(any(User.class));
 
-        BDDMockito.given(userUtils.generateUsername(anyString(), anyString()))
+        given(userUtils.generateUsername(anyString(), anyString()))
                 .willReturn(username);
 
-        BDDMockito.given(userUtils.generatePassword(anyInt()))
+        given(userUtils.generatePassword(anyInt()))
                 .willReturn(password);
 
         // when
@@ -132,7 +133,7 @@ class UserServiceImplTest {
         // given
         User user = DataUtils.getUserJohnDoe();
 
-        BDDMockito.doNothing().when(repository).update(any(User.class));
+        doNothing().when(repository).update(any(User.class));
 
         // when
         service.update(user);
@@ -147,7 +148,7 @@ class UserServiceImplTest {
         // given
         Long id = 1L;
 
-        BDDMockito.doNothing().when(repository).deleteById(anyLong());
+        doNothing().when(repository).deleteById(anyLong());
 
         // when
         service.deleteById(id);

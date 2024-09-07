@@ -8,7 +8,6 @@ import com.crm.gym.app.utils.DataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 
@@ -42,7 +43,7 @@ class TrainingServiceImplTest {
         Training expected = DataUtils.getTrainingEmilyDavis();
         Long id = expected.getId();
 
-        BDDMockito.given(repository.findById(anyLong()))
+        given(repository.findById(anyLong()))
                 .willReturn(Optional.of(expected));
 
         // when
@@ -60,10 +61,10 @@ class TrainingServiceImplTest {
         Long id = 1L;
         String message = "Training with id %s not found".formatted(id);
 
-        BDDMockito.given(repository.findById(anyLong()))
+        given(repository.findById(anyLong()))
                 .willReturn(Optional.empty());
 
-        BDDMockito.given(messageUtils.getMessage(anyString(), any()))
+        given(messageUtils.getMessage(anyString(), any()))
                 .willReturn(message);
 
         // when
@@ -79,7 +80,7 @@ class TrainingServiceImplTest {
         // given
         Training training = DataUtils.getTrainingEmilyDavis();
 
-        BDDMockito.doNothing().when(repository).save(any(Training.class));
+        doNothing().when(repository).save(any(Training.class));
 
         // when
         service.save(training);
