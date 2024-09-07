@@ -1,6 +1,7 @@
 package com.crm.gym.app.aspect;
 
-import com.crm.gym.app.util.MessageUtils;
+import com.crm.gym.app.util.LoggingUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -8,7 +9,6 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static com.crm.gym.app.util.Constants.DEBUG_PARSE_UTILS_EXCEPTION;
@@ -21,12 +21,10 @@ import static com.crm.gym.app.util.Constants.INFO_PARSE_UTILS_RESULT;
 @Slf4j
 @Aspect
 @Component
-public class ParserUtilsLoggingAspect extends BaseLoggingAspect {
+@RequiredArgsConstructor
+public class ParserUtilsLoggingAspect {
 
-    @Autowired
-    public ParserUtilsLoggingAspect(MessageUtils messageUtils) {
-        super(messageUtils);
-    }
+    private final LoggingUtils utils;
 
     @Pointcut("execution(* com.crm.gym.app.util.ParseUtils.*(..))")
     public void parserMethods() {
@@ -34,16 +32,16 @@ public class ParserUtilsLoggingAspect extends BaseLoggingAspect {
 
     @Before("parserMethods() && args(*)")
     public void logBefore(JoinPoint joinPoint) {
-        logBefore(joinPoint, INFO_PARSE_UTILS_INPUT, DEBUG_PARSE_UTILS_INPUT);
+        utils.logBefore(joinPoint, INFO_PARSE_UTILS_INPUT, DEBUG_PARSE_UTILS_INPUT);
     }
 
     @AfterReturning(pointcut = "parserMethods()", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
-        logAfterReturning(joinPoint, result, INFO_PARSE_UTILS_RESULT, DEBUG_PARSE_UTILS_RESULT);
+        utils.logAfterReturning(joinPoint, result, INFO_PARSE_UTILS_RESULT, DEBUG_PARSE_UTILS_RESULT);
     }
 
     @AfterThrowing(pointcut = "parserMethods()", throwing = "ex")
     public void logAfterThrowing(JoinPoint joinPoint, Exception ex) {
-        logAfterThrowing(joinPoint, ex, INFO_PARSE_UTILS_EXCEPTION, DEBUG_PARSE_UTILS_EXCEPTION);
+        utils.logAfterThrowing(joinPoint, ex, INFO_PARSE_UTILS_EXCEPTION, DEBUG_PARSE_UTILS_EXCEPTION);
     }
 }

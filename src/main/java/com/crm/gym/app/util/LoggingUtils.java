@@ -1,19 +1,20 @@
-package com.crm.gym.app.aspect;
+package com.crm.gym.app.util;
 
-import com.crm.gym.app.util.MessageUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
 @Slf4j
+@Component
 @RequiredArgsConstructor
-public abstract class BaseLoggingAspect {
+public class LoggingUtils {
 
     private final MessageUtils messageUtils;
 
-    protected void logBefore(JoinPoint joinPoint, String infoMessageCode, String debugMessageCode) {
+    public void logBefore(JoinPoint joinPoint, String infoMessageCode, String debugMessageCode) {
         String className = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();
 
@@ -24,7 +25,7 @@ public abstract class BaseLoggingAspect {
         log.debug(messageUtils.getMessage(debugMessageCode, className, methodName, stringArgs));
     }
 
-    protected void logAfterReturning(JoinPoint joinPoint, Object result, String infoMessageCode, String debugMessageCode) {
+    public void logAfterReturning(JoinPoint joinPoint, Object result, String infoMessageCode, String debugMessageCode) {
         String className = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();
 
@@ -32,7 +33,7 @@ public abstract class BaseLoggingAspect {
         log.debug(messageUtils.getMessage(debugMessageCode, className, methodName, result));
     }
 
-    protected void logAfterThrowing(JoinPoint joinPoint, Exception ex, String infoMessageCode, String errorMessageCode) {
+    public void logAfterThrowing(JoinPoint joinPoint, Exception ex, String infoMessageCode, String errorMessageCode) {
         String className = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();
         String message = ex.getMessage();
