@@ -25,7 +25,17 @@ class UserParserTest {
     private UserUtils userUtils;
 
     @InjectMocks
-    private UserParser userParser;
+    private UserParser parser;
+
+    @Test
+    @DisplayName("Test parse method with null input")
+    @SuppressWarnings("all")
+    public void givenNullInput_whenParse_thenThrowsNullPointerException() {
+        // given
+
+        // when & then
+        assertThrows(NullPointerException.class, () -> parser.parse(null));
+    }
 
     @Test
     @DisplayName("Test parse with correct data functionality")
@@ -51,7 +61,7 @@ class UserParserTest {
                 .willReturn(password);
 
         // when
-        User actual = userParser.parse(input);
+        User actual = parser.parse(input);
 
         // then
         assertThat(actual).isNotNull();
@@ -86,7 +96,7 @@ class UserParserTest {
                 .willReturn(password);
 
         // when
-        User actual = userParser.parse(input);
+        User actual = parser.parse(input);
 
         // then
         assertThat(actual).isNotNull();
@@ -109,7 +119,7 @@ class UserParserTest {
         given(parseUtils.parseLong(userId))
                 .willThrow(new ParseException("Number is not a valid: %s".formatted(userId)));
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> userParser.parse(input));
+        ParseException ex = assertThrows(ParseException.class, () -> parser.parse(input));
 
         // then
         assertThat(ex.getMessage()).isEqualTo("Number is not a valid: %s".formatted(userId));
@@ -122,7 +132,7 @@ class UserParserTest {
         String input = "";
 
         // when
-        User actual = userParser.parse(input);
+        User actual = parser.parse(input);
 
         // then
         assertThat(actual).isNotNull();

@@ -22,10 +22,20 @@ import static org.mockito.BDDMockito.given;
 class TrainingParserTest {
 
     @Mock
-    private ParseUtils parseUtils;
+    private ParseUtils utils;
 
     @InjectMocks
-    private TrainingParser trainingParser;
+    private TrainingParser parser;
+
+    @Test
+    @DisplayName("Test parse method with null input")
+    @SuppressWarnings("all")
+    public void givenNullInput_whenParse_thenThrowsNullPointerException() {
+        // given
+
+        // when & then
+        assertThrows(NullPointerException.class, () -> parser.parse(null));
+    }
 
     @Test
     @DisplayName("Test parse with correct data functionality")
@@ -42,25 +52,25 @@ class TrainingParserTest {
         int trainingDurationInHours = 2;
         Duration trainingDuration = Duration.ofHours(trainingDurationInHours);
 
-        given(parseUtils.parseLong(trainingId.toString()))
+        given(utils.parseLong(trainingId.toString()))
                 .willReturn(trainingId);
 
-        given(parseUtils.parseLong(traineeId.toString()))
+        given(utils.parseLong(traineeId.toString()))
                 .willReturn(traineeId);
 
-        given(parseUtils.parseLong(trainerId.toString()))
+        given(utils.parseLong(trainerId.toString()))
                 .willReturn(trainerId);
 
-        given(parseUtils.parseLong(trainingTypeId.toString()))
+        given(utils.parseLong(trainingTypeId.toString()))
                 .willReturn(trainingTypeId);
 
-        given(parseUtils.parseDateTime(anyString()))
+        given(utils.parseDateTime(anyString()))
                 .willReturn(trainingDate);
 
-        given(parseUtils.parseInt(Integer.toString(trainingDurationInHours)))
+        given(utils.parseInt(Integer.toString(trainingDurationInHours)))
                 .willReturn(trainingDurationInHours);
         // when
-        Training actual = trainingParser.parse(input);
+        Training actual = parser.parse(input);
 
         // then
         assertThat(actual).isNotNull();
@@ -85,18 +95,18 @@ class TrainingParserTest {
         int trainingDurationInHours = 2;
         Duration trainingDuration = Duration.ofHours(trainingDurationInHours);
 
-        given(parseUtils.parseLong(trainingId.toString()))
+        given(utils.parseLong(trainingId.toString()))
                 .willReturn(trainingId);
 
-        given(parseUtils.parseLong(trainingTypeId.toString()))
+        given(utils.parseLong(trainingTypeId.toString()))
                 .willReturn(trainingTypeId);
 
 
-        given(parseUtils.parseInt(Integer.toString(trainingDurationInHours)))
+        given(utils.parseInt(Integer.toString(trainingDurationInHours)))
                 .willReturn(trainingDurationInHours);
 
         // when
-        Training actual = trainingParser.parse(input);
+        Training actual = parser.parse(input);
 
         // then
         assertThat(actual).isNotNull();
@@ -117,11 +127,11 @@ class TrainingParserTest {
 
         String trainingDate = "date";
 
-        given(parseUtils.parseDateTime(trainingDate))
+        given(utils.parseDateTime(trainingDate))
                 .willThrow(new ParseException("DateTime is not in a valid format: %s".formatted(trainingDate)));
 
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> trainingParser.parse(input));
+        ParseException ex = assertThrows(ParseException.class, () -> parser.parse(input));
 
         // then
         assertThat(ex.getMessage()).isEqualTo("DateTime is not in a valid format: %s".formatted(trainingDate));
@@ -134,7 +144,7 @@ class TrainingParserTest {
         String input = "";
 
         // when
-        Training actual = trainingParser.parse(input);
+        Training actual = parser.parse(input);
 
         // then
         assertThat(actual).isNotNull();

@@ -18,10 +18,20 @@ import static org.mockito.BDDMockito.given;
 class TrainerParserTest {
 
     @Mock
-    private ParseUtils parseUtils;
+    private ParseUtils utils;
 
     @InjectMocks
-    private TrainerParser trainerParser;
+    private TrainerParser parser;
+
+    @Test
+    @DisplayName("Test parse method with null input")
+    @SuppressWarnings("all")
+    public void givenNullInput_whenParse_thenThrowsNullPointerException() {
+        // given
+
+        // when & then
+        assertThrows(NullPointerException.class, () -> parser.parse(null));
+    }
 
     @Test
     @DisplayName("Test parse with correct data functionality")
@@ -33,18 +43,18 @@ class TrainerParserTest {
         Long trainerId = 1L;
         Long specializationId = 1L;
 
-        given(parseUtils.parseLong(userId.toString()))
+        given(utils.parseLong(userId.toString()))
                 .willReturn(userId);
 
-        given(parseUtils.parseLong(trainerId.toString()))
+        given(utils.parseLong(trainerId.toString()))
                 .willReturn(trainerId);
 
-        given(parseUtils.parseLong(specializationId.toString()))
+        given(utils.parseLong(specializationId.toString()))
                 .willReturn(specializationId);
 
 
         // when
-        Trainer actual = trainerParser.parse(input);
+        Trainer actual = parser.parse(input);
 
         // then
         assertThat(actual).isNotNull();
@@ -62,14 +72,14 @@ class TrainerParserTest {
         Long userId = 4L;
         Long specializationId = 1L;
 
-        given(parseUtils.parseLong(userId.toString()))
+        given(utils.parseLong(userId.toString()))
                 .willReturn(userId);
 
-        given(parseUtils.parseLong(specializationId.toString()))
+        given(utils.parseLong(specializationId.toString()))
                 .willReturn(specializationId);
 
         // when
-        Trainer actual = trainerParser.parse(input);
+        Trainer actual = parser.parse(input);
 
         // then
         assertThat(actual).isNotNull();
@@ -88,16 +98,16 @@ class TrainerParserTest {
         Long trainerId = 1L;
         String specializationId = "spec";
 
-        given(parseUtils.parseLong(userId.toString()))
+        given(utils.parseLong(userId.toString()))
                 .willReturn(userId);
 
-        given(parseUtils.parseLong(trainerId.toString()))
+        given(utils.parseLong(trainerId.toString()))
                 .willReturn(trainerId);
 
-        given(parseUtils.parseLong(specializationId))
+        given(utils.parseLong(specializationId))
                 .willThrow(new ParseException("Number is not a valid: %s".formatted(specializationId)));
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> trainerParser.parse(input));
+        ParseException ex = assertThrows(ParseException.class, () -> parser.parse(input));
 
         // then
         assertThat(ex.getMessage()).isEqualTo("Number is not a valid: %s".formatted(specializationId));
@@ -110,7 +120,7 @@ class TrainerParserTest {
         String input = "";
 
         // when
-        Trainer actual = trainerParser.parse(input);
+        Trainer actual = parser.parse(input);
 
         // then
         assertThat(actual).isNotNull();

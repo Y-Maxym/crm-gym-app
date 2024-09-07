@@ -20,10 +20,20 @@ import static org.mockito.BDDMockito.given;
 class TraineeParserTest {
 
     @Mock
-    private ParseUtils parseUtils;
+    private ParseUtils utils;
 
     @InjectMocks
-    private TraineeParser traineeParser;
+    private TraineeParser parser;
+
+    @Test
+    @DisplayName("Test parse method with null input")
+    @SuppressWarnings("all")
+    public void givenNullInput_whenParse_thenThrowsNullPointerException() {
+        // given
+
+        // when & then
+        assertThrows(NullPointerException.class, () -> parser.parse(null));
+    }
 
     @Test
     @DisplayName("Test parse with correct data functionality")
@@ -36,17 +46,17 @@ class TraineeParserTest {
         LocalDate dateOfBirth = LocalDate.of(2000, 1, 1);
         String address = "Address1";
 
-        given(parseUtils.parseLong(userId.toString()))
+        given(utils.parseLong(userId.toString()))
                 .willReturn(userId);
 
-        given(parseUtils.parseLong(traineeId.toString()))
+        given(utils.parseLong(traineeId.toString()))
                 .willReturn(traineeId);
 
-        given(parseUtils.parseDate(dateOfBirth.toString()))
+        given(utils.parseDate(dateOfBirth.toString()))
                 .willReturn(dateOfBirth);
 
         // when
-        Trainee actual = traineeParser.parse(input);
+        Trainee actual = parser.parse(input);
 
         // then
         assertThat(actual).isNotNull();
@@ -65,11 +75,11 @@ class TraineeParserTest {
         Long userId = 1L;
         String address = "Address1";
 
-        given(parseUtils.parseLong(userId.toString()))
+        given(utils.parseLong(userId.toString()))
                 .willReturn(userId);
 
         // when
-        Trainee actual = traineeParser.parse(input);
+        Trainee actual = parser.parse(input);
 
         // then
         assertThat(actual).isNotNull();
@@ -87,11 +97,11 @@ class TraineeParserTest {
 
         String dateOfBirth = "abc";
 
-        given(parseUtils.parseDate(dateOfBirth))
+        given(utils.parseDate(dateOfBirth))
                 .willThrow(new ParseException("Date is not in a valid format: %s".formatted(dateOfBirth)));
 
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> traineeParser.parse(input));
+        ParseException ex = assertThrows(ParseException.class, () -> parser.parse(input));
 
         // then
         assertThat(ex.getMessage()).isEqualTo("Date is not in a valid format: %s".formatted(dateOfBirth));
@@ -104,7 +114,7 @@ class TraineeParserTest {
         String input = "";
 
         // when
-        Trainee actual = traineeParser.parse(input);
+        Trainee actual = parser.parse(input);
 
         // then
         assertThat(actual).isNotNull();
