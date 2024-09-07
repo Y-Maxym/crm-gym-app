@@ -14,11 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static com.crm.gym.app.util.Constants.ERROR_TRAINER_WITH_ID_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.only;
@@ -43,7 +41,7 @@ class TrainerServiceImplTest {
         Trainer expected = DataUtils.getTrainerEmilyDavis();
         Long id = expected.getId();
 
-        given(repository.findById(anyLong()))
+        given(repository.findById(id))
                 .willReturn(Optional.of(expected));
 
         // when
@@ -61,10 +59,10 @@ class TrainerServiceImplTest {
         Long id = 1L;
         String message = "Trainer with id %s not found".formatted(id);
 
-        given(repository.findById(anyLong()))
+        given(repository.findById(id))
                 .willReturn(Optional.empty());
 
-        given(messageUtils.getMessage(anyString(), any()))
+        given(messageUtils.getMessage(ERROR_TRAINER_WITH_ID_NOT_FOUND, id))
                 .willReturn(message);
 
         // when
@@ -78,30 +76,30 @@ class TrainerServiceImplTest {
     @DisplayName("Test save trainer functionality")
     public void givenSaveTrainer_whenSave_thenRepositoryIsCalled() {
         // given
-        Trainer trainer = DataUtils.getTrainerEmilyDavis();
+        Trainer trainerToSave = DataUtils.getTrainerEmilyDavis();
 
-        doNothing().when(repository).save(any(Trainer.class));
+        doNothing().when(repository).save(trainerToSave);
 
         // when
-        service.save(trainer);
+        service.save(trainerToSave);
 
         // then
-        verify(repository, only()).save(trainer);
+        verify(repository, only()).save(trainerToSave);
     }
 
     @Test
     @DisplayName("Test update trainer functionality")
     public void givenUpdatedTrainer_whenUpdate_thenRepositoryIsCalled() {
         // given
-        Trainer trainer = DataUtils.getTrainerEmilyDavis();
+        Trainer trainerToUpdate = DataUtils.getTrainerEmilyDavis();
 
-        doNothing().when(repository).update(any(Trainer.class));
+        doNothing().when(repository).update(trainerToUpdate);
 
         // when
-        service.update(trainer);
+        service.update(trainerToUpdate);
 
         // then
-        verify(repository, only()).update(trainer);
+        verify(repository, only()).update(trainerToUpdate);
     }
 
 }

@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.only;
@@ -91,7 +89,7 @@ class UserDaoImplTest {
         // given
         User userToSave = DataUtils.getUserJohnDoe();
 
-        given(storage.put(anyLong(), any(User.class)))
+        given(storage.put(userToSave.getId(), userToSave))
                 .willReturn(null);
 
         // when
@@ -108,7 +106,7 @@ class UserDaoImplTest {
         User userToUpdate = DataUtils.getUserJohnDoe();
         User previous = DataUtils.getUserJaneSmith();
 
-        given(storage.put(anyLong(), any(User.class)))
+        given(storage.put(userToUpdate.getId(), userToUpdate))
                 .willReturn(previous);
 
         // when
@@ -124,7 +122,7 @@ class UserDaoImplTest {
         // given
         Long id = 1L;
 
-        doNothing().when(storage).remove(anyLong());
+        doNothing().when(storage).remove(id);
 
         // when
         repository.deleteById(id);

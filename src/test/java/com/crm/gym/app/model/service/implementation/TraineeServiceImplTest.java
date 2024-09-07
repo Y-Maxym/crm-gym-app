@@ -14,11 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static com.crm.gym.app.util.Constants.ERROR_TRAINEE_WITH_ID_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.only;
@@ -43,7 +41,7 @@ class TraineeServiceImplTest {
         Trainee expected = DataUtils.getTraineeJohnDoe();
         Long id = expected.getId();
 
-        given(repository.findById(anyLong()))
+        given(repository.findById(id))
                 .willReturn(Optional.of(expected));
 
         // when
@@ -61,10 +59,10 @@ class TraineeServiceImplTest {
         Long id = 1L;
         String message = "Trainee with id %s not found".formatted(id);
 
-        given(repository.findById(anyLong()))
+        given(repository.findById(id))
                 .willReturn(Optional.empty());
 
-        given(messageUtils.getMessage(anyString(), any()))
+        given(messageUtils.getMessage(ERROR_TRAINEE_WITH_ID_NOT_FOUND, id))
                 .willReturn(message);
 
         // when
@@ -78,30 +76,30 @@ class TraineeServiceImplTest {
     @DisplayName("Test save trainee functionality")
     public void givenSaveTrainee_whenSave_thenRepositoryIsCalled() {
         // given
-        Trainee trainee = DataUtils.getTraineeJohnDoe();
+        Trainee traineeToSave = DataUtils.getTraineeJohnDoe();
 
-        doNothing().when(repository).save(any(Trainee.class));
+        doNothing().when(repository).save(traineeToSave);
 
         // when
-        service.save(trainee);
+        service.save(traineeToSave);
 
         // then
-        verify(repository, only()).save(trainee);
+        verify(repository, only()).save(traineeToSave);
     }
 
     @Test
     @DisplayName("Test update trainee functionality")
     public void givenUpdatedTrainee_whenUpdate_thenRepositoryIsCalled() {
         // given
-        Trainee trainee = DataUtils.getTraineeJohnDoe();
+        Trainee traineeToUpdate = DataUtils.getTraineeJohnDoe();
 
-        doNothing().when(repository).update(any(Trainee.class));
+        doNothing().when(repository).update(traineeToUpdate);
 
         // when
-        service.update(trainee);
+        service.update(traineeToUpdate);
 
         // then
-        verify(repository, only()).update(trainee);
+        verify(repository, only()).update(traineeToUpdate);
     }
 
     @Test
@@ -110,7 +108,7 @@ class TraineeServiceImplTest {
         // given
         Long id = 1L;
 
-        doNothing().when(repository).deleteById(anyLong());
+        doNothing().when(repository).deleteById(id);
 
         // when
         service.deleteById(id);

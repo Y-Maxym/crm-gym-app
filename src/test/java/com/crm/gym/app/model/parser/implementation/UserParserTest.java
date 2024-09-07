@@ -13,8 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,16 +37,17 @@ class UserParserTest {
         String firstName = "John";
         String lastName = "Doe";
         String username = "John.Doe";
+        int passwordLength = 10;
         String password = "1234567890";
 
 
         given(parseUtils.parseLong(userId.toString()))
                 .willReturn(userId);
 
-        given(userUtils.generateUsername(anyString(), anyString()))
+        given(userUtils.generateUsername(firstName, lastName))
                 .willReturn(username);
 
-        given(userUtils.generatePassword(anyInt()))
+        given(userUtils.generatePassword(passwordLength))
                 .willReturn(password);
 
         // when
@@ -72,16 +71,18 @@ class UserParserTest {
 
         Long userId = 1L;
         String firstName = "John";
+        String lastName = "";
         String username = "John.";
+        int passwordLength = 10;
         String password = "1234567890";
 
         given(parseUtils.parseLong(userId.toString()))
                 .willReturn(userId);
 
-        given(userUtils.generateUsername(anyString(), anyString()))
+        given(userUtils.generateUsername(firstName, lastName))
                 .willReturn(username);
 
-        given(userUtils.generatePassword(anyInt()))
+        given(userUtils.generatePassword(passwordLength))
                 .willReturn(password);
 
         // when

@@ -14,11 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static com.crm.gym.app.util.Constants.ERROR_TRAINING_WITH_ID_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.only;
@@ -43,7 +41,7 @@ class TrainingServiceImplTest {
         Training expected = DataUtils.getTrainingEmilyDavis();
         Long id = expected.getId();
 
-        given(repository.findById(anyLong()))
+        given(repository.findById(id))
                 .willReturn(Optional.of(expected));
 
         // when
@@ -61,10 +59,10 @@ class TrainingServiceImplTest {
         Long id = 1L;
         String message = "Training with id %s not found".formatted(id);
 
-        given(repository.findById(anyLong()))
+        given(repository.findById(id))
                 .willReturn(Optional.empty());
 
-        given(messageUtils.getMessage(anyString(), any()))
+        given(messageUtils.getMessage(ERROR_TRAINING_WITH_ID_NOT_FOUND, id))
                 .willReturn(message);
 
         // when
@@ -78,15 +76,15 @@ class TrainingServiceImplTest {
     @DisplayName("Test save training functionality")
     public void givenSaveTraining_whenSave_thenRepositoryIsCalled() {
         // given
-        Training training = DataUtils.getTrainingEmilyDavis();
+        Training trainingToSave = DataUtils.getTrainingEmilyDavis();
 
-        doNothing().when(repository).save(any(Training.class));
+        doNothing().when(repository).save(trainingToSave);
 
         // when
-        service.save(training);
+        service.save(trainingToSave);
 
         // then
-        verify(repository, only()).save(training);
+        verify(repository, only()).save(trainingToSave);
     }
 
 }
