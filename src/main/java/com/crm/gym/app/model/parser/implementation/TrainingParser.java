@@ -4,7 +4,8 @@ import com.crm.gym.app.model.entity.Training;
 import com.crm.gym.app.model.parser.Parser;
 import com.crm.gym.app.util.ParseUtils;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Component
-@RequiredArgsConstructor
+@Setter(onMethod_ = @Autowired)
 public class TrainingParser implements Parser<String, Training> {
 
     private static final int TRAINING_ID_INDEX = 0;
@@ -23,7 +24,7 @@ public class TrainingParser implements Parser<String, Training> {
     private static final int TRAINING_DATE_INDEX = 5;
     private static final int TRAINING_DURATION_INDEX = 6;
 
-    private final ParseUtils utils;
+    private ParseUtils utils;
 
     @Override
     public Training parse(@NonNull String input) {

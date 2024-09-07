@@ -5,19 +5,20 @@ import com.crm.gym.app.model.parser.Parser;
 import com.crm.gym.app.util.ParseUtils;
 import com.crm.gym.app.util.UserUtils;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
+@Setter(onMethod_ = @Autowired)
 public class UserParser implements Parser<String, User> {
 
     private static final int USER_ID_INDEX = 0;
     private static final int FIRST_NAME_INDEX = 1;
     private static final int LAST_NAME_INDEX = 2;
 
-    private final ParseUtils parseUtils;
-    private final UserUtils userUtils;
+    private ParseUtils parseUtils;
+    private UserUtils userUtils;
 
     @Override
     public User parse(@NonNull String input) {

@@ -5,17 +5,18 @@ import com.crm.gym.app.model.entity.Trainer;
 import com.crm.gym.app.model.repository.EntityDao;
 import com.crm.gym.app.model.service.TrainerService;
 import com.crm.gym.app.util.MessageUtils;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static com.crm.gym.app.util.Constants.ERROR_TRAINER_WITH_ID_NOT_FOUND;
 
 @Service
-@RequiredArgsConstructor
+@Setter(onMethod_ = @Autowired)
 public class TrainerServiceImpl implements TrainerService {
 
-    private final MessageUtils messageUtils;
-    private final EntityDao<Long, Trainer> repository;
+    private MessageUtils messageUtils;
+    private EntityDao<Long, Trainer> repository;
 
     public Trainer findById(Long id) {
         return repository.findById(id)

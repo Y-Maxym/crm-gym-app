@@ -6,21 +6,22 @@ import com.crm.gym.app.model.repository.EntityDao;
 import com.crm.gym.app.model.service.UserService;
 import com.crm.gym.app.util.MessageUtils;
 import com.crm.gym.app.util.UserUtils;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static com.crm.gym.app.util.Constants.ERROR_USER_WITH_ID_NOT_FOUND;
 import static java.util.Objects.isNull;
 
-@Service
-@RequiredArgsConstructor
 @Slf4j
+@Service
+@Setter(onMethod_ = @Autowired)
 public class UserServiceImpl implements UserService {
 
-    private final EntityDao<Long, User> repository;
-    private final MessageUtils messageUtils;
-    private final UserUtils userUtils;
+    private EntityDao<Long, User> repository;
+    private MessageUtils messageUtils;
+    private UserUtils userUtils;
 
     @Override
     public User findById(Long id) {

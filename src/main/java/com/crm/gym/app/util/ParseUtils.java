@@ -1,26 +1,27 @@
 package com.crm.gym.app.util;
 
 import com.crm.gym.app.exception.ParseException;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
-import static com.crm.gym.app.util.Constants.ERROR_PARSE_UTILS_INVALID_FORMAT_DATETIME;
 import static com.crm.gym.app.util.Constants.ERROR_PARSE_UTILS_INVALID_FORMAT_DATE;
+import static com.crm.gym.app.util.Constants.ERROR_PARSE_UTILS_INVALID_FORMAT_DATETIME;
 import static com.crm.gym.app.util.Constants.ERROR_PARSE_UTILS_INVALID_NUMBER;
 import static com.crm.gym.app.util.Constants.ERROR_PARSE_UTILS_NULL_VALUE;
 import static java.util.Objects.isNull;
 
-@Component
 @Slf4j
-@RequiredArgsConstructor
+@Component
+@Setter(onMethod_ = @Autowired)
 public class ParseUtils {
 
-    private final MessageUtils messageUtils;
+    private MessageUtils messageUtils;
 
     public void checkNotNull(String value) {
         if (isNull(value)) {

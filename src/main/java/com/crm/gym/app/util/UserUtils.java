@@ -2,12 +2,14 @@ package com.crm.gym.app.util;
 
 import com.crm.gym.app.model.entity.User;
 import com.crm.gym.app.model.repository.EntityDao;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.apache.commons.text.RandomStringGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
+@Setter(onMethod_ = @Autowired)
+
 public class UserUtils {
 
     private static final char[] LOWERCASE_LETTERS = {'a', 'z'};
@@ -16,7 +18,7 @@ public class UserUtils {
 
     private static long serialNumber = 1L;
 
-    private final EntityDao<Long, User> repository;
+    private EntityDao<Long, User> repository;
 
     public String generatePassword(int length) {
         RandomStringGenerator generator = new RandomStringGenerator.Builder()

@@ -4,13 +4,14 @@ import com.crm.gym.app.model.entity.Trainee;
 import com.crm.gym.app.model.parser.Parser;
 import com.crm.gym.app.util.ParseUtils;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
 @Component
-@RequiredArgsConstructor
+@Setter(onMethod_ = @Autowired)
 public class TraineeParser implements Parser<String, Trainee> {
 
     private static final int TRAINEE_ID_INDEX = 3;
@@ -18,7 +19,7 @@ public class TraineeParser implements Parser<String, Trainee> {
     private static final int DATE_OF_BIRTH_INDEX = 4;
     private static final int ADDRESS_INDEX = 5;
 
-    private final ParseUtils utils;
+    private ParseUtils utils;
 
     @Override
     public Trainee parse(@NonNull String input) {

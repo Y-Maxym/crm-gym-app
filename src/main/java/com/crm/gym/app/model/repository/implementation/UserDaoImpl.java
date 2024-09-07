@@ -3,17 +3,18 @@ package com.crm.gym.app.model.repository.implementation;
 import com.crm.gym.app.model.entity.User;
 import com.crm.gym.app.model.repository.EntityDao;
 import com.crm.gym.app.model.storage.Storage;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-@RequiredArgsConstructor
+@Setter(onMethod_ = @Autowired)
 public class UserDaoImpl implements EntityDao<Long, User> {
 
-    private final Storage<Long, User> storage;
+    private Storage<Long, User> storage;
 
     @Override
     public Optional<User> findById(Long id) {

@@ -7,7 +7,9 @@ import com.crm.gym.app.model.parser.implementation.TraineeParser;
 import com.crm.gym.app.model.parser.implementation.UserParser;
 import com.crm.gym.app.model.storage.Storage;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
+import lombok.AccessLevel;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -21,16 +23,17 @@ import java.util.stream.Stream;
 
 
 @Component
-@RequiredArgsConstructor
+@Setter(onMethod_ = @Autowired)
 public class TraineeStorage implements Storage<Long, Trainee> {
 
     private final Map<Long, Trainee> storage = new HashMap<>();
-    private final TraineeParser traineeParser;
 
-    private final UserStorage userStorage;
-    private final UserParser userParser;
+    private TraineeParser traineeParser;
+    private UserParser userParser;
+    private UserStorage userStorage;
 
     @Value("${storage.file-path.trainee}")
+    @Setter(AccessLevel.NONE)
     private Resource fileResource;
 
     @Override

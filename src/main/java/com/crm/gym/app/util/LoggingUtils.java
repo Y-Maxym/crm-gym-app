@@ -1,18 +1,19 @@
 package com.crm.gym.app.util;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
+@Setter(onMethod_ = @Autowired)
 public class LoggingUtils {
 
-    private final MessageUtils messageUtils;
+    private MessageUtils messageUtils;
 
     public void logBefore(JoinPoint joinPoint, String infoMessageCode, String debugMessageCode) {
         String className = joinPoint.getSignature().getDeclaringTypeName();
