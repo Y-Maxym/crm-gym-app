@@ -1,6 +1,6 @@
 spring:
   application:
-    name: crm-gym-app
+    name: gym-crm-app
 
   config:
     import: optional:file:.env[.properties]
