@@ -1,7 +1,7 @@
 package com.gym.crm.app.model.repository.implementation;
 
 import com.gym.crm.app.model.entity.User;
-import com.gym.crm.app.model.storage.implementation.UserStorage;
+import com.gym.crm.app.model.storage.Storage;
 import com.gym.crm.app.utils.DataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,16 +14,21 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.only;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class UserDaoImplTest {
 
     @Mock
-    private UserStorage storage;
+    private Storage storage;
 
     @InjectMocks
     private UserDaoImpl repository;
@@ -35,7 +40,7 @@ class UserDaoImplTest {
         User expected = DataUtils.getUserJohnDoe();
         Long id = expected.getId();
 
-        given(storage.get(id))
+        given(storage.get(id, User.class))
                 .willReturn(expected);
 
         // when
@@ -52,7 +57,7 @@ class UserDaoImplTest {
         // given
         Long id = 1L;
 
-        given(storage.get(id))
+        given(storage.get(id, User.class))
                 .willReturn(null);
 
         // when
@@ -72,7 +77,7 @@ class UserDaoImplTest {
 
         List<User> expected = List.of(user1, user2, user3);
 
-        given(storage.getAll())
+        given(storage.getAll(User.class))
                 .willReturn(expected);
 
         // when
@@ -85,38 +90,42 @@ class UserDaoImplTest {
 
     @Test
     @DisplayName("Test save user functionality")
-    public void givenUserToSave_whenSaveUser_thenStorageIsCalled() {
+    public void givenUserToSave_whenSaveOrUpdateUser_thenStorageIsCalled() {
         // given
-        User userToSave = DataUtils.getUserJohnDoe();
+        User userToSave = spy(DataUtils.getUserJohnDoe());
+        userToSave.setId(null);
 
-        given(storage.put(userToSave))
+        given(storage.put(anyLong(), eq(userToSave)))
                 .willReturn(userToSave);
 
         // when
-        User actual = repository.save(userToSave);
+        User actual = repository.saveOrUpdate(userToSave);
 
         // then
-        assertThat(actual).isEqualTo(userToSave);
+        assertThat(actual.getId()).isNotNull();
 
-        verify(storage, only()).put(userToSave);
+        verify(userToSave, times(1)).setId(anyLong());
+        verify(storage, only()).put(anyLong(), eq(userToSave));
     }
 
     @Test
     @DisplayName("Test update user functionality")
-    public void givenUserToUpdate_whenSaveUser_thenStorageIsCalled() {
+    public void givenUserToUpdate_whenSaveOrUpdateUser_thenStorageIsCalled() {
         // given
-        User userToUpdate = DataUtils.getUserJohnDoe();
+        User userToUpdate = spy(DataUtils.getUserJohnDoe());
+        Long id = userToUpdate.getId();
 
-        given(storage.put(userToUpdate))
+        given(storage.put(id, userToUpdate))
                 .willReturn(userToUpdate);
 
         // when
-        User actual = repository.update(userToUpdate);
+        User actual = repository.saveOrUpdate(userToUpdate);
 
         // then
         assertThat(actual).isEqualTo(userToUpdate);
 
-        verify(storage, only()).put(userToUpdate);
+        verify(userToUpdate, never()).setId(anyLong());
+        verify(storage, only()).put(id, userToUpdate);
     }
 
     @Test
@@ -125,12 +134,12 @@ class UserDaoImplTest {
         // given
         Long id = 1L;
 
-        doNothing().when(storage).remove(id);
+        doNothing().when(storage).remove(id, User.class);
 
         // when
         repository.deleteById(id);
 
         // then
-        verify(storage, only()).remove(id);
+        verify(storage, only()).remove(id, User.class);
     }
 }

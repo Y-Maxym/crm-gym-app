@@ -24,11 +24,11 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     public void save(Trainee trainee) {
-        repository.save(trainee);
+        repository.saveOrUpdate(trainee);
     }
 
     public void update(Trainee trainee) {
-        repository.update(trainee);
+        repository.saveOrUpdate(trainee);
     }
 
     public void deleteById(Long id) {

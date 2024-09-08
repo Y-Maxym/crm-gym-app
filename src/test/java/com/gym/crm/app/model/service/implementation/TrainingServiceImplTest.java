@@ -81,7 +81,7 @@ class TrainingServiceImplTest {
         service.save(trainingToSave);
 
         // then
-        verify(repository, only()).save(trainingToSave);
+        verify(repository, only()).saveOrUpdate(trainingToSave);
     }
 
 }

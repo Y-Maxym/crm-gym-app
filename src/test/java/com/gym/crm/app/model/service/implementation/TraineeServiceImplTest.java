@@ -82,7 +82,7 @@ class TraineeServiceImplTest {
         service.save(traineeToSave);
 
         // then
-        verify(repository, only()).save(traineeToSave);
+        verify(repository, only()).saveOrUpdate(traineeToSave);
     }
 
     @Test
@@ -95,7 +95,7 @@ class TraineeServiceImplTest {
         service.update(traineeToUpdate);
 
         // then
-        verify(repository, only()).update(traineeToUpdate);
+        verify(repository, only()).saveOrUpdate(traineeToUpdate);
     }
 
     @Test

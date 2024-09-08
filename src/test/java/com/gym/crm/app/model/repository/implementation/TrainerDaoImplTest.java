@@ -1,7 +1,7 @@
 package com.gym.crm.app.model.repository.implementation;
 
 import com.gym.crm.app.model.entity.Trainer;
-import com.gym.crm.app.model.storage.implementation.TrainerStorage;
+import com.gym.crm.app.model.storage.Storage;
 import com.gym.crm.app.utils.DataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,16 +14,21 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.only;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class TrainerDaoImplTest {
 
     @Mock
-    private TrainerStorage storage;
+    private Storage storage;
 
     @InjectMocks
     private TrainerDaoImpl repository;
@@ -35,7 +40,7 @@ class TrainerDaoImplTest {
         Trainer expected = DataUtils.getTrainerEmilyDavis();
         Long id = expected.getId();
 
-        given(storage.get(id))
+        given(storage.get(id, Trainer.class))
                 .willReturn(expected);
 
         // when
@@ -52,7 +57,7 @@ class TrainerDaoImplTest {
         // given
         Long id = 1L;
 
-        given(storage.get(id))
+        given(storage.get(id, Trainer.class))
                 .willReturn(null);
 
         // when
@@ -71,7 +76,7 @@ class TrainerDaoImplTest {
 
         List<Trainer> expected = List.of(trainer1, trainer2);
 
-        given(storage.getAll())
+        given(storage.getAll(Trainer.class))
                 .willReturn(expected);
 
         // when
@@ -84,38 +89,42 @@ class TrainerDaoImplTest {
 
     @Test
     @DisplayName("Test save trainer functionality")
-    public void givenTrainerToSave_whenSaveTrainer_thenStorageIsCalled() {
+    public void givenTrainerToSave_whenSaveOrUpdateTrainer_thenStorageIsCalled() {
         // given
-        Trainer trainerToSave = DataUtils.getTrainerEmilyDavis();
+        Trainer trainerToSave = spy(DataUtils.getTrainerEmilyDavis());
+        trainerToSave.setId(null);
 
-        given(storage.put(trainerToSave))
+        given(storage.put(anyLong(), eq(trainerToSave)))
                 .willReturn(trainerToSave);
 
         // when
-        Trainer actual = repository.save(trainerToSave);
+        Trainer actual = repository.saveOrUpdate(trainerToSave);
 
         // then
-        assertThat(actual).isEqualTo(trainerToSave);
+        assertThat(actual.getId()).isNotNull();
 
-        verify(storage, only()).put(trainerToSave);
+        verify(trainerToSave, times(1)).setId(anyLong());
+        verify(storage, only()).put(anyLong(), eq(trainerToSave));
     }
 
     @Test
     @DisplayName("Test update trainer functionality")
-    public void givenTrainerToUpdate_whenSaveTrainer_thenStorageIsCalled() {
+    public void givenTrainerToUpdate_whenSaveOrUpdateTrainer_thenStorageIsCalled() {
         // given
-        Trainer trainerToUpdate = DataUtils.getTrainerEmilyDavis();
+        Trainer trainerToUpdate = spy(DataUtils.getTrainerEmilyDavis());
+        Long id = trainerToUpdate.getId();
 
-        given(storage.put(trainerToUpdate))
+        given(storage.put(id, trainerToUpdate))
                 .willReturn(trainerToUpdate);
 
         // when
-        Trainer actual = repository.update(trainerToUpdate);
+        Trainer actual = repository.saveOrUpdate(trainerToUpdate);
 
         // then
         assertThat(actual).isEqualTo(trainerToUpdate);
 
-        verify(storage, only()).put(trainerToUpdate);
+        verify(trainerToUpdate, never()).setId(anyLong());
+        verify(storage, only()).put(id, trainerToUpdate);
     }
 
     @Test
@@ -124,12 +133,12 @@ class TrainerDaoImplTest {
         // given
         Long id = 1L;
 
-        doNothing().when(storage).remove(id);
+        doNothing().when(storage).remove(id, Trainer.class);
 
         // when
         repository.deleteById(id);
 
         // then
-        verify(storage, only()).remove(id);
+        verify(storage, only()).remove(id, Trainer.class);
     }
 }

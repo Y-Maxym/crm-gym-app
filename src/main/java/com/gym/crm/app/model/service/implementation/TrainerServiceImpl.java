@@ -24,10 +24,10 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     public void save(Trainer trainer) {
-        repository.save(trainer);
+        repository.saveOrUpdate(trainer);
     }
 
     public void update(Trainer trainer) {
-        repository.update(trainer);
+        repository.saveOrUpdate(trainer);
     }
 }

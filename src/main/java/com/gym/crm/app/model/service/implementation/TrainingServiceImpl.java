@@ -24,6 +24,6 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     public void save(Training training) {
-        repository.save(training);
+        repository.saveOrUpdate(training);
     }
 }

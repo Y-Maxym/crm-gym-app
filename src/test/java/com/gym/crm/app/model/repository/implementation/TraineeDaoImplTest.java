@@ -1,7 +1,7 @@
 package com.gym.crm.app.model.repository.implementation;
 
 import com.gym.crm.app.model.entity.Trainee;
-import com.gym.crm.app.model.storage.implementation.TraineeStorage;
+import com.gym.crm.app.model.storage.Storage;
 import com.gym.crm.app.utils.DataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,16 +14,21 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.only;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class TraineeDaoImplTest {
 
     @Mock
-    private TraineeStorage storage;
+    private Storage storage;
 
     @InjectMocks
     private TraineeDaoImpl repository;
@@ -35,7 +40,7 @@ class TraineeDaoImplTest {
         Trainee expected = DataUtils.getTraineeJohnDoe();
         Long id = expected.getId();
 
-        given(storage.get(id))
+        given(storage.get(id, Trainee.class))
                 .willReturn(expected);
 
         // when
@@ -52,7 +57,7 @@ class TraineeDaoImplTest {
         // given
         Long id = 1L;
 
-        given(storage.get(id))
+        given(storage.get(id, Trainee.class))
                 .willReturn(null);
 
         // when
@@ -72,7 +77,7 @@ class TraineeDaoImplTest {
 
         List<Trainee> expected = List.of(trainee1, trainee2, trainee3);
 
-        given(storage.getAll())
+        given(storage.getAll(Trainee.class))
                 .willReturn(expected);
 
         // when
@@ -85,38 +90,42 @@ class TraineeDaoImplTest {
 
     @Test
     @DisplayName("Test save trainee functionality")
-    public void givenTraineeToSave_whenSaveTrainee_thenStorageIsCalled() {
+    public void givenTraineeToSave_whenSaveOrUpdateTrainee_thenStorageIsCalled() {
         // given
-        Trainee traineeToSave = DataUtils.getTraineeJohnDoe();
+        Trainee traineeToSave = spy(DataUtils.getTraineeJohnDoe());
+        traineeToSave.setId(null);
 
-        given(storage.put(traineeToSave))
+        given(storage.put(anyLong(), eq(traineeToSave)))
                 .willReturn(traineeToSave);
 
         // when
-        Trainee actual = repository.save(traineeToSave);
+        Trainee actual = repository.saveOrUpdate(traineeToSave);
 
         // then
         assertThat(actual).isEqualTo(traineeToSave);
 
-        verify(storage, only()).put(traineeToSave);
+        verify(traineeToSave, times(1)).setId(anyLong());
+        verify(storage, only()).put(anyLong(), eq(traineeToSave));
     }
 
     @Test
     @DisplayName("Test update trainee functionality")
-    public void givenTraineeToUpdate_whenSaveTrainee_thenStorageIsCalled() {
+    public void givenTraineeToUpdate_whenSaveOrUpdateTrainee_thenStorageIsCalled() {
         // given
-        Trainee traineeToUpdate = DataUtils.getTraineeJohnDoe();
+        Trainee traineeToUpdate = spy(DataUtils.getTraineeJohnDoe());
+        Long id = traineeToUpdate.getId();
 
-        given(storage.put(traineeToUpdate))
+        given(storage.put(id, traineeToUpdate))
                 .willReturn(traineeToUpdate);
 
         // when
-        Trainee actual = repository.update(traineeToUpdate);
+        Trainee actual = repository.saveOrUpdate(traineeToUpdate);
 
         // then
         assertThat(actual).isEqualTo(traineeToUpdate);
 
-        verify(storage, only()).put(traineeToUpdate);
+        verify(traineeToUpdate, never()).setId(anyLong());
+        verify(storage, only()).put(id, traineeToUpdate);
     }
 
     @Test
@@ -125,12 +134,12 @@ class TraineeDaoImplTest {
         // given
         Long id = 1L;
 
-        doNothing().when(storage).remove(id);
+        doNothing().when(storage).remove(id, Trainee.class);
 
         // when
         repository.deleteById(id);
 
         // then
-        verify(storage, only()).remove(id);
+        verify(storage, only()).remove(id, Trainee.class);
     }
 }

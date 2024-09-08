@@ -10,34 +10,39 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Objects.isNull;
+
 @Repository
 @Setter(onMethod_ = @Autowired)
 public class TrainingDaoImpl implements EntityDao<Long, Training> {
 
-    private Storage<Long, Training> storage;
+    private static long currentId = 1;
+
+    private Storage storage;
 
     @Override
     public Optional<Training> findById(Long id) {
-        return Optional.ofNullable(storage.get(id));
+        Training entity = storage.get(id, Training.class);
+
+        return Optional.ofNullable(entity);
     }
 
     @Override
     public List<Training> findAll() {
-        return storage.getAll();
+        return storage.getAll(Training.class);
     }
 
     @Override
-    public Training save(Training training) {
-        return storage.put(training);
-    }
+    public Training saveOrUpdate(Training training) {
+        if (isNull(training.getId())) {
+            training.setId(currentId++);
+        }
 
-    @Override
-    public Training update(Training training) {
-        return storage.put(training);
+        return storage.put(training.getId(), training);
     }
 
     @Override
     public void deleteById(Long id) {
-        storage.remove(id);
+        storage.remove(id, Training.class);
     }
 }

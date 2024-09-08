@@ -59,4 +59,6 @@ public class Constants {
     public static final String ERROR_TRAINER_WITH_ID_NOT_FOUND = "ERROR.TRAINER.WITH.ID.NOT.FOUND";
     public static final String ERROR_TRAINING_WITH_ID_NOT_FOUND = "ERROR.TRAINING.WITH.ID.NOT.FOUND";
     public static final String ERROR_USER_WITH_ID_NOT_FOUND = "ERROR.USER.WITH.ID.NOT.FOUND";
+
+    public static final String ERROR_STORAGE_NOT_FOUND = "ERROR.STORAGE.NOT.FOUND";
 }

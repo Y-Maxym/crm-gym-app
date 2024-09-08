@@ -81,7 +81,7 @@ class TrainerServiceImplTest {
         service.save(trainerToSave);
 
         // then
-        verify(repository, only()).save(trainerToSave);
+        verify(repository, only()).saveOrUpdate(trainerToSave);
     }
 
     @Test
@@ -94,7 +94,7 @@ class TrainerServiceImplTest {
         service.update(trainerToUpdate);
 
         // then
-        verify(repository, only()).update(trainerToUpdate);
+        verify(repository, only()).saveOrUpdate(trainerToUpdate);
     }
 
 }

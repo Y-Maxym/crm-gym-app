@@ -90,7 +90,7 @@ class UserServiceImplTest {
         service.save(userToSave);
 
         // then
-        verify(repository, only()).save(userToSave);
+        verify(repository, only()).saveOrUpdate(userToSave);
     }
 
     @Test
@@ -117,7 +117,7 @@ class UserServiceImplTest {
         assertThat(userToSave.getUsername()).isEqualTo(username);
         assertThat(userToSave.getPassword()).isEqualTo(password);
 
-        verify(repository, only()).save(userToSave);
+        verify(repository, only()).saveOrUpdate(userToSave);
         verify(userUtils, times(1)).generateUsername(userToSave.getFirstName(), userToSave.getLastName());
         verify(userUtils, times(1)).generatePassword(10);
     }
@@ -132,7 +132,7 @@ class UserServiceImplTest {
         service.update(userToUpdate);
 
         // then
-        verify(repository, only()).update(userToUpdate);
+        verify(repository, only()).saveOrUpdate(userToUpdate);
     }
 
     @Test

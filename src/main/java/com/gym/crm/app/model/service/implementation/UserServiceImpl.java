@@ -43,12 +43,12 @@ public class UserServiceImpl implements UserService {
             user.setPassword(password);
         }
 
-        repository.save(user);
+        repository.saveOrUpdate(user);
     }
 
     @Override
     public void update(User user) {
-        repository.update(user);
+        repository.saveOrUpdate(user);
     }
 
     @Override
