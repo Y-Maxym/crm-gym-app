@@ -88,14 +88,16 @@ class TrainerDaoImplTest {
         // given
         Trainer trainerToSave = DataUtils.getTrainerEmilyDavis();
 
-        given(storage.put(trainerToSave.getId(), trainerToSave))
-                .willReturn(null);
+        given(storage.put(trainerToSave))
+                .willReturn(trainerToSave);
 
         // when
-        repository.save(trainerToSave);
+        Trainer actual = repository.save(trainerToSave);
 
         // then
-        verify(storage, only()).put(trainerToSave.getId(), trainerToSave);
+        assertThat(actual).isEqualTo(trainerToSave);
+
+        verify(storage, only()).put(trainerToSave);
     }
 
     @Test
@@ -103,16 +105,17 @@ class TrainerDaoImplTest {
     public void givenTrainerToUpdate_whenSaveTrainer_thenStorageIsCalled() {
         // given
         Trainer trainerToUpdate = DataUtils.getTrainerEmilyDavis();
-        Trainer previous = DataUtils.getTrainerDavidBrown();
 
-        given(storage.put(trainerToUpdate.getId(), trainerToUpdate))
-                .willReturn(previous);
+        given(storage.put(trainerToUpdate))
+                .willReturn(trainerToUpdate);
 
         // when
-        repository.save(trainerToUpdate);
+        Trainer actual = repository.update(trainerToUpdate);
 
         // then
-        verify(storage, only()).put(trainerToUpdate.getId(), trainerToUpdate);
+        assertThat(actual).isEqualTo(trainerToUpdate);
+
+        verify(storage, only()).put(trainerToUpdate);
     }
 
     @Test

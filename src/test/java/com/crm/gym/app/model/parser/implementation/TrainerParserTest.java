@@ -37,46 +37,13 @@ class TrainerParserTest {
     @DisplayName("Test parse with correct data functionality")
     public void givenCorrectInput_whenParse_thenSuccessfulReturn() {
         // given
-        String input = "4,Emily,Davis,1,1";
+        String input = "Emily,Davis,1";
 
-        Long userId = 4L;
-        Long trainerId = 1L;
         Long specializationId = 1L;
-
-        given(utils.parseLong(userId.toString()))
-                .willReturn(userId);
-
-        given(utils.parseLong(trainerId.toString()))
-                .willReturn(trainerId);
 
         given(utils.parseLong(specializationId.toString()))
                 .willReturn(specializationId);
 
-
-        // when
-        Trainer actual = parser.parse(input);
-
-        // then
-        assertThat(actual).isNotNull();
-        assertThat(actual.getId()).isEqualTo(trainerId);
-        assertThat(actual.getUserId()).isEqualTo(userId);
-        assertThat(actual.getSpecializationId()).isEqualTo(specializationId);
-    }
-
-    @Test
-    @DisplayName("Test parse with missing values functionality")
-    public void givenMissingValuesInput_whenParse_thenNullValuesIsReturned() {
-        // given
-        String input = "4,Emily,Davis,,1";
-
-        Long userId = 4L;
-        Long specializationId = 1L;
-
-        given(utils.parseLong(userId.toString()))
-                .willReturn(userId);
-
-        given(utils.parseLong(specializationId.toString()))
-                .willReturn(specializationId);
 
         // when
         Trainer actual = parser.parse(input);
@@ -84,25 +51,33 @@ class TrainerParserTest {
         // then
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isNull();
-        assertThat(actual.getUserId()).isEqualTo(userId);
+        assertThat(actual.getUserId()).isNull();
         assertThat(actual.getSpecializationId()).isEqualTo(specializationId);
+    }
+
+    @Test
+    @DisplayName("Test parse with missing values functionality")
+    public void givenMissingValuesInput_whenParse_thenNullValuesIsReturned() {
+        // given
+        String input = "Emily,Davis,";
+
+        // when
+        Trainer actual = parser.parse(input);
+
+        // then
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isNull();
+        assertThat(actual.getUserId()).isNull();
+        assertThat(actual.getSpecializationId()).isNull();
     }
 
     @Test
     @DisplayName("Test parse with incorrect data functionality")
     public void givenIncorrectInput_whenParse_thenSuccessfulReturn() {
         // given
-        String input = "4,Emily,Davis,1,spec";
+        String input = "Emily,Davis,spec";
 
-        Long userId = 4L;
-        Long trainerId = 1L;
         String specializationId = "spec";
-
-        given(utils.parseLong(userId.toString()))
-                .willReturn(userId);
-
-        given(utils.parseLong(trainerId.toString()))
-                .willReturn(trainerId);
 
         given(utils.parseLong(specializationId))
                 .willThrow(new ParseException("Number is not a valid: %s".formatted(specializationId)));

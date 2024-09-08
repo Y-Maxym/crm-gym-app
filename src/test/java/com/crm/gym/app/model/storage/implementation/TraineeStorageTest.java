@@ -22,7 +22,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
@@ -51,7 +50,7 @@ class TraineeStorageTest {
         Trainee trainee = DataUtils.getTraineeJohnDoe();
         Long id = trainee.getId();
 
-        traineeStorage.put(id, trainee);
+        traineeStorage.put(trainee);
 
         // when
         Trainee actual = traineeStorage.get(id);
@@ -68,9 +67,9 @@ class TraineeStorageTest {
         Trainee trainee2 = DataUtils.getTraineeJaneSmith();
         Trainee trainee3 = DataUtils.getTraineeMichaelJohnson();
 
-        traineeStorage.put(trainee1.getId(), trainee1);
-        traineeStorage.put(trainee2.getId(), trainee2);
-        traineeStorage.put(trainee3.getId(), trainee3);
+        traineeStorage.put(trainee1);
+        traineeStorage.put(trainee2);
+        traineeStorage.put(trainee3);
 
         // when
         List<Trainee> actual = traineeStorage.getAll();
@@ -81,27 +80,25 @@ class TraineeStorageTest {
 
     @Test
     @DisplayName("Test put trainee functionality")
-    public void givenTrainee_whenPut_thenNullIsReturned() {
+    public void givenTrainee_whenPut_thenTraineeIsReturned() {
         // given
         Trainee expected = DataUtils.getTraineeJohnDoe();
 
         // when
-        Trainee previous = traineeStorage.put(expected.getId(), expected);
-        Trainee actual = traineeStorage.get(expected.getId());
+        Trainee actual = traineeStorage.put(expected);
 
         // then
-        assertThat(previous).isNull();
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    @DisplayName("Test put trainee functionality")
+    @DisplayName("Test remove trainee functionality")
     public void givenId_whenRemove_thenTraineeIsRemoved() {
         // given
         Trainee expected = DataUtils.getTraineeJohnDoe();
         Long id = expected.getId();
 
-        traineeStorage.put(id, expected);
+        traineeStorage.put(expected);
 
         // when
         traineeStorage.remove(id);
@@ -120,9 +117,9 @@ class TraineeStorageTest {
         Trainee trainee2 = DataUtils.getTraineeJaneSmith();
         Trainee trainee3 = DataUtils.getTraineeMichaelJohnson();
 
-        traineeStorage.put(trainee1.getId(), trainee1);
-        traineeStorage.put(trainee2.getId(), trainee2);
-        traineeStorage.put(trainee3.getId(), trainee3);
+        traineeStorage.put(trainee1);
+        traineeStorage.put(trainee2);
+        traineeStorage.put(trainee3);
 
         // when
         traineeStorage.clear();
@@ -143,8 +140,12 @@ class TraineeStorageTest {
         given(userParser.parse(anyString()))
                 .willReturn(user);
 
+        given(userStorage.put(user))
+                .willReturn(user);
+
         given(traineeParser.parse(anyString()))
                 .willReturn(trainee);
+
 
         Resource resource = new ClassPathResource("init/trainee-test.csv");
         ReflectionTestUtils.setField(traineeStorage, "fileResource", resource);
@@ -159,7 +160,7 @@ class TraineeStorageTest {
         assertThat(trainees).hasSize(1);
         assertThat(trainees).extracting("address").contains(trainee.getAddress());
 
-        verify(userStorage, only()).put(user.getId(), user);
+        verify(userStorage, only()).put(user);
     }
 
     @Test
@@ -176,7 +177,7 @@ class TraineeStorageTest {
         assertThat(ex.getMessage()).isEqualTo("Failed to read trainee file");
 
         verify(userParser, never()).parse(anyString());
-        verify(userStorage, never()).put(anyLong(), any(User.class));
+        verify(userStorage, never()).put(any(User.class));
         verify(traineeParser, never()).parse(anyString());
     }
 
@@ -198,7 +199,7 @@ class TraineeStorageTest {
         assertThat(ex.getCause()).isInstanceOf(ParseException.class);
         assertThat(ex.getCause().getMessage()).isEqualTo("Value cannot be null");
 
-        verify(userStorage, never()).put(anyLong(), any(User.class));
+        verify(userStorage, never()).put(any(User.class));
         verify(traineeParser, never()).parse(anyString());
     }
 

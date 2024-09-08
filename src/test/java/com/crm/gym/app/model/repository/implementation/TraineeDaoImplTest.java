@@ -89,14 +89,16 @@ class TraineeDaoImplTest {
         // given
         Trainee traineeToSave = DataUtils.getTraineeJohnDoe();
 
-        given(storage.put(traineeToSave.getId(), traineeToSave))
-                .willReturn(null);
+        given(storage.put(traineeToSave))
+                .willReturn(traineeToSave);
 
         // when
-        repository.save(traineeToSave);
+        Trainee actual = repository.save(traineeToSave);
 
         // then
-        verify(storage, only()).put(traineeToSave.getId(), traineeToSave);
+        assertThat(actual).isEqualTo(traineeToSave);
+
+        verify(storage, only()).put(traineeToSave);
     }
 
     @Test
@@ -104,16 +106,17 @@ class TraineeDaoImplTest {
     public void givenTraineeToUpdate_whenSaveTrainee_thenStorageIsCalled() {
         // given
         Trainee traineeToUpdate = DataUtils.getTraineeJohnDoe();
-        Trainee previous = DataUtils.getTraineeJaneSmith();
 
-        given(storage.put(traineeToUpdate.getId(), traineeToUpdate))
-                .willReturn(previous);
+        given(storage.put(traineeToUpdate))
+                .willReturn(traineeToUpdate);
 
         // when
-        repository.save(traineeToUpdate);
+        Trainee actual = repository.update(traineeToUpdate);
 
         // then
-        verify(storage, only()).put(traineeToUpdate.getId(), traineeToUpdate);
+        assertThat(actual).isEqualTo(traineeToUpdate);
+
+        verify(storage, only()).put(traineeToUpdate);
     }
 
     @Test

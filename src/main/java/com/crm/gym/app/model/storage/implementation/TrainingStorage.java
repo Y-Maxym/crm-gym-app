@@ -19,11 +19,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static java.util.Objects.isNull;
+
 @Component
 @Setter(onMethod_ = @Autowired)
 public class TrainingStorage implements Storage<Long, Training> {
 
     private final Map<Long, Training> storage = new HashMap<>();
+
+    private static long currentId = 1;
 
     private TrainingParser parser;
 
@@ -32,8 +36,8 @@ public class TrainingStorage implements Storage<Long, Training> {
     private Resource fileResource;
 
     @Override
-    public Training get(Long key) {
-        return storage.get(key);
+    public Training get(Long id) {
+        return storage.get(id);
     }
 
     @Override
@@ -42,13 +46,19 @@ public class TrainingStorage implements Storage<Long, Training> {
     }
 
     @Override
-    public Training put(Long key, Training value) {
-        return storage.put(key, value);
+    public Training put(Training entity) {
+        if (isNull(entity.getId())) {
+            entity.setId(currentId++);
+        }
+
+        storage.put(entity.getId(), entity);
+
+        return entity;
     }
 
     @Override
-    public void remove(Long key) {
-        storage.remove(key);
+    public void remove(Long id) {
+        storage.remove(id);
     }
 
     @Override
@@ -63,7 +73,7 @@ public class TrainingStorage implements Storage<Long, Training> {
             lines.skip(1).toList().forEach(line -> {
 
                 Training training = parser.parse(line);
-                storage.put(training.getId(), training);
+                put(training);
             });
 
         } catch (Exception e) {

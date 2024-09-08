@@ -27,13 +27,13 @@ public class TraineeDaoImpl implements EntityDao<Long, Trainee> {
     }
 
     @Override
-    public void save(Trainee trainee) {
-        storage.put(trainee.getId(), trainee);
+    public Trainee save(Trainee trainee) {
+        return storage.put(trainee);
     }
 
     @Override
-    public void update(Trainee trainee) {
-        storage.put(trainee.getId(), trainee);
+    public Trainee update(Trainee trainee) {
+        return storage.put(trainee);
     }
 
     @Override

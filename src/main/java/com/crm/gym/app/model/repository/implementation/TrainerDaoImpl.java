@@ -27,13 +27,13 @@ public class TrainerDaoImpl implements EntityDao<Long, Trainer> {
     }
 
     @Override
-    public void save(Trainer trainer) {
-        storage.put(trainer.getId(), trainer);
+    public Trainer save(Trainer trainer) {
+        return storage.put(trainer);
     }
 
     @Override
-    public void update(Trainer trainer) {
-        storage.put(trainer.getId(), trainer);
+    public Trainer update(Trainer trainer) {
+        return storage.put(trainer);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.crm.gym.app.model.parser.implementation;
 
-import com.crm.gym.app.exception.ParseException;
 import com.crm.gym.app.model.entity.User;
 import com.crm.gym.app.util.ParseUtils;
 import com.crm.gym.app.util.UserUtils;
@@ -41,18 +40,13 @@ class UserParserTest {
     @DisplayName("Test parse with correct data functionality")
     public void givenCorrectInput_whenParse_thenSuccessfulReturn() {
         // given
-        String input = "1,John,Doe,1,2000-01-01,Address1";
+        String input = "John,Doe,2000-01-01,Address1";
 
-        Long userId = 1L;
         String firstName = "John";
         String lastName = "Doe";
         String username = "John.Doe";
         int passwordLength = 10;
         String password = "1234567890";
-
-
-        given(parseUtils.parseLong(userId.toString()))
-                .willReturn(userId);
 
         given(userUtils.generateUsername(firstName, lastName))
                 .willReturn(username);
@@ -65,7 +59,7 @@ class UserParserTest {
 
         // then
         assertThat(actual).isNotNull();
-        assertThat(actual.getId()).isEqualTo(userId);
+        assertThat(actual.getId()).isNull();
         assertThat(actual.getFirstName()).isEqualTo(firstName);
         assertThat(actual.getLastName()).isEqualTo(lastName);
         assertThat(actual.getUsername()).isEqualTo(username);
@@ -77,17 +71,13 @@ class UserParserTest {
     @DisplayName("Test parse with missing values functionality")
     public void givenMissingValuesInput_whenParse_thenNullValuesIsReturned() {
         // given
-        String input = "1,John,,1,2000-01-01,Address1";
+        String input = "John,,2000-01-01,Address1";
 
-        Long userId = 1L;
         String firstName = "John";
         String lastName = "";
         String username = "John.";
         int passwordLength = 10;
         String password = "1234567890";
-
-        given(parseUtils.parseLong(userId.toString()))
-                .willReturn(userId);
 
         given(userUtils.generateUsername(firstName, lastName))
                 .willReturn(username);
@@ -100,29 +90,12 @@ class UserParserTest {
 
         // then
         assertThat(actual).isNotNull();
-        assertThat(actual.getId()).isEqualTo(userId);
+        assertThat(actual.getId()).isNull();
         assertThat(actual.getFirstName()).isEqualTo(firstName);
         assertThat(actual.getLastName()).isEmpty();
         assertThat(actual.getUsername()).isEqualTo(username);
         assertThat(actual.getPassword()).isEqualTo(password);
         assertThat(actual.isActive()).isTrue();
-    }
-
-    @Test
-    @DisplayName("Test parse with incorrect data functionality")
-    public void givenIncorrectInput_whenParse_thenSuccessfulReturn() {
-        // given
-        String input = "ff,John,Doe,1,2000-01-01,Address1";
-
-        String userId = "ff";
-
-        given(parseUtils.parseLong(userId))
-                .willThrow(new ParseException("Number is not a valid: %s".formatted(userId)));
-        // when
-        ParseException ex = assertThrows(ParseException.class, () -> parser.parse(input));
-
-        // then
-        assertThat(ex.getMessage()).isEqualTo("Number is not a valid: %s".formatted(userId));
     }
 
     @Test
@@ -137,10 +110,10 @@ class UserParserTest {
         // then
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isNull();
-        assertThat(actual.getFirstName()).isNull();
-        assertThat(actual.getLastName()).isNull();
-        assertThat(actual.getUsername()).isNull();
-        assertThat(actual.getPassword()).isNull();
+        assertThat(actual.getFirstName()).isBlank();
+        assertThat(actual.getLastName()).isBlank();
+        assertThat(actual.getUsername()).isBlank();
+        assertThat(actual.getPassword()).isBlank();
         assertThat(actual.isActive()).isTrue();
     }
 

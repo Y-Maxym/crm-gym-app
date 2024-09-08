@@ -2,15 +2,15 @@ package com.crm.gym.app.model.storage;
 
 import java.util.List;
 
-public interface Storage<K, V> {
+public interface Storage<ID, E> {
 
-    V get(K key);
+    E get(ID id);
 
-    List<V> getAll();
+    List<E> getAll();
 
-    V put(K key, V value);
+    E put(E entity);
 
-    void remove(K key);
+    void remove(ID id);
 
     void clear();
 }

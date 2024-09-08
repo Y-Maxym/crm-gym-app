@@ -21,11 +21,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static java.util.Objects.isNull;
+
 @Component
 @Setter(onMethod_ = @Autowired)
 public class TrainerStorage implements Storage<Long, Trainer> {
 
     private final Map<Long, Trainer> storage = new HashMap<>();
+
+    private static long currentId = 1;
 
     private TrainerParser trainerParser;
     private UserParser userParser;
@@ -36,8 +40,8 @@ public class TrainerStorage implements Storage<Long, Trainer> {
     private Resource fileResource;
 
     @Override
-    public Trainer get(Long key) {
-        return storage.get(key);
+    public Trainer get(Long id) {
+        return storage.get(id);
     }
 
     @Override
@@ -46,13 +50,19 @@ public class TrainerStorage implements Storage<Long, Trainer> {
     }
 
     @Override
-    public Trainer put(Long key, Trainer value) {
-        return storage.put(key, value);
+    public Trainer put(Trainer entity) {
+        if (isNull(entity.getId())) {
+            entity.setId(currentId++);
+        }
+
+        storage.put(entity.getId(), entity);
+
+        return entity;
     }
 
     @Override
-    public void remove(Long key) {
-        storage.remove(key);
+    public void remove(Long id) {
+        storage.remove(id);
     }
 
     @Override
@@ -67,10 +77,11 @@ public class TrainerStorage implements Storage<Long, Trainer> {
             lines.skip(1).toList().forEach(line -> {
 
                 User user = userParser.parse(line);
-                userStorage.put(user.getId(), user);
+                user = userStorage.put(user);
 
                 Trainer trainer = trainerParser.parse(line);
-                storage.put(trainer.getId(), trainer);
+                trainer.setUserId(user.getId());
+                put(trainer);
             });
 
         } catch (Exception e) {

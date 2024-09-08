@@ -16,13 +16,12 @@ import java.util.Optional;
 @Setter(onMethod_ = @Autowired)
 public class TrainingParser implements Parser<String, Training> {
 
-    private static final int TRAINING_ID_INDEX = 0;
-    private static final int TRAINEE_ID_INDEX = 1;
-    private static final int TRAINER_ID_INDEX = 2;
-    private static final int TRAINING_NAME_INDEX = 3;
-    private static final int TRAINING_TYPE_ID_INDEX = 4;
-    private static final int TRAINING_DATE_INDEX = 5;
-    private static final int TRAINING_DURATION_INDEX = 6;
+    private static final int TRAINEE_ID_INDEX = 0;
+    private static final int TRAINER_ID_INDEX = 1;
+    private static final int TRAINING_NAME_INDEX = 2;
+    private static final int TRAINING_TYPE_ID_INDEX = 3;
+    private static final int TRAINING_DATE_INDEX = 4;
+    private static final int TRAINING_DURATION_INDEX = 5;
 
     private ParseUtils utils;
 
@@ -30,7 +29,6 @@ public class TrainingParser implements Parser<String, Training> {
     public Training parse(@NonNull String input) {
         String[] data = input.split(",");
 
-        Long id = extractAndParseValue(data, TRAINING_ID_INDEX, utils::parseLong);
         Long traineeId = extractAndParseValue(data, TRAINEE_ID_INDEX, utils::parseLong);
         Long trainerId = extractAndParseValue(data, TRAINER_ID_INDEX, utils::parseLong);
         String trainingName = extractStringValue(data, TRAINING_NAME_INDEX);
@@ -42,7 +40,6 @@ public class TrainingParser implements Parser<String, Training> {
                 .orElse(null);
 
         return Training.builder()
-                .id(id)
                 .traineeId(traineeId)
                 .trainerId(trainerId)
                 .trainingName(trainingName)

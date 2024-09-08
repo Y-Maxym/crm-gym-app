@@ -88,14 +88,16 @@ class TrainingDaoImplTest {
         // given
         Training trainingToSave = DataUtils.getTrainingDavidBrown();
 
-        given(storage.put(trainingToSave.getId(), trainingToSave))
-                .willReturn(null);
+        given(storage.put(trainingToSave))
+                .willReturn(trainingToSave);
 
         // when
-        repository.save(trainingToSave);
+        Training actual = repository.save(trainingToSave);
 
         // then
-        verify(storage, only()).put(trainingToSave.getId(), trainingToSave);
+        assertThat(actual).isEqualTo(trainingToSave);
+
+        verify(storage, only()).put(trainingToSave);
     }
 
     @Test
@@ -103,16 +105,17 @@ class TrainingDaoImplTest {
     public void givenTrainingToUpdate_whenSaveTraining_thenStorageIsCalled() {
         // given
         Training trainingToUpdate = DataUtils.getTrainingDavidBrown();
-        Training previous = DataUtils.getTrainingEmilyDavis();
 
-        given(storage.put(trainingToUpdate.getId(), trainingToUpdate))
-                .willReturn(previous);
+        given(storage.put(trainingToUpdate))
+                .willReturn(trainingToUpdate);
 
         // when
-        repository.save(trainingToUpdate);
+        Training actual = repository.update(trainingToUpdate);
 
         // then
-        verify(storage, only()).put(trainingToUpdate.getId(), trainingToUpdate);
+        assertThat(actual).isEqualTo(trainingToUpdate);
+
+        verify(storage, only()).put(trainingToUpdate);
     }
 
     @Test

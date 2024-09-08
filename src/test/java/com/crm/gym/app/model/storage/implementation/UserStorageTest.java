@@ -25,7 +25,7 @@ class UserStorageTest {
         User user = DataUtils.getUserDavidBrown();
         Long id = user.getId();
 
-        userStorage.put(id, user);
+        userStorage.put(user);
 
         // when
         User actual = userStorage.get(id);
@@ -41,8 +41,8 @@ class UserStorageTest {
         User user1 = DataUtils.getUserDavidBrown();
         User user2 = DataUtils.getUserEmilyDavis();
 
-        userStorage.put(user1.getId(), user1);
-        userStorage.put(user2.getId(), user2);
+        userStorage.put(user1);
+        userStorage.put(user2);
 
         // when
         List<User> actual = userStorage.getAll();
@@ -53,27 +53,25 @@ class UserStorageTest {
 
     @Test
     @DisplayName("Test put user functionality")
-    public void givenUser_whenPut_thenNullIsReturned() {
+    public void givenUser_whenPut_thenUserIsReturned() {
         // given
         User expected = DataUtils.getUserDavidBrown();
 
         // when
-        User previous = userStorage.put(expected.getId(), expected);
-        User actual = userStorage.get(expected.getId());
+        User actual = userStorage.put(expected);
 
         // then
-        assertThat(previous).isNull();
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    @DisplayName("Test put user functionality")
+    @DisplayName("Test remove user functionality")
     public void givenId_whenRemove_thenUserIsRemoved() {
         // given
         User expected = DataUtils.getUserDavidBrown();
         Long id = expected.getId();
 
-        userStorage.put(id, expected);
+        userStorage.put(expected);
 
         // when
         userStorage.remove(id);
@@ -91,8 +89,8 @@ class UserStorageTest {
         User user1 = DataUtils.getUserDavidBrown();
         User user2 = DataUtils.getUserEmilyDavis();
 
-        userStorage.put(user1.getId(), user1);
-        userStorage.put(user2.getId(), user2);
+        userStorage.put(user1);
+        userStorage.put(user2);
 
         // when
         userStorage.clear();

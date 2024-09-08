@@ -39,18 +39,10 @@ class TraineeParserTest {
     @DisplayName("Test parse with correct data functionality")
     public void givenCorrectInput_whenParse_thenSuccessfulReturn() {
         // given
-        String input = "1,John,Doe,1,2000-01-01,Address1";
+        String input = "John,Doe,2000-01-01,Address1";
 
-        Long userId = 1L;
-        Long traineeId = 1L;
         LocalDate dateOfBirth = LocalDate.of(2000, 1, 1);
         String address = "Address1";
-
-        given(utils.parseLong(userId.toString()))
-                .willReturn(userId);
-
-        given(utils.parseLong(traineeId.toString()))
-                .willReturn(traineeId);
 
         given(utils.parseDate(dateOfBirth.toString()))
                 .willReturn(dateOfBirth);
@@ -60,8 +52,8 @@ class TraineeParserTest {
 
         // then
         assertThat(actual).isNotNull();
-        assertThat(actual.getId()).isEqualTo(userId);
-        assertThat(actual.getUserId()).isEqualTo(userId);
+        assertThat(actual.getId()).isNull();
+        assertThat(actual.getUserId()).isNull();
         assertThat(actual.getDateOfBirth()).isEqualTo(dateOfBirth);
         assertThat(actual.getAddress()).isEqualTo(address);
     }
@@ -70,13 +62,9 @@ class TraineeParserTest {
     @DisplayName("Test parse with missing values functionality")
     public void givenMissingValuesInput_whenParse_thenNullValuesIsReturned() {
         // given
-        String input = "1,John,Doe,,,Address1";
+        String input = "John,Doe,,Address1";
 
-        Long userId = 1L;
         String address = "Address1";
-
-        given(utils.parseLong(userId.toString()))
-                .willReturn(userId);
 
         // when
         Trainee actual = parser.parse(input);
@@ -84,7 +72,7 @@ class TraineeParserTest {
         // then
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isNull();
-        assertThat(actual.getUserId()).isEqualTo(userId);
+        assertThat(actual.getUserId()).isNull();
         assertThat(actual.getDateOfBirth()).isNull();
         assertThat(actual.getAddress()).isEqualTo(address);
     }
@@ -93,7 +81,7 @@ class TraineeParserTest {
     @DisplayName("Test parse with incorrect data functionality")
     public void givenIncorrectInput_whenParse_thenSuccessfulReturn() {
         // given
-        String input = "1,John,Doe,1,abc,Address1";
+        String input = "John,Doe,abc,Address1";
 
         String dateOfBirth = "abc";
 

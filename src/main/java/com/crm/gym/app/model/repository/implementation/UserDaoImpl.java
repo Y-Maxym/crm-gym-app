@@ -27,13 +27,13 @@ public class UserDaoImpl implements EntityDao<Long, User> {
     }
 
     @Override
-    public void save(User user) {
-        storage.put(user.getId(), user);
+    public User save(User user) {
+        return storage.put(user);
     }
 
     @Override
-    public void update(User user) {
-        storage.put(user.getId(), user);
+    public User update(User user) {
+        return storage.put(user);
     }
 
     @Override

@@ -89,14 +89,16 @@ class UserDaoImplTest {
         // given
         User userToSave = DataUtils.getUserJohnDoe();
 
-        given(storage.put(userToSave.getId(), userToSave))
-                .willReturn(null);
+        given(storage.put(userToSave))
+                .willReturn(userToSave);
 
         // when
-        repository.save(userToSave);
+        User actual = repository.save(userToSave);
 
         // then
-        verify(storage, only()).put(userToSave.getId(), userToSave);
+        assertThat(actual).isEqualTo(userToSave);
+
+        verify(storage, only()).put(userToSave);
     }
 
     @Test
@@ -104,16 +106,17 @@ class UserDaoImplTest {
     public void givenUserToUpdate_whenSaveUser_thenStorageIsCalled() {
         // given
         User userToUpdate = DataUtils.getUserJohnDoe();
-        User previous = DataUtils.getUserJaneSmith();
 
-        given(storage.put(userToUpdate.getId(), userToUpdate))
-                .willReturn(previous);
+        given(storage.put(userToUpdate))
+                .willReturn(userToUpdate);
 
         // when
-        repository.save(userToUpdate);
+        User actual = repository.update(userToUpdate);
 
         // then
-        verify(storage, only()).put(userToUpdate.getId(), userToUpdate);
+        assertThat(actual).isEqualTo(userToUpdate);
+
+        verify(storage, only()).put(userToUpdate);
     }
 
     @Test

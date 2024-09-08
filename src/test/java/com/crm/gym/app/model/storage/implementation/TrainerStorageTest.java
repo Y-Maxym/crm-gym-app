@@ -22,7 +22,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
@@ -51,7 +50,7 @@ class TrainerStorageTest {
         Trainer trainer = DataUtils.getTrainerDavidBrown();
         Long id = trainer.getId();
 
-        trainerStorage.put(id, trainer);
+        trainerStorage.put(trainer);
 
         // when
         Trainer actual = trainerStorage.get(id);
@@ -67,8 +66,8 @@ class TrainerStorageTest {
         Trainer trainer1 = DataUtils.getTrainerEmilyDavis();
         Trainer trainer2 = DataUtils.getTrainerDavidBrown();
 
-        trainerStorage.put(trainer1.getId(), trainer1);
-        trainerStorage.put(trainer2.getId(), trainer2);
+        trainerStorage.put(trainer1);
+        trainerStorage.put(trainer2);
 
         // when
         List<Trainer> actual = trainerStorage.getAll();
@@ -79,27 +78,25 @@ class TrainerStorageTest {
 
     @Test
     @DisplayName("Test put trainer functionality")
-    public void givenTrainer_whenPut_thenNullIsReturned() {
+    public void givenTrainer_whenPut_thenTrainerIsReturned() {
         // given
         Trainer expected = DataUtils.getTrainerEmilyDavis();
 
         // when
-        Trainer previous = trainerStorage.put(expected.getId(), expected);
-        Trainer actual = trainerStorage.get(expected.getId());
+        Trainer actual = trainerStorage.put(expected);
 
         // then
-        assertThat(previous).isNull();
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    @DisplayName("Test put trainer functionality")
+    @DisplayName("Test remove trainer functionality")
     public void givenId_whenRemove_thenTrainerIsRemoved() {
         // given
         Trainer expected = DataUtils.getTrainerEmilyDavis();
         Long id = expected.getId();
 
-        trainerStorage.put(id, expected);
+        trainerStorage.put(expected);
 
         // when
         trainerStorage.remove(id);
@@ -117,8 +114,8 @@ class TrainerStorageTest {
         Trainer trainer1 = DataUtils.getTrainerEmilyDavis();
         Trainer trainer2 = DataUtils.getTrainerDavidBrown();
 
-        trainerStorage.put(trainer1.getId(), trainer1);
-        trainerStorage.put(trainer2.getId(), trainer2);
+        trainerStorage.put(trainer1);
+        trainerStorage.put(trainer2);
 
         // when
         trainerStorage.clear();
@@ -139,6 +136,9 @@ class TrainerStorageTest {
         given(userParser.parse(anyString()))
                 .willReturn(user);
 
+        given(userStorage.put(user))
+                .willReturn(user);
+
         given(trainerParser.parse(anyString()))
                 .willReturn(trainer);
 
@@ -155,7 +155,7 @@ class TrainerStorageTest {
         assertThat(trainers).hasSize(1);
         assertThat(trainers).extracting("userId").contains(trainer.getUserId());
 
-        verify(userStorage, only()).put(user.getId(), user);
+        verify(userStorage, only()).put(user);
     }
 
     @Test
@@ -172,7 +172,7 @@ class TrainerStorageTest {
         assertThat(ex.getMessage()).isEqualTo("Failed to read trainer file");
 
         verify(userParser, never()).parse(anyString());
-        verify(userStorage, never()).put(anyLong(), any(User.class));
+        verify(userStorage, never()).put(any(User.class));
         verify(trainerParser, never()).parse(anyString());
     }
 
@@ -194,7 +194,7 @@ class TrainerStorageTest {
         assertThat(ex.getCause()).isInstanceOf(ParseException.class);
         assertThat(ex.getCause().getMessage()).isEqualTo("Value cannot be null");
 
-        verify(userStorage, never()).put(anyLong(), any(User.class));
+        verify(userStorage, never()).put(any(User.class));
         verify(trainerParser, never()).parse(anyString());
     }
 

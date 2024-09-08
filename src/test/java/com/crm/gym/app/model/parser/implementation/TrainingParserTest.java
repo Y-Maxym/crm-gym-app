@@ -41,9 +41,8 @@ class TrainingParserTest {
     @DisplayName("Test parse with correct data functionality")
     public void givenCorrectInput_whenParse_thenSuccessfulReturn() {
         // given
-        String input = "1,1,1,Training Emily Davis,1,2020-01-01T10:00:00,2";
+        String input = "1,1,Training Emily Davis,1,2020-01-01T10:00:00,2";
 
-        Long trainingId = 1L;
         Long traineeId = 1L;
         Long trainerId = 1L;
         String trainingName = "Training Emily Davis";
@@ -51,9 +50,6 @@ class TrainingParserTest {
         LocalDateTime trainingDate = LocalDateTime.of(2020, 1, 1, 10, 0, 0);
         int trainingDurationInHours = 2;
         Duration trainingDuration = Duration.ofHours(trainingDurationInHours);
-
-        given(utils.parseLong(trainingId.toString()))
-                .willReturn(trainingId);
 
         given(utils.parseLong(traineeId.toString()))
                 .willReturn(traineeId);
@@ -74,7 +70,7 @@ class TrainingParserTest {
 
         // then
         assertThat(actual).isNotNull();
-        assertThat(actual.getId()).isEqualTo(trainingId);
+        assertThat(actual.getId()).isNull();
         assertThat(actual.getTraineeId()).isEqualTo(traineeId);
         assertThat(actual.getTrainerId()).isEqualTo(trainerId);
         assertThat(actual.getTrainingName()).isEqualTo(trainingName);
@@ -87,16 +83,12 @@ class TrainingParserTest {
     @DisplayName("Test parse with missing values functionality")
     public void givenMissingValuesInput_whenParse_thenNullValuesIsReturned() {
         // given
-        String input = "1,,,Training Emily Davis,1,,2";
+        String input = ",,Training Emily Davis,1,,2";
 
-        Long trainingId = 1L;
         String trainingName = "Training Emily Davis";
         Long trainingTypeId = 1L;
         int trainingDurationInHours = 2;
         Duration trainingDuration = Duration.ofHours(trainingDurationInHours);
-
-        given(utils.parseLong(trainingId.toString()))
-                .willReturn(trainingId);
 
         given(utils.parseLong(trainingTypeId.toString()))
                 .willReturn(trainingTypeId);
@@ -110,7 +102,7 @@ class TrainingParserTest {
 
         // then
         assertThat(actual).isNotNull();
-        assertThat(actual.getId()).isEqualTo(trainingId);
+        assertThat(actual.getId()).isNull();
         assertThat(actual.getTraineeId()).isNull();
         assertThat(actual.getTrainerId()).isNull();
         assertThat(actual.getTrainingName()).isEqualTo(trainingName);
@@ -123,7 +115,7 @@ class TrainingParserTest {
     @DisplayName("Test parse with incorrect data functionality")
     public void givenIncorrectInput_whenParse_thenSuccessfulReturn() {
         // given
-        String input = "1,1,1,Training Emily Davis,1,date,2";
+        String input = "1,1,Training Emily Davis,1,date,2";
 
         String trainingDate = "date";
 

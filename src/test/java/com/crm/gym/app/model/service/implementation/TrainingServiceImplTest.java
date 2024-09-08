@@ -18,7 +18,6 @@ import static com.crm.gym.app.util.Constants.ERROR_TRAINING_WITH_ID_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 
@@ -77,8 +76,6 @@ class TrainingServiceImplTest {
     public void givenSaveTraining_whenSave_thenRepositoryIsCalled() {
         // given
         Training trainingToSave = DataUtils.getTrainingEmilyDavis();
-
-        doNothing().when(repository).save(trainingToSave);
 
         // when
         service.save(trainingToSave);

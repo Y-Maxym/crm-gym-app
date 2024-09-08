@@ -19,7 +19,6 @@ import static com.crm.gym.app.util.Constants.ERROR_USER_WITH_ID_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -87,8 +86,6 @@ class UserServiceImplTest {
         userToSave.setUsername(username);
         userToSave.setPassword(password);
 
-        doNothing().when(repository).save(userToSave);
-
         // when
         service.save(userToSave);
 
@@ -106,8 +103,6 @@ class UserServiceImplTest {
         String username = "%s.%s".formatted(firstName, lastName);
         int passwordLength = 10;
         String password = "1234567890";
-
-        doNothing().when(repository).save(userToSave);
 
         given(userUtils.generateUsername(firstName, lastName))
                 .willReturn(username);
@@ -133,8 +128,6 @@ class UserServiceImplTest {
         // given
         User userToUpdate = DataUtils.getUserJohnDoe();
 
-        doNothing().when(repository).update(userToUpdate);
-
         // when
         service.update(userToUpdate);
 
@@ -147,8 +140,6 @@ class UserServiceImplTest {
     public void givenId_whenDeleteById_thenRepositoryIsCalled() {
         // given
         Long id = 1L;
-
-        doNothing().when(repository).deleteById(id);
 
         // when
         service.deleteById(id);

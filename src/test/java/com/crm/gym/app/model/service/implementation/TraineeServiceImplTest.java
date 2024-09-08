@@ -78,8 +78,6 @@ class TraineeServiceImplTest {
         // given
         Trainee traineeToSave = DataUtils.getTraineeJohnDoe();
 
-        doNothing().when(repository).save(traineeToSave);
-
         // when
         service.save(traineeToSave);
 
@@ -92,8 +90,6 @@ class TraineeServiceImplTest {
     public void givenUpdatedTrainee_whenUpdate_thenRepositoryIsCalled() {
         // given
         Trainee traineeToUpdate = DataUtils.getTraineeJohnDoe();
-
-        doNothing().when(repository).update(traineeToUpdate);
 
         // when
         service.update(traineeToUpdate);
