@@ -27,7 +27,7 @@ public class ParserLoggingAspect {
 
     private LoggingUtils utils;
 
-    @Pointcut("execution(* com.gym.crm.app.model.parser.implementation..*(..))")
+    @Pointcut("execution(* com.gym.crm.app.model.parser..*(..))")
     public void parserMethods() {
     }
 

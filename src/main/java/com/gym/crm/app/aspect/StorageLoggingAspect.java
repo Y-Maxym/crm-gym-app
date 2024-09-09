@@ -27,7 +27,7 @@ public class StorageLoggingAspect {
 
     private LoggingUtils utils;
 
-    @Pointcut("execution(* com.gym.crm.app.model.storage.implementation..*(..))")
+    @Pointcut("execution(* com.gym.crm.app.model.storage..*(..))")
     public void storageMethods() {
     }
 

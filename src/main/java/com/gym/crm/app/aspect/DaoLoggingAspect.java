@@ -27,7 +27,7 @@ public class DaoLoggingAspect {
 
     private LoggingUtils utils;
 
-    @Pointcut("execution(* com.gym.crm.app.model.repository.implementation..*(..))")
+    @Pointcut("execution(* com.gym.crm.app.model.repository..*(..))")
     public void daoMethods() {
     }
 
