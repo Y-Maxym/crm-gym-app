@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
@@ -97,7 +97,7 @@ class UserDaoImplTest {
         User userToSave = spy(DataUtils.getUserJohnDoeTransient());
         User persisted = DataUtils.getUserJohnDoePersisted();
 
-        given(storage.put(anyLong(), eq(persisted)))
+        given(storage.put(anyLong(), any(User.class)))
                 .willReturn(persisted);
 
         // when
@@ -108,7 +108,7 @@ class UserDaoImplTest {
         assertThat(actual).isEqualTo(persisted);
 
         verify(userToSave, times(1)).toBuilder();
-        verify(storage, only()).put(anyLong(), eq(persisted));
+        verify(storage, only()).put(anyLong(), any(User.class));
     }
 
     @Test

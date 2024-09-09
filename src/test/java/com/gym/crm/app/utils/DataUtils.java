@@ -167,7 +167,6 @@ public class DataUtils {
 
     public static Trainee getTraineeJohnDoeTransient() {
         return Trainee.builder()
-                .userId(1L)
                 .dateOfBirth(LocalDate.parse("2000-01-01"))
                 .address("Address1")
                 .build();
@@ -175,7 +174,6 @@ public class DataUtils {
 
     public static Trainee getTraineeJaneSmithTransient() {
         return Trainee.builder()
-                .userId(2L)
                 .dateOfBirth(LocalDate.parse("2000-01-01"))
                 .address("Address2")
                 .build();
@@ -183,7 +181,6 @@ public class DataUtils {
 
     public static Trainee getTraineeMichaelJohnsonTransient() {
         return Trainee.builder()
-                .userId(3L)
                 .dateOfBirth(LocalDate.parse("2000-01-01"))
                 .address("Address3")
                 .build();
@@ -191,14 +188,12 @@ public class DataUtils {
 
     public static Trainer getTrainerEmilyDavisTransient() {
         return Trainer.builder()
-                .userId(4L)
                 .specializationId(1L)
                 .build();
     }
 
     public static Trainer getTrainerDavidBrownTransient() {
         return Trainer.builder()
-                .userId(5L)
                 .specializationId(2L)
                 .build();
     }
