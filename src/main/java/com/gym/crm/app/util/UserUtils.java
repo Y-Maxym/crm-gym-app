@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Setter(onMethod_ = @Autowired)
-
 public class UserUtils {
 
     private static final char[] LOWERCASE_LETTERS = {'a', 'z'};
