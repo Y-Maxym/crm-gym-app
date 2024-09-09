@@ -37,7 +37,7 @@ class TrainingServiceImplTest {
     @DisplayName("Test find training by id functionality")
     public void givenId_whenFindById_thenTrainingIsReturned() {
         // given
-        Training expected = DataUtils.getTrainingEmilyDavis();
+        Training expected = DataUtils.getTrainingEmilyDavisPersisted();
         Long id = expected.getId();
 
         given(repository.findById(id))
@@ -75,7 +75,7 @@ class TrainingServiceImplTest {
     @DisplayName("Test save training functionality")
     public void givenSaveTraining_whenSave_thenRepositoryIsCalled() {
         // given
-        Training trainingToSave = DataUtils.getTrainingEmilyDavis();
+        Training trainingToSave = DataUtils.getTrainingEmilyDavisPersisted();
 
         // when
         service.save(trainingToSave);

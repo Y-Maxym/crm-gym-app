@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
+@DirtiesContext
 class TraineeDaoImplTest {
 
     @Mock
@@ -37,7 +39,7 @@ class TraineeDaoImplTest {
     @DisplayName("Test find trainee by id functionality")
     public void givenId_whenFindById_thenTraineeIsReturned() {
         // given
-        Trainee expected = DataUtils.getTraineeJohnDoe();
+        Trainee expected = DataUtils.getTraineeJohnDoePersisted();
         Long id = expected.getId();
 
         given(storage.get(id, Trainee.class))
@@ -71,9 +73,9 @@ class TraineeDaoImplTest {
     @DisplayName("Test find all trainee functionality")
     public void givenTrainees_whenFindAll_thenTraineesIsReturned() {
         // given
-        Trainee trainee1 = DataUtils.getTraineeJohnDoe();
-        Trainee trainee2 = DataUtils.getTraineeJaneSmith();
-        Trainee trainee3 = DataUtils.getTraineeMichaelJohnson();
+        Trainee trainee1 = DataUtils.getTraineeJohnDoePersisted();
+        Trainee trainee2 = DataUtils.getTraineeJaneSmithPersisted();
+        Trainee trainee3 = DataUtils.getTraineeMichaelJohnsonPersisted();
 
         List<Trainee> expected = List.of(trainee1, trainee2, trainee3);
 
@@ -92,27 +94,28 @@ class TraineeDaoImplTest {
     @DisplayName("Test save trainee functionality")
     public void givenTraineeToSave_whenSaveOrUpdateTrainee_thenStorageIsCalled() {
         // given
-        Trainee traineeToSave = spy(DataUtils.getTraineeJohnDoe());
-        traineeToSave.setId(null);
+        Trainee traineeToSave = spy(DataUtils.getTraineeJohnDoeTransient());
+        Trainee persisted = DataUtils.getTraineeJohnDoePersisted();
 
-        given(storage.put(anyLong(), eq(traineeToSave)))
-                .willReturn(traineeToSave);
+        given(storage.put(anyLong(), eq(persisted)))
+                .willReturn(persisted);
 
         // when
         Trainee actual = repository.saveOrUpdate(traineeToSave);
 
         // then
-        assertThat(actual).isEqualTo(traineeToSave);
+        assertThat(actual.getId()).isNotNull();
+        assertThat(actual).isEqualTo(persisted);
 
-        verify(traineeToSave, times(1)).setId(anyLong());
-        verify(storage, only()).put(anyLong(), eq(traineeToSave));
+        verify(traineeToSave, times(1)).toBuilder();
+        verify(storage, only()).put(anyLong(), eq(persisted));
     }
 
     @Test
     @DisplayName("Test update trainee functionality")
     public void givenTraineeToUpdate_whenSaveOrUpdateTrainee_thenStorageIsCalled() {
         // given
-        Trainee traineeToUpdate = spy(DataUtils.getTraineeJohnDoe());
+        Trainee traineeToUpdate = spy(DataUtils.getTraineeJohnDoePersisted());
         Long id = traineeToUpdate.getId();
 
         given(storage.put(id, traineeToUpdate))
@@ -124,7 +127,7 @@ class TraineeDaoImplTest {
         // then
         assertThat(actual).isEqualTo(traineeToUpdate);
 
-        verify(traineeToUpdate, never()).setId(anyLong());
+        verify(traineeToUpdate, never()).toBuilder();
         verify(storage, only()).put(id, traineeToUpdate);
     }
 

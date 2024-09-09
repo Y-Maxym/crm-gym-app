@@ -9,6 +9,7 @@ import com.gym.crm.app.utils.DataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -42,7 +43,7 @@ class UserServiceImplTest {
     @DisplayName("Test find user by id functionality")
     public void givenId_whenFindById_thenUserIsReturned() {
         // given
-        User expected = DataUtils.getUserJohnDoe();
+        User expected = DataUtils.getUserJohnDoePersisted();
         Long id = expected.getId();
 
         given(repository.findById(id))
@@ -80,11 +81,11 @@ class UserServiceImplTest {
     @DisplayName("Test save user with full data functionality")
     public void givenSaveUserWithFullData_whenSave_thenRepositoryIsCalled() {
         // given
-        User userToSave = DataUtils.getUserJohnDoe();
+        User userToSave = DataUtils.getUserJohnDoePersisted();
         String username = userToSave.getFirstName() + "." + userToSave.getLastName();
         String password = "1234567890";
-        userToSave.setUsername(username);
-        userToSave.setPassword(password);
+
+        userToSave.toBuilder().username(username).password(password).build();
 
         // when
         service.save(userToSave);
@@ -97,7 +98,8 @@ class UserServiceImplTest {
     @DisplayName("Test save user without username and password functionality")
     public void givenSaveUserWithoutUsernamePassword_whenSave_thenRepositoryIsCalled() {
         // given
-        User userToSave = DataUtils.getUserJohnDoe();
+        User userToSave = DataUtils.getUserJohnDoeTransient();
+
         String firstName = userToSave.getFirstName();
         String lastName = userToSave.getLastName();
         String username = "%s.%s".formatted(firstName, lastName);
@@ -114,10 +116,13 @@ class UserServiceImplTest {
         service.save(userToSave);
 
         // then
-        assertThat(userToSave.getUsername()).isEqualTo(username);
-        assertThat(userToSave.getPassword()).isEqualTo(password);
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(repository, only()).saveOrUpdate(userCaptor.capture());
 
-        verify(repository, only()).saveOrUpdate(userToSave);
+        User capturedUser = userCaptor.getValue();
+        assertThat(capturedUser.getUsername()).isEqualTo(username);
+        assertThat(capturedUser.getPassword()).isEqualTo(password);
+
         verify(userUtils, times(1)).generateUsername(userToSave.getFirstName(), userToSave.getLastName());
         verify(userUtils, times(1)).generatePassword(10);
     }
@@ -126,7 +131,7 @@ class UserServiceImplTest {
     @DisplayName("Test update user functionality")
     public void givenUpdatedUser_whenUpdate_thenRepositoryIsCalled() {
         // given
-        User userToUpdate = DataUtils.getUserJohnDoe();
+        User userToUpdate = DataUtils.getUserJohnDoePersisted();
 
         // when
         service.update(userToUpdate);

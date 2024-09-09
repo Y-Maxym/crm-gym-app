@@ -7,14 +7,12 @@ import com.gym.crm.app.model.service.UserService;
 import com.gym.crm.app.util.MessageUtils;
 import com.gym.crm.app.util.UserUtils;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static com.gym.crm.app.util.Constants.ERROR_USER_WITH_ID_NOT_FOUND;
 import static java.util.Objects.isNull;
 
-@Slf4j
 @Service
 @Setter(onMethod_ = @Autowired)
 public class UserServiceImpl implements UserService {
@@ -31,19 +29,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void save(User user) {
+        User preparedUser = prepareUserForSave(user);
+
+        repository.saveOrUpdate(preparedUser);
+    }
+
+    private User prepareUserForSave(User user) {
         if (isNull(user.getUsername())) {
 
             String username = userUtils.generateUsername(user.getFirstName(), user.getLastName());
-            user.setUsername(username);
+            user = user.toBuilder().username(username).build();
         }
 
         if (isNull(user.getPassword())) {
 
             String password = userUtils.generatePassword(10);
-            user.setPassword(password);
+            user = user.toBuilder().password(password).build();
         }
 
-        repository.saveOrUpdate(user);
+        return user;
     }
 
     @Override

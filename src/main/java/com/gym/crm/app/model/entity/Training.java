@@ -1,24 +1,24 @@
 package com.gym.crm.app.model.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class Training {
+@Getter
+@Builder(toBuilder = true)
+@ToString
+@EqualsAndHashCode
+public final class Training {
 
-    private Long id;
-    private Long traineeId;
-    private Long trainerId;
-    private String trainingName;
-    private Long trainingTypeId;
-    private LocalDateTime trainingDate;
-    private Duration trainingDuration;
+    private final Long id;
+    private final Long traineeId;
+    private final Long trainerId;
+    private final String trainingName;
+    private final Long trainingTypeId;
+    private final LocalDateTime trainingDate;
+    private final Duration trainingDuration;
 }

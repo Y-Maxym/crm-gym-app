@@ -1,16 +1,16 @@
 package com.gym.crm.app.model.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class TrainingType {
+@Getter
+@Builder(toBuilder = true)
+@ToString
+@EqualsAndHashCode
+public final class TrainingType {
 
-    private Long id;
-    private String trainingTypeName;
+    private final Long id;
+    private final String trainingTypeName;
 }

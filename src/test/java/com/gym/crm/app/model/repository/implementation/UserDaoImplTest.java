@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
+@DirtiesContext
 class UserDaoImplTest {
 
     @Mock
@@ -37,7 +39,7 @@ class UserDaoImplTest {
     @DisplayName("Test find user by id functionality")
     public void givenId_whenFindById_thenUserIsReturned() {
         // given
-        User expected = DataUtils.getUserJohnDoe();
+        User expected = DataUtils.getUserJohnDoePersisted();
         Long id = expected.getId();
 
         given(storage.get(id, User.class))
@@ -71,9 +73,9 @@ class UserDaoImplTest {
     @DisplayName("Test find all user functionality")
     public void givenUsers_whenFindAll_thenUsersIsReturned() {
         // given
-        User user1 = DataUtils.getUserJohnDoe();
-        User user2 = DataUtils.getUserJaneSmith();
-        User user3 = DataUtils.getUserMichaelJohnson();
+        User user1 = DataUtils.getUserJohnDoePersisted();
+        User user2 = DataUtils.getUserJaneSmithPersisted();
+        User user3 = DataUtils.getUserMichaelJohnsonPersisted();
 
         List<User> expected = List.of(user1, user2, user3);
 
@@ -92,27 +94,28 @@ class UserDaoImplTest {
     @DisplayName("Test save user functionality")
     public void givenUserToSave_whenSaveOrUpdateUser_thenStorageIsCalled() {
         // given
-        User userToSave = spy(DataUtils.getUserJohnDoe());
-        userToSave.setId(null);
+        User userToSave = spy(DataUtils.getUserJohnDoeTransient());
+        User persisted = DataUtils.getUserJohnDoePersisted();
 
-        given(storage.put(anyLong(), eq(userToSave)))
-                .willReturn(userToSave);
+        given(storage.put(anyLong(), eq(persisted)))
+                .willReturn(persisted);
 
         // when
         User actual = repository.saveOrUpdate(userToSave);
 
         // then
         assertThat(actual.getId()).isNotNull();
+        assertThat(actual).isEqualTo(persisted);
 
-        verify(userToSave, times(1)).setId(anyLong());
-        verify(storage, only()).put(anyLong(), eq(userToSave));
+        verify(userToSave, times(1)).toBuilder();
+        verify(storage, only()).put(anyLong(), eq(persisted));
     }
 
     @Test
     @DisplayName("Test update user functionality")
     public void givenUserToUpdate_whenSaveOrUpdateUser_thenStorageIsCalled() {
         // given
-        User userToUpdate = spy(DataUtils.getUserJohnDoe());
+        User userToUpdate = spy(DataUtils.getUserJohnDoePersisted());
         Long id = userToUpdate.getId();
 
         given(storage.put(id, userToUpdate))
@@ -124,7 +127,7 @@ class UserDaoImplTest {
         // then
         assertThat(actual).isEqualTo(userToUpdate);
 
-        verify(userToUpdate, never()).setId(anyLong());
+        verify(userToUpdate, never()).toBuilder();
         verify(storage, only()).put(id, userToUpdate);
     }
 

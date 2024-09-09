@@ -38,7 +38,7 @@ class TraineeServiceImplTest {
     @DisplayName("Test find trainee by id functionality")
     public void givenId_whenFindById_thenTraineeIsReturned() {
         // given
-        Trainee expected = DataUtils.getTraineeJohnDoe();
+        Trainee expected = DataUtils.getTraineeJohnDoePersisted();
         Long id = expected.getId();
 
         given(repository.findById(id))
@@ -76,7 +76,7 @@ class TraineeServiceImplTest {
     @DisplayName("Test save trainee functionality")
     public void givenSaveTrainee_whenSave_thenRepositoryIsCalled() {
         // given
-        Trainee traineeToSave = DataUtils.getTraineeJohnDoe();
+        Trainee traineeToSave = DataUtils.getTraineeJohnDoePersisted();
 
         // when
         service.save(traineeToSave);
@@ -89,7 +89,7 @@ class TraineeServiceImplTest {
     @DisplayName("Test update trainee functionality")
     public void givenUpdatedTrainee_whenUpdate_thenRepositoryIsCalled() {
         // given
-        Trainee traineeToUpdate = DataUtils.getTraineeJohnDoe();
+        Trainee traineeToUpdate = DataUtils.getTraineeJohnDoePersisted();
 
         // when
         service.update(traineeToUpdate);

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
+@DirtiesContext
 class TrainingDaoImplTest {
 
     @Mock
@@ -37,7 +39,7 @@ class TrainingDaoImplTest {
     @DisplayName("Test find training by id functionality")
     public void givenId_whenFindById_thenTrainingIsReturned() {
         // given
-        Training expected = DataUtils.getTrainingEmilyDavis();
+        Training expected = DataUtils.getTrainingEmilyDavisPersisted();
         Long id = expected.getId();
 
         given(storage.get(id, Training.class))
@@ -71,8 +73,8 @@ class TrainingDaoImplTest {
     @DisplayName("Test find all training functionality")
     public void givenTrainings_whenFindAll_thenTrainingsIsReturned() {
         // given
-        Training training1 = DataUtils.getTrainingDavidBrown();
-        Training training2 = DataUtils.getTrainingEmilyDavis();
+        Training training1 = DataUtils.getTrainingDavidBrownPersisted();
+        Training training2 = DataUtils.getTrainingEmilyDavisPersisted();
 
         List<Training> expected = List.of(training1, training2);
 
@@ -91,27 +93,28 @@ class TrainingDaoImplTest {
     @DisplayName("Test save training functionality")
     public void givenTrainingToSave_whenSaveOrUpdateTraining_thenStorageIsCalled() {
         // given
-        Training trainingToSave = spy(DataUtils.getTrainingDavidBrown());
-        trainingToSave.setId(null);
+        Training trainingToSave = spy(DataUtils.getTrainingEmilyDavisTransient());
+        Training persisted = DataUtils.getTrainingEmilyDavisPersisted();
 
-        given(storage.put(anyLong(), eq(trainingToSave)))
-                .willReturn(trainingToSave);
+        given(storage.put(anyLong(), eq(persisted)))
+                .willReturn(persisted);
 
         // when
         Training actual = repository.saveOrUpdate(trainingToSave);
 
         // then
         assertThat(actual.getId()).isNotNull();
+        assertThat(actual).isEqualTo(persisted);
 
-        verify(trainingToSave, times(1)).setId(anyLong());
-        verify(storage, only()).put(anyLong(), eq(trainingToSave));
+        verify(trainingToSave, times(1)).toBuilder();
+        verify(storage, only()).put(anyLong(), eq(persisted));
     }
 
     @Test
     @DisplayName("Test update training functionality")
     public void givenTrainingToUpdate_whenSaveOrUpdateTraining_thenStorageIsCalled() {
         // given
-        Training trainingToUpdate = spy(DataUtils.getTrainingDavidBrown());
+        Training trainingToUpdate = spy(DataUtils.getTrainingDavidBrownPersisted());
         Long id = trainingToUpdate.getId();
 
         given(storage.put(id, trainingToUpdate))
@@ -123,7 +126,7 @@ class TrainingDaoImplTest {
         // then
         assertThat(actual).isEqualTo(trainingToUpdate);
 
-        verify(trainingToUpdate, never()).setId(anyLong());
+        verify(trainingToUpdate, never()).toBuilder();
         verify(storage, only()).put(id, trainingToUpdate);
     }
 

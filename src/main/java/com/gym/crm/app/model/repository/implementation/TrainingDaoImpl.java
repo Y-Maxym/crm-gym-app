@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static java.util.Objects.isNull;
 
@@ -16,7 +17,7 @@ import static java.util.Objects.isNull;
 @Setter(onMethod_ = @Autowired)
 public class TrainingDaoImpl implements EntityDao<Long, Training> {
 
-    private static long currentId = 1;
+    private static AtomicLong currentId = new AtomicLong(0);
 
     private Storage storage;
 
@@ -35,7 +36,9 @@ public class TrainingDaoImpl implements EntityDao<Long, Training> {
     @Override
     public Training saveOrUpdate(Training training) {
         if (isNull(training.getId())) {
-            training.setId(currentId++);
+            Long id = currentId.incrementAndGet();
+
+            training = training.toBuilder().id(id).build();
         }
 
         return storage.put(training.getId(), training);
