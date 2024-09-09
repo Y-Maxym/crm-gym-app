@@ -13,6 +13,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -122,6 +123,53 @@ class UserServiceImplTest {
         User capturedUser = userCaptor.getValue();
         assertThat(capturedUser.getUsername()).isEqualTo(username);
         assertThat(capturedUser.getPassword()).isEqualTo(password);
+
+        verify(userUtils, times(1)).generateUsername(userToSave.getFirstName(), userToSave.getLastName());
+        verify(userUtils, times(1)).generatePassword(10);
+    }
+
+    @Test
+    @DisplayName("Test prepare user with full data functionality")
+    public void givenSaveUserWithFullData_whenPrepareUserForSave_thenUserIsReturned() {
+        // given
+        User userPersisted = DataUtils.getUserJohnDoePersisted();
+        String username = userPersisted.getFirstName() + "." + userPersisted.getLastName();
+        String password = "1234567890";
+
+        User userToSave = userPersisted.toBuilder().username(username).password(password).build();
+
+        // when
+        User actual = ReflectionTestUtils.invokeMethod(service, "prepareUserForSave", userToSave);
+
+        // then
+        assertThat(actual).isNotNull();
+        assertThat(actual).isEqualTo(userToSave);
+    }
+
+    @Test
+    @DisplayName("Test prepare user without username and password functionality")
+    public void givenSaveUserWithoutUsernamePassword_whenPrepareUserForSave_thenUserIsReturned() {
+        // given
+        User userToSave = DataUtils.getUserJohnDoeTransient();
+
+        String firstName = userToSave.getFirstName();
+        String lastName = userToSave.getLastName();
+        String username = "%s.%s".formatted(firstName, lastName);
+        int passwordLength = 10;
+        String password = "1234567890";
+
+        given(userUtils.generateUsername(firstName, lastName))
+                .willReturn(username);
+
+        given(userUtils.generatePassword(passwordLength))
+                .willReturn(password);
+
+        // when
+        User actual = ReflectionTestUtils.invokeMethod(service, "prepareUserForSave", userToSave);
+
+        // then
+        assertThat(actual).isNotNull();
+        assertThat(actual).isNotEqualTo(userToSave);
 
         verify(userUtils, times(1)).generateUsername(userToSave.getFirstName(), userToSave.getLastName());
         verify(userUtils, times(1)).generatePassword(10);
