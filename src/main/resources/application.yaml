@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: gym-crm-app
+
+  config:
+    import: optional:file:.env[.properties]
+
+storage:
+  file-path:
+    trainee: ${INIT_DATA_TRAINEE_PATH}
+    trainer: ${INIT_DATA_TRAINER_PATH}
+    training: ${INIT_DATA_TRAINING_PATH}
