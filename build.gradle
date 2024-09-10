@@ -37,6 +37,14 @@ jacoco {
     toolVersion = "0.8.12"
 }
 
+jacocoTestReport {
+    reports {
+        xml.required.set(true)
+        csv.required.set(true)
+        html.required.set(true)
+    }
+}
+
 tasks.named('test') {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
