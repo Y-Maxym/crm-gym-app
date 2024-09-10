@@ -1,7 +1,7 @@
-package com.gym.crm.app.model.service.implementation;
+package com.gym.crm.app.model.service.impl;
 
 import com.gym.crm.app.exception.EntityNotFoundException;
-import com.gym.crm.app.model.entity.Training;
+import com.gym.crm.app.model.entity.Trainer;
 import com.gym.crm.app.model.repository.EntityDao;
 import com.gym.crm.app.util.MessageUtils;
 import com.gym.crm.app.utils.DataUtils;
@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.gym.crm.app.util.Constants.ERROR_TRAINING_WITH_ID_NOT_FOUND;
+import static com.gym.crm.app.util.Constants.ERROR_TRAINER_WITH_ID_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
@@ -22,29 +22,29 @@ import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class TrainingServiceImplTest {
+class TrainerServiceImplTest {
 
     @Mock
     private MessageUtils messageUtils;
 
     @Mock
-    private EntityDao<Long, Training> repository;
+    private EntityDao<Long, Trainer> repository;
 
     @InjectMocks
-    private TrainingServiceImpl service;
+    private TrainerServiceImpl service;
 
     @Test
-    @DisplayName("Test find training by id functionality")
-    public void givenId_whenFindById_thenTrainingIsReturned() {
+    @DisplayName("Test find trainer by id functionality")
+    public void givenId_whenFindById_thenTrainerIsReturned() {
         // given
-        Training expected = DataUtils.getTrainingEmilyDavisPersisted();
+        Trainer expected = DataUtils.getTrainerEmilyDavisPersisted();
         Long id = expected.getId();
 
         given(repository.findById(id))
                 .willReturn(Optional.of(expected));
 
         // when
-        Training actual = service.findById(id);
+        Trainer actual = service.findById(id);
 
         // then
         assertThat(actual).isNotNull();
@@ -52,16 +52,16 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    @DisplayName("Test find training by incorrect id functionality")
+    @DisplayName("Test find trainer by incorrect id functionality")
     public void givenIncorrectId_whenFindById_thenExceptionIsThrown() {
         // given
         Long id = 1L;
-        String message = "Training with id %s not found".formatted(id);
+        String message = "Trainer with id %s not found".formatted(id);
 
         given(repository.findById(id))
                 .willReturn(Optional.empty());
 
-        given(messageUtils.getMessage(ERROR_TRAINING_WITH_ID_NOT_FOUND, id))
+        given(messageUtils.getMessage(ERROR_TRAINER_WITH_ID_NOT_FOUND, id))
                 .willReturn(message);
 
         // when
@@ -72,16 +72,29 @@ class TrainingServiceImplTest {
     }
 
     @Test
-    @DisplayName("Test save training functionality")
-    public void givenSaveTraining_whenSave_thenRepositoryIsCalled() {
+    @DisplayName("Test save trainer functionality")
+    public void givenSaveTrainer_whenSave_thenRepositoryIsCalled() {
         // given
-        Training trainingToSave = DataUtils.getTrainingEmilyDavisPersisted();
+        Trainer trainerToSave = DataUtils.getTrainerEmilyDavisPersisted();
 
         // when
-        service.save(trainingToSave);
+        service.save(trainerToSave);
 
         // then
-        verify(repository, only()).saveOrUpdate(trainingToSave);
+        verify(repository, only()).saveOrUpdate(trainerToSave);
+    }
+
+    @Test
+    @DisplayName("Test update trainer functionality")
+    public void givenUpdatedTrainer_whenUpdate_thenRepositoryIsCalled() {
+        // given
+        Trainer trainerToUpdate = DataUtils.getTrainerEmilyDavisPersisted();
+
+        // when
+        service.update(trainerToUpdate);
+
+        // then
+        verify(repository, only()).saveOrUpdate(trainerToUpdate);
     }
 
 }

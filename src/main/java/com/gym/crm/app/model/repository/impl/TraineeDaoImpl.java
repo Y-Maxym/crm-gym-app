@@ -1,6 +1,6 @@
-package com.gym.crm.app.model.repository.implementation;
+package com.gym.crm.app.model.repository.impl;
 
-import com.gym.crm.app.model.entity.User;
+import com.gym.crm.app.model.entity.Trainee;
 import com.gym.crm.app.model.repository.EntityDao;
 import com.gym.crm.app.model.storage.Storage;
 import lombok.Setter;
@@ -15,38 +15,37 @@ import static java.util.Objects.isNull;
 
 @Repository
 @Setter(onMethod_ = @Autowired)
-public class UserDaoImpl implements EntityDao<Long, User> {
+public class TraineeDaoImpl implements EntityDao<Long, Trainee> {
 
     private static AtomicLong currentId = new AtomicLong(0);
 
     private Storage storage;
 
     @Override
-    public Optional<User> findById(Long id) {
-        User entity = storage.get(id, User.class);
+    public Optional<Trainee> findById(Long id) {
+        Trainee entity = storage.get(id, Trainee.class);
 
         return Optional.ofNullable(entity);
     }
 
     @Override
-    public List<User> findAll() {
-        return storage.getAll(User.class);
+    public List<Trainee> findAll() {
+        return storage.getAll(Trainee.class);
     }
 
     @Override
-    public User saveOrUpdate(User user) {
-        if (isNull(user.getId())) {
+    public Trainee saveOrUpdate(Trainee trainee) {
+        if (isNull(trainee.getId())) {
             Long id = currentId.incrementAndGet();
 
-            user = user.toBuilder().id(id).build();
+            trainee = trainee.toBuilder().id(id).build();
         }
 
-        return storage.put(user.getId(), user);
+        return storage.put(trainee.getId(), trainee);
     }
-
 
     @Override
     public void deleteById(Long id) {
-        storage.remove(id, User.class);
+        storage.remove(id, Trainee.class);
     }
 }

@@ -1,4 +1,4 @@
-package com.gym.crm.app.model.parser.implementation;
+package com.gym.crm.app.model.parser.impl;
 
 import com.gym.crm.app.exception.ParseException;
 import com.gym.crm.app.model.entity.Training;

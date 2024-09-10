@@ -1,4 +1,4 @@
-package com.gym.crm.app.model.repository.implementation;
+package com.gym.crm.app.model.repository.impl;
 
 import com.gym.crm.app.model.entity.User;
 import com.gym.crm.app.model.storage.Storage;

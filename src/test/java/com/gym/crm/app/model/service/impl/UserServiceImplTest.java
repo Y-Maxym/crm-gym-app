@@ -1,4 +1,4 @@
-package com.gym.crm.app.model.service.implementation;
+package com.gym.crm.app.model.service.impl;
 
 import com.gym.crm.app.exception.EntityNotFoundException;
 import com.gym.crm.app.model.entity.User;

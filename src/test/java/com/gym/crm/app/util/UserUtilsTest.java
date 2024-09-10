@@ -1,7 +1,7 @@
 package com.gym.crm.app.util;
 
 import com.gym.crm.app.model.entity.User;
-import com.gym.crm.app.model.repository.implementation.UserDaoImpl;
+import com.gym.crm.app.model.repository.impl.UserDaoImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
