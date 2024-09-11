@@ -50,8 +50,8 @@ To start the application locally, use the following command:
 
 The application is fully covered with unit tests, using **JUnit** and **Mockito** to ensure the functionality of all components. The current test coverage is:
 
-- **Line Coverage**:  ![Coverage](.github/badges/jacoco.svg)
-- **Branch Coverage**:  ![Branches](.github/badges/branches.svg)
+- **Line Coverage**: ![Coverage](.github/badges/jacoco.svg)
+- **Branch Coverage**: ![Branches](.github/badges/branches.svg)
 
 
 

@@ -27,6 +27,8 @@ import java.util.stream.Stream;
 @Setter(onMethod_ = @Autowired)
 public class InitDataUtils {
 
+    private static final String INITIALIZE_DATA_ERROR = "Failed to initialize data from CSV files";
+
     private TraineeParser traineeParser;
     private TrainerParser trainerParser;
     private UserParser userParser;
@@ -56,7 +58,7 @@ public class InitDataUtils {
             initTrainerStorage();
             initTrainingStorage();
         } catch (Exception e) {
-            throw new ReadCSVFileException("Failed to initialize data from CSV files", e);
+            throw new ReadCSVFileException(INITIALIZE_DATA_ERROR, e);
         }
     }
 
