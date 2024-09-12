@@ -9,7 +9,9 @@ public interface EntityDao<ID, T> {
 
     List<T> findAll();
 
-    T saveOrUpdate(T entity);
+    T save(T entity);
+
+    T update(T entity);
 
     void deleteById(ID id);
 }

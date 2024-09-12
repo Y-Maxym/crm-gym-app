@@ -5,6 +5,8 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import com.gym.crm.app.logging.LoggingHelper;
+import com.gym.crm.app.logging.MessageHelper;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,10 +24,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class LoggingUtilsTest {
+class LoggingHelperTest {
 
     @Mock
-    private MessageUtils messageUtils;
+    private MessageHelper messageHelper;
 
     @Mock
     private JoinPoint joinPoint;
@@ -34,14 +36,14 @@ class LoggingUtilsTest {
     private Signature signature;
 
     @InjectMocks
-    private LoggingUtils loggingUtils;
+    private LoggingHelper loggingHelper;
 
     private ListAppender<ILoggingEvent> listAppender;
 
     @BeforeEach
     void setUp() {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-        Logger logger = loggerContext.getLogger(LoggingUtils.class);
+        Logger logger = loggerContext.getLogger(LoggingHelper.class);
 
         listAppender = new ListAppender<>();
         listAppender.setContext(loggerContext);
@@ -65,11 +67,11 @@ class LoggingUtilsTest {
         given(signature.getName()).willReturn(methodName);
         given(signature.getDeclaringTypeName()).willReturn(className);
         given(joinPoint.getArgs()).willReturn(args);
-        given(messageUtils.getMessage("INFO_CODE", methodName, className)).willReturn(infoMessage);
-        given(messageUtils.getMessage("DEBUG_CODE", className, methodName, Arrays.toString(args))).willReturn(debugMessage);
+        given(messageHelper.getMessage("INFO_CODE", methodName, className)).willReturn(infoMessage);
+        given(messageHelper.getMessage("DEBUG_CODE", className, methodName, Arrays.toString(args))).willReturn(debugMessage);
 
         // when
-        loggingUtils.logBefore(joinPoint, "INFO_CODE", "DEBUG_CODE");
+        loggingHelper.logBefore(joinPoint, "INFO_CODE", "DEBUG_CODE");
 
         // then
         assertThat(listAppender.list).extracting("formattedMessage")
@@ -89,11 +91,11 @@ class LoggingUtilsTest {
         given(joinPoint.getSignature()).willReturn(signature);
         given(signature.getName()).willReturn(methodName);
         given(signature.getDeclaringTypeName()).willReturn(className);
-        given(messageUtils.getMessage("INFO_CODE", methodName, className)).willReturn(infoMessage);
-        given(messageUtils.getMessage("DEBUG_CODE", className, methodName, result)).willReturn(debugMessage);
+        given(messageHelper.getMessage("INFO_CODE", methodName, className)).willReturn(infoMessage);
+        given(messageHelper.getMessage("DEBUG_CODE", className, methodName, result)).willReturn(debugMessage);
 
         // when
-        loggingUtils.logAfterReturning(joinPoint, result, "INFO_CODE", "DEBUG_CODE");
+        loggingHelper.logAfterReturning(joinPoint, result, "INFO_CODE", "DEBUG_CODE");
 
         // then
         assertThat(listAppender.list).extracting("formattedMessage")
@@ -113,11 +115,11 @@ class LoggingUtilsTest {
         given(joinPoint.getSignature()).willReturn(signature);
         given(signature.getName()).willReturn(methodName);
         given(signature.getDeclaringTypeName()).willReturn(className);
-        given(messageUtils.getMessage("INFO_CODE", methodName, className)).willReturn(infoMessage);
-        given(messageUtils.getMessage("ERROR_CODE", className, methodName, ex.getMessage())).willReturn(errorMessage);
+        given(messageHelper.getMessage("INFO_CODE", methodName, className)).willReturn(infoMessage);
+        given(messageHelper.getMessage("ERROR_CODE", className, methodName, ex.getMessage())).willReturn(errorMessage);
 
         // when
-        loggingUtils.logAfterThrowing(joinPoint, ex, "INFO_CODE", "ERROR_CODE");
+        loggingHelper.logAfterThrowing(joinPoint, ex, "INFO_CODE", "ERROR_CODE");
 
         // then
         assertThat(listAppender.list).extracting("formattedMessage")

@@ -1,4 +1,4 @@
-package com.gym.crm.app.util;
+package com.gym.crm.app.logging;
 
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Setter(onMethod_ = @Autowired)
-public class MessageUtils {
+public class MessageHelper {
 
     private MessageSource messageSource;
 

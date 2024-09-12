@@ -1,9 +1,9 @@
 package com.gym.crm.app.model.service.impl;
 
-import com.gym.crm.app.exception.EntityNotFoundException;
+import com.gym.crm.app.exception.EntityException;
 import com.gym.crm.app.model.entity.User;
 import com.gym.crm.app.model.repository.EntityDao;
-import com.gym.crm.app.util.MessageUtils;
+import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.util.UserUtils;
 import com.gym.crm.app.utils.DataUtils;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verify;
 class UserServiceImplTest {
 
     @Mock
-    private MessageUtils messageUtils;
+    private MessageHelper messageHelper;
 
     @Mock
     private UserUtils userUtils;
@@ -68,11 +68,11 @@ class UserServiceImplTest {
         given(repository.findById(id))
                 .willReturn(Optional.empty());
 
-        given(messageUtils.getMessage(ERROR_USER_WITH_ID_NOT_FOUND, id))
+        given(messageHelper.getMessage(ERROR_USER_WITH_ID_NOT_FOUND, id))
                 .willReturn(message);
 
         // when
-        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class, () -> service.findById(id));
+        EntityException ex = assertThrows(EntityException.class, () -> service.findById(id));
 
         // then
         assertThat(ex.getMessage()).isEqualTo(message);
@@ -107,7 +107,7 @@ class UserServiceImplTest {
         int passwordLength = 10;
         String password = "1234567890";
 
-        given(userUtils.generateUsername(firstName, lastName))
+        given(userUtils.generateUsernameWithSerialNumber(firstName, lastName))
                 .willReturn(username);
 
         given(userUtils.generatePassword(passwordLength))
@@ -124,7 +124,7 @@ class UserServiceImplTest {
         assertThat(capturedUser.getUsername()).isEqualTo(username);
         assertThat(capturedUser.getPassword()).isEqualTo(password);
 
-        verify(userUtils, times(1)).generateUsername(userToSave.getFirstName(), userToSave.getLastName());
+        verify(userUtils, times(1)).generateUsernameWithSerialNumber(userToSave.getFirstName(), userToSave.getLastName());
         verify(userUtils, times(1)).generatePassword(10);
     }
 
@@ -158,7 +158,7 @@ class UserServiceImplTest {
         int passwordLength = 10;
         String password = "1234567890";
 
-        given(userUtils.generateUsername(firstName, lastName))
+        given(userUtils.generateUsernameWithSerialNumber(firstName, lastName))
                 .willReturn(username);
 
         given(userUtils.generatePassword(passwordLength))
@@ -171,7 +171,7 @@ class UserServiceImplTest {
         assertThat(actual).isNotNull();
         assertThat(actual).isNotEqualTo(userToSave);
 
-        verify(userUtils, times(1)).generateUsername(userToSave.getFirstName(), userToSave.getLastName());
+        verify(userUtils, times(1)).generateUsernameWithSerialNumber(userToSave.getFirstName(), userToSave.getLastName());
         verify(userUtils, times(1)).generatePassword(10);
     }
 

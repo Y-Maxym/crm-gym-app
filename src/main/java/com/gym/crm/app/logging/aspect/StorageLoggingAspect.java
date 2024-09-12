@@ -1,6 +1,6 @@
-package com.gym.crm.app.aspect;
+package com.gym.crm.app.logging.aspect;
 
-import com.gym.crm.app.util.LoggingUtils;
+import com.gym.crm.app.logging.LoggingHelper;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -25,7 +25,7 @@ import static com.gym.crm.app.util.Constants.INFO_STORAGE_RESULT;
 @Setter(onMethod_ = @Autowired)
 public class StorageLoggingAspect {
 
-    private LoggingUtils utils;
+    private LoggingHelper utils;
 
     @Pointcut("execution(* com.gym.crm.app.model.storage..*(..))")
     public void storageMethods() {

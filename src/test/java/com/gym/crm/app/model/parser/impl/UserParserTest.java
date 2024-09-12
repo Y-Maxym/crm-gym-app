@@ -1,7 +1,7 @@
 package com.gym.crm.app.model.parser.impl;
 
 import com.gym.crm.app.model.entity.User;
-import com.gym.crm.app.util.ParseUtils;
+import com.gym.crm.app.model.parser.ParserHelper;
 import com.gym.crm.app.util.UserUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import static org.mockito.BDDMockito.given;
 class UserParserTest {
 
     @Mock
-    private ParseUtils parseUtils;
+    private ParserHelper parserHelper;
 
     @Mock
     private UserUtils userUtils;
@@ -48,7 +48,7 @@ class UserParserTest {
         int passwordLength = 10;
         String password = "1234567890";
 
-        given(userUtils.generateUsername(firstName, lastName))
+        given(userUtils.generateUsernameWithSerialNumber(firstName, lastName))
                 .willReturn(username);
 
         given(userUtils.generatePassword(passwordLength))
@@ -79,7 +79,7 @@ class UserParserTest {
         int passwordLength = 10;
         String password = "1234567890";
 
-        given(userUtils.generateUsername(firstName, lastName))
+        given(userUtils.generateUsernameWithSerialNumber(firstName, lastName))
                 .willReturn(username);
 
         given(userUtils.generatePassword(passwordLength))

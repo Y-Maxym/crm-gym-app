@@ -1,4 +1,4 @@
-package com.gym.crm.app.util;
+package com.gym.crm.app.model.storage;
 
 import com.gym.crm.app.exception.ReadCSVFileException;
 import com.gym.crm.app.model.entity.Trainee;
@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 
 @Component
 @Setter(onMethod_ = @Autowired)
-public class InitDataUtils {
+public class InitDataHelper {
 
     private static final String INITIALIZE_DATA_ERROR = "Failed to initialize data from CSV files";
 
@@ -88,26 +88,26 @@ public class InitDataUtils {
 
     private void processTraineeLine(String line) {
         User user = userParser.parse(line);
-        User savedUser = userRepository.saveOrUpdate(user);
+        User savedUser = userRepository.save(user);
 
         Trainee trainee = traineeParser.parse(line);
         Trainee updatedTrainee = trainee.toBuilder().userId(savedUser.getId()).build();
 
-        traineeRepository.saveOrUpdate(updatedTrainee);
+        traineeRepository.save(updatedTrainee);
     }
 
     private void processTrainerLine(String line) {
         User user = userParser.parse(line);
-        User savedUser = userRepository.saveOrUpdate(user);
+        User savedUser = userRepository.save(user);
 
         Trainer trainer = trainerParser.parse(line);
         Trainer updatedTrainer = trainer.toBuilder().userId(savedUser.getId()).build();
 
-        trainerRepository.saveOrUpdate(updatedTrainer);
+        trainerRepository.save(updatedTrainer);
     }
 
     private void processTrainingLine(String line) {
         Training training = trainingParser.parse(line);
-        trainingRepository.saveOrUpdate(training);
+        trainingRepository.save(training);
     }
 }

@@ -34,13 +34,18 @@ public class TrainingDaoImpl implements EntityDao<Long, Training> {
     }
 
     @Override
-    public Training saveOrUpdate(Training training) {
+    public Training save(Training training) {
         if (isNull(training.getId())) {
             Long id = currentId.incrementAndGet();
 
             training = training.toBuilder().id(id).build();
         }
 
+        return storage.put(training.getId(), training);
+    }
+
+    @Override
+    public Training update(Training training) {
         return storage.put(training.getId(), training);
     }
 

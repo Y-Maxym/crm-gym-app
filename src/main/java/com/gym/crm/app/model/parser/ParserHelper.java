@@ -1,6 +1,7 @@
-package com.gym.crm.app.util;
+package com.gym.crm.app.model.parser;
 
 import com.gym.crm.app.exception.ParseException;
+import com.gym.crm.app.logging.MessageHelper;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,13 @@ import static java.util.Objects.isNull;
 @Slf4j
 @Component
 @Setter(onMethod_ = @Autowired)
-public class ParseUtils {
+public class ParserHelper {
 
-    private MessageUtils messageUtils;
+    private MessageHelper messageHelper;
 
     public void checkNotNull(String value) {
         if (isNull(value)) {
-            throw new ParseException(messageUtils.getMessage(ERROR_PARSE_UTILS_NULL_VALUE));
+            throw new ParseException(messageHelper.getMessage(ERROR_PARSE_UTILS_NULL_VALUE));
         }
     }
 
@@ -35,7 +36,7 @@ public class ParseUtils {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            throw new ParseException(messageUtils.getMessage(ERROR_PARSE_UTILS_INVALID_NUMBER, value));
+            throw new ParseException(messageHelper.getMessage(ERROR_PARSE_UTILS_INVALID_NUMBER, value));
         }
     }
 
@@ -45,7 +46,7 @@ public class ParseUtils {
         try {
             return Long.parseLong(value);
         } catch (NumberFormatException e) {
-            throw new ParseException(messageUtils.getMessage(ERROR_PARSE_UTILS_INVALID_NUMBER, value));
+            throw new ParseException(messageHelper.getMessage(ERROR_PARSE_UTILS_INVALID_NUMBER, value));
         }
     }
 
@@ -55,7 +56,7 @@ public class ParseUtils {
         try {
             return LocalDate.parse(value);
         } catch (DateTimeParseException e) {
-            throw new ParseException(messageUtils.getMessage(ERROR_PARSE_UTILS_INVALID_FORMAT_DATE, value));
+            throw new ParseException(messageHelper.getMessage(ERROR_PARSE_UTILS_INVALID_FORMAT_DATE, value));
         }
     }
 
@@ -65,7 +66,7 @@ public class ParseUtils {
         try {
             return LocalDateTime.parse(value);
         } catch (DateTimeParseException e) {
-            throw new ParseException(messageUtils.getMessage(ERROR_PARSE_UTILS_INVALID_FORMAT_DATETIME, value));
+            throw new ParseException(messageHelper.getMessage(ERROR_PARSE_UTILS_INVALID_FORMAT_DATETIME, value));
         }
     }
 }

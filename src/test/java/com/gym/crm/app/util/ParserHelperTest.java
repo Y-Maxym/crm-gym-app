@@ -1,6 +1,8 @@
 package com.gym.crm.app.util;
 
 import com.gym.crm.app.exception.ParseException;
+import com.gym.crm.app.logging.MessageHelper;
+import com.gym.crm.app.model.parser.ParserHelper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,13 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class ParseUtilsTest {
+class ParserHelperTest {
 
     @Mock
-    private MessageUtils messageUtils;
+    private MessageHelper messageHelper;
 
     @InjectMocks
-    private ParseUtils parseUtils;
+    private ParserHelper parserHelper;
 
     @Test
     @DisplayName("Test check not null method with non-null value functionality")
@@ -36,7 +38,7 @@ class ParseUtilsTest {
         String value = "value";
 
         // when & then
-        assertDoesNotThrow(() -> parseUtils.checkNotNull(value));
+        assertDoesNotThrow(() -> parserHelper.checkNotNull(value));
     }
 
     @Test
@@ -45,11 +47,11 @@ class ParseUtilsTest {
         // given
         String message = "Value cannot be null";
 
-        given(messageUtils.getMessage(ERROR_PARSE_UTILS_NULL_VALUE))
+        given(messageHelper.getMessage(ERROR_PARSE_UTILS_NULL_VALUE))
                 .willReturn(message);
 
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> parseUtils.checkNotNull(null));
+        ParseException ex = assertThrows(ParseException.class, () -> parserHelper.checkNotNull(null));
 
         // then
         assertThat(ex.getMessage()).isEqualTo(message);
@@ -63,7 +65,7 @@ class ParseUtilsTest {
         int expected = 123;
 
         // when
-        int actual = parseUtils.parseInt(value);
+        int actual = parserHelper.parseInt(value);
 
         // then
         assertThat(actual).isEqualTo(expected);
@@ -75,11 +77,11 @@ class ParseUtilsTest {
         // given
         String message = "Value cannot be null";
 
-        given(messageUtils.getMessage(ERROR_PARSE_UTILS_NULL_VALUE))
+        given(messageHelper.getMessage(ERROR_PARSE_UTILS_NULL_VALUE))
                 .willReturn(message);
 
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> parseUtils.parseInt(null));
+        ParseException ex = assertThrows(ParseException.class, () -> parserHelper.parseInt(null));
 
         // then
         assertThat(ex.getMessage()).isEqualTo(message);
@@ -92,11 +94,11 @@ class ParseUtilsTest {
         String value = "invalidNumber";
         String message = "Number is not a valid: %s".formatted(value);
 
-        given(messageUtils.getMessage(ERROR_PARSE_UTILS_INVALID_NUMBER, value))
+        given(messageHelper.getMessage(ERROR_PARSE_UTILS_INVALID_NUMBER, value))
                 .willReturn(message);
 
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> parseUtils.parseInt(value));
+        ParseException ex = assertThrows(ParseException.class, () -> parserHelper.parseInt(value));
 
         // then
         assertThat(ex.getMessage()).isEqualTo(message);
@@ -110,7 +112,7 @@ class ParseUtilsTest {
         long expected = 12345L;
 
         // when
-        long result = parseUtils.parseLong(value);
+        long result = parserHelper.parseLong(value);
 
         // then
         assertThat(result).isEqualTo(expected);
@@ -122,11 +124,11 @@ class ParseUtilsTest {
         // given
         String message = "Value cannot be null";
 
-        given(messageUtils.getMessage(ERROR_PARSE_UTILS_NULL_VALUE))
+        given(messageHelper.getMessage(ERROR_PARSE_UTILS_NULL_VALUE))
                 .willReturn(message);
 
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> parseUtils.parseLong(null));
+        ParseException ex = assertThrows(ParseException.class, () -> parserHelper.parseLong(null));
 
         // then
         assertThat(ex.getMessage()).isEqualTo(message);
@@ -139,11 +141,11 @@ class ParseUtilsTest {
         String value = "invalidNumber";
         String message = "Number is not a valid: %s".formatted(value);
 
-        given(messageUtils.getMessage(ERROR_PARSE_UTILS_INVALID_NUMBER, value))
+        given(messageHelper.getMessage(ERROR_PARSE_UTILS_INVALID_NUMBER, value))
                 .willReturn(message);
 
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> parseUtils.parseLong(value));
+        ParseException ex = assertThrows(ParseException.class, () -> parserHelper.parseLong(value));
 
         // then
         assertThat(ex.getMessage()).isEqualTo(message);
@@ -157,7 +159,7 @@ class ParseUtilsTest {
         LocalDate expected = LocalDate.of(2024, 9, 7);
 
         // when
-        LocalDate result = parseUtils.parseDate(value);
+        LocalDate result = parserHelper.parseDate(value);
 
         // then
         assertThat(result).isEqualTo(expected);
@@ -169,11 +171,11 @@ class ParseUtilsTest {
         // given
         String message = "Value cannot be null";
 
-        given(messageUtils.getMessage(ERROR_PARSE_UTILS_NULL_VALUE))
+        given(messageHelper.getMessage(ERROR_PARSE_UTILS_NULL_VALUE))
                 .willReturn(message);
 
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> parseUtils.parseDate(null));
+        ParseException ex = assertThrows(ParseException.class, () -> parserHelper.parseDate(null));
 
         // then
         assertThat(ex.getMessage()).isEqualTo(message);
@@ -186,11 +188,11 @@ class ParseUtilsTest {
         String value = "invalidFormat";
         String message = "Date is not in a valid format: %s".formatted(value);
 
-        given(messageUtils.getMessage(ERROR_PARSE_UTILS_INVALID_FORMAT_DATE, value))
+        given(messageHelper.getMessage(ERROR_PARSE_UTILS_INVALID_FORMAT_DATE, value))
                 .willReturn(message);
 
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> parseUtils.parseDate(value));
+        ParseException ex = assertThrows(ParseException.class, () -> parserHelper.parseDate(value));
 
         // then
         assertThat(ex.getMessage()).isEqualTo(message);
@@ -204,7 +206,7 @@ class ParseUtilsTest {
         LocalDateTime expected = LocalDateTime.of(2024, 9, 7, 10, 0, 0);
 
         // when
-        LocalDateTime result = parseUtils.parseDateTime(value);
+        LocalDateTime result = parserHelper.parseDateTime(value);
 
         // then
         assertThat(result).isEqualTo(expected);
@@ -216,11 +218,11 @@ class ParseUtilsTest {
         // given
         String message = "Value cannot be null";
 
-        given(messageUtils.getMessage(ERROR_PARSE_UTILS_NULL_VALUE))
+        given(messageHelper.getMessage(ERROR_PARSE_UTILS_NULL_VALUE))
                 .willReturn(message);
 
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> parseUtils.parseDateTime(null));
+        ParseException ex = assertThrows(ParseException.class, () -> parserHelper.parseDateTime(null));
 
         // then
         assertThat(ex.getMessage()).isEqualTo(message);
@@ -233,11 +235,11 @@ class ParseUtilsTest {
         String value = "invalidFormat";
         String message = "DateTime is not in a valid format: %s".formatted(value);
 
-        given(messageUtils.getMessage(ERROR_PARSE_UTILS_INVALID_FORMAT_DATETIME, value))
+        given(messageHelper.getMessage(ERROR_PARSE_UTILS_INVALID_FORMAT_DATETIME, value))
                 .willReturn(message);
 
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> parseUtils.parseDateTime(value));
+        ParseException ex = assertThrows(ParseException.class, () -> parserHelper.parseDateTime(value));
 
         // then
         assertThat(ex.getMessage()).isEqualTo(message);

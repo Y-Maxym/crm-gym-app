@@ -2,7 +2,7 @@ package com.gym.crm.app.model.parser.impl;
 
 import com.gym.crm.app.model.entity.Trainee;
 import com.gym.crm.app.model.parser.Parser;
-import com.gym.crm.app.util.ParseUtils;
+import com.gym.crm.app.model.parser.ParserHelper;
 import lombok.NonNull;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +17,15 @@ public class TraineeParser implements Parser<String, Trainee> {
     private static final int DATE_OF_BIRTH_INDEX = 2;
     private static final int ADDRESS_INDEX = 3;
 
-    private ParseUtils utils;
+    private static final String SPLIT_REGEX = ",";
+
+    private ParserHelper utils;
 
     @Override
     public Trainee parse(@NonNull String input) {
-        String[] data = input.split(",");
+        String[] data = input.split(SPLIT_REGEX);
 
-        LocalDate dateOfBirth = extractAndParseValue(data, DATE_OF_BIRTH_INDEX, utils::parseDate);
+        LocalDate dateOfBirth = parseValue(data, DATE_OF_BIRTH_INDEX, utils::parseDate);
         String address = extractStringValue(data, ADDRESS_INDEX);
 
         return Trainee.builder()

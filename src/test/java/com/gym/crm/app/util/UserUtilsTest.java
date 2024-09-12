@@ -52,7 +52,7 @@ class UserUtilsTest {
 
     @Test
     @DisplayName("Test generate username without duplication")
-    public void givenFirstNameAndLastName_whenGenerateUsername_thenReturnsUsernameWithoutNumber() {
+    public void givenFirstNameAndLastName_whenGenerateUsername_thenReturnsUsernameWithSerialNumberWithoutNumber() {
         // given
         String firstName = "John";
         String lastName = "Doe";
@@ -61,7 +61,7 @@ class UserUtilsTest {
                 .willReturn(Collections.emptyList());
 
         // when
-        String username = userUtils.generateUsername(firstName, lastName);
+        String username = userUtils.generateUsernameWithSerialNumber(firstName, lastName);
 
         // then
         assertThat(username).isEqualTo("John.Doe");
@@ -69,7 +69,7 @@ class UserUtilsTest {
 
     @Test
     @DisplayName("Test generate username with duplication")
-    public void givenDuplicatedUsername_whenGenerateUsername_thenReturnsUsernameWithNumber() {
+    public void givenDuplicatedUsername_whenGenerateUsername_thenReturnsUsernameWithSerialNumberWithNumber() {
         // given
         String firstName = "John";
         String lastName = "Doe";
@@ -82,7 +82,7 @@ class UserUtilsTest {
                 .willReturn(Collections.singletonList(existingUser));
 
         // when
-        String username = userUtils.generateUsername(firstName, lastName);
+        String username = userUtils.generateUsernameWithSerialNumber(firstName, lastName);
 
         // then
         assertThat(username).isEqualTo("John.Doe1");

@@ -2,7 +2,7 @@ package com.gym.crm.app.model.parser.impl;
 
 import com.gym.crm.app.model.entity.Training;
 import com.gym.crm.app.model.parser.Parser;
-import com.gym.crm.app.util.ParseUtils;
+import com.gym.crm.app.model.parser.ParserHelper;
 import lombok.NonNull;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,19 +23,21 @@ public class TrainingParser implements Parser<String, Training> {
     private static final int TRAINING_DATE_INDEX = 4;
     private static final int TRAINING_DURATION_INDEX = 5;
 
-    private ParseUtils utils;
+    private static final String SPLIT_REGEX = ",";
+
+    private ParserHelper utils;
 
     @Override
     public Training parse(@NonNull String input) {
-        String[] data = input.split(",");
+        String[] data = input.split(SPLIT_REGEX);
 
-        Long traineeId = extractAndParseValue(data, TRAINEE_ID_INDEX, utils::parseLong);
-        Long trainerId = extractAndParseValue(data, TRAINER_ID_INDEX, utils::parseLong);
+        Long traineeId = parseValue(data, TRAINEE_ID_INDEX, utils::parseLong);
+        Long trainerId = parseValue(data, TRAINER_ID_INDEX, utils::parseLong);
         String trainingName = extractStringValue(data, TRAINING_NAME_INDEX);
-        Long trainingTypeId = extractAndParseValue(data, TRAINING_TYPE_ID_INDEX, utils::parseLong);
-        LocalDateTime trainingDate = extractAndParseValue(data, TRAINING_DATE_INDEX, utils::parseDateTime);
+        Long trainingTypeId = parseValue(data, TRAINING_TYPE_ID_INDEX, utils::parseLong);
+        LocalDateTime trainingDate = parseValue(data, TRAINING_DATE_INDEX, utils::parseDateTime);
 
-        Duration trainingDuration = Optional.ofNullable(extractAndParseValue(data, TRAINING_DURATION_INDEX, utils::parseInt))
+        Duration trainingDuration = Optional.ofNullable(parseValue(data, TRAINING_DURATION_INDEX, utils::parseInt))
                 .map(Duration::ofHours)
                 .orElse(null);
 

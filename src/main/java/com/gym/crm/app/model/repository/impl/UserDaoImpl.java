@@ -34,7 +34,7 @@ public class UserDaoImpl implements EntityDao<Long, User> {
     }
 
     @Override
-    public User saveOrUpdate(User user) {
+    public User save(User user) {
         if (isNull(user.getId())) {
             Long id = currentId.incrementAndGet();
 
@@ -44,6 +44,10 @@ public class UserDaoImpl implements EntityDao<Long, User> {
         return storage.put(user.getId(), user);
     }
 
+    @Override
+    public User update(User user) {
+        return storage.put(user.getId(), user);
+    }
 
     @Override
     public void deleteById(Long id) {

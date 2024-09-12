@@ -15,15 +15,17 @@ public class UserParser implements Parser<String, User> {
     private static final int FIRST_NAME_INDEX = 0;
     private static final int LAST_NAME_INDEX = 1;
 
+    private static final String SPLIT_REGEX = ",";
+
     private UserUtils userUtils;
 
     @Override
     public User parse(@NonNull String input) {
-        String[] data = input.split(",");
+        String[] data = input.split(SPLIT_REGEX);
 
         String firstName = extractStringValue(data, FIRST_NAME_INDEX);
         String lastName = extractStringValue(data, LAST_NAME_INDEX);
-        String username = userUtils.generateUsername(firstName, lastName);
+        String username = userUtils.generateUsernameWithSerialNumber(firstName, lastName);
         String password = userUtils.generatePassword(10);
 
         return User.builder()

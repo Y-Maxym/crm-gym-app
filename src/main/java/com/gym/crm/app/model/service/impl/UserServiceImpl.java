@@ -1,10 +1,11 @@
 package com.gym.crm.app.model.service.impl;
 
-import com.gym.crm.app.exception.EntityNotFoundException;
+import com.gym.crm.app.exception.EntityException;
+import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.model.entity.User;
 import com.gym.crm.app.model.repository.EntityDao;
+import com.gym.crm.app.model.service.EntityExceptionHelper;
 import com.gym.crm.app.model.service.UserService;
-import com.gym.crm.app.util.MessageUtils;
 import com.gym.crm.app.util.UserUtils;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,26 +19,31 @@ import static java.util.Objects.isNull;
 public class UserServiceImpl implements UserService {
 
     private EntityDao<Long, User> repository;
-    private MessageUtils messageUtils;
+    private MessageHelper messageHelper;
     private UserUtils userUtils;
+    private EntityExceptionHelper exceptionHelper;
 
     @Override
     public User findById(Long id) {
+        exceptionHelper.checkId(id);
+
         return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(messageUtils.getMessage(ERROR_USER_WITH_ID_NOT_FOUND, id)));
+                .orElseThrow(() -> new EntityException(messageHelper.getMessage(ERROR_USER_WITH_ID_NOT_FOUND, id)));
     }
 
     @Override
     public void save(User user) {
+        exceptionHelper.checkEntity(user);
+
         User preparedUser = prepareUserForSave(user);
 
-        repository.saveOrUpdate(preparedUser);
+        repository.save(preparedUser);
     }
 
     private User prepareUserForSave(User user) {
         if (isNull(user.getUsername())) {
 
-            String username = userUtils.generateUsername(user.getFirstName(), user.getLastName());
+            String username = generateUsername(user.getFirstName(), user.getLastName());
             user = user.toBuilder().username(username).build();
         }
 
@@ -52,12 +58,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(User user) {
-        repository.saveOrUpdate(user);
+        exceptionHelper.checkEntity(user);
+        exceptionHelper.checkId(user.getId());
+
+        repository.update(user);
     }
 
     @Override
     public void deleteById(Long id) {
+        exceptionHelper.checkId(id);
+
         repository.deleteById(id);
+    }
+
+    private String generateUsername(String firstName, String lastName) {
+        String username = firstName + "." + lastName;
+
+        if (isDuplicatedUsername(username)) {
+            username = userUtils.generateUsernameWithSerialNumber(firstName, lastName);
+        }
+
+        return username;
+    }
+
+    private boolean isDuplicatedUsername(String username) {
+        return repository.findAll().stream().anyMatch(user -> user.getUsername().equals(username));
     }
 
 }

@@ -3,7 +3,7 @@ package com.gym.crm.app.model.storage;
 import com.gym.crm.app.exception.StorageNotFoundException;
 import com.gym.crm.app.model.entity.Trainee;
 import com.gym.crm.app.util.Constants;
-import com.gym.crm.app.util.MessageUtils;
+import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.utils.DataUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +26,7 @@ import static org.mockito.BDDMockito.given;
 class StorageTest {
 
     @Mock
-    private MessageUtils messageUtils;
+    private MessageHelper messageHelper;
 
     @InjectMocks
     private Storage storage;
@@ -171,7 +171,7 @@ class StorageTest {
         // given
         Class<?> clazz = Constants.class;
 
-        given(messageUtils.getMessage(ERROR_STORAGE_NOT_FOUND, clazz))
+        given(messageHelper.getMessage(ERROR_STORAGE_NOT_FOUND, clazz))
                 .willReturn("Storage for %s not found".formatted(clazz));
         // when
         StorageNotFoundException ex = assertThrows(StorageNotFoundException.class, () -> {

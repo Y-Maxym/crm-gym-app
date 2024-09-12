@@ -1,18 +1,17 @@
 package com.gym.crm.app.model.storage;
 
 import com.gym.crm.app.exception.StorageNotFoundException;
+import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.model.entity.Trainee;
 import com.gym.crm.app.model.entity.Trainer;
 import com.gym.crm.app.model.entity.Training;
 import com.gym.crm.app.model.entity.User;
-import com.gym.crm.app.util.MessageUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,7 @@ public class Storage {
 
     private final Map<Class<?>, Map<Long, ?>> globalStorage = new HashMap<>();
 
-    private MessageUtils messageUtils;
+    private MessageHelper messageHelper;
 
     @SuppressWarnings("all")
     public <T> T get(Long id, Class<T> clazz) {
@@ -40,9 +39,9 @@ public class Storage {
     public <T> List<T> getAll(Class<T> clazz) {
         Map<Long, ?> storage = defineStorage(clazz);
 
-        Collection<T> allEntities = (Collection<T>) storage.values();
+        List<T> allEntities = (List<T>) storage.values();
 
-        return new ArrayList<T>(allEntities);
+        return Collections.unmodifiableList(allEntities);
     }
 
     @SuppressWarnings("all")
@@ -73,7 +72,7 @@ public class Storage {
         Map<Long, T> storage = (Map<Long, T>) globalStorage.get(clazz);
 
         if (isNull(storage)) {
-            throw new StorageNotFoundException(messageUtils.getMessage(ERROR_STORAGE_NOT_FOUND, clazz));
+            throw new StorageNotFoundException(messageHelper.getMessage(ERROR_STORAGE_NOT_FOUND, clazz));
         }
 
         return storage;

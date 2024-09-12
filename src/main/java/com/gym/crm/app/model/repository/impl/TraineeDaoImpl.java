@@ -34,13 +34,18 @@ public class TraineeDaoImpl implements EntityDao<Long, Trainee> {
     }
 
     @Override
-    public Trainee saveOrUpdate(Trainee trainee) {
+    public Trainee save(Trainee trainee) {
         if (isNull(trainee.getId())) {
             Long id = currentId.incrementAndGet();
 
             trainee = trainee.toBuilder().id(id).build();
         }
 
+        return storage.put(trainee.getId(), trainee);
+    }
+
+    @Override
+    public Trainee update(Trainee trainee) {
         return storage.put(trainee.getId(), trainee);
     }
 

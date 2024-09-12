@@ -2,7 +2,7 @@ package com.gym.crm.app.model.parser.impl;
 
 import com.gym.crm.app.exception.ParseException;
 import com.gym.crm.app.model.entity.Training;
-import com.gym.crm.app.util.ParseUtils;
+import com.gym.crm.app.model.parser.ParserHelper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +22,7 @@ import static org.mockito.BDDMockito.given;
 class TrainingParserTest {
 
     @Mock
-    private ParseUtils utils;
+    private ParserHelper utils;
 
     @InjectMocks
     private TrainingParser parser;
