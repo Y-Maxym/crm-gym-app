@@ -1,9 +1,9 @@
 package com.gym.crm.app.utils;
 
-import com.gym.crm.app.model.entity.Trainee;
-import com.gym.crm.app.model.entity.Trainer;
-import com.gym.crm.app.model.entity.Training;
-import com.gym.crm.app.model.entity.User;
+import com.gym.crm.app.entity.Trainee;
+import com.gym.crm.app.entity.Trainer;
+import com.gym.crm.app.entity.Training;
+import com.gym.crm.app.entity.User;
 
 import java.time.Duration;
 import java.time.LocalDate;

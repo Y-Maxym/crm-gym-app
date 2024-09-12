@@ -1,13 +1,13 @@
 package com.gym.crm.app.facade;
 
-import com.gym.crm.app.model.entity.Trainee;
-import com.gym.crm.app.model.entity.Trainer;
-import com.gym.crm.app.model.entity.Training;
-import com.gym.crm.app.model.entity.User;
-import com.gym.crm.app.model.service.TraineeService;
-import com.gym.crm.app.model.service.TrainerService;
-import com.gym.crm.app.model.service.TrainingService;
-import com.gym.crm.app.model.service.UserService;
+import com.gym.crm.app.entity.Trainee;
+import com.gym.crm.app.entity.Trainer;
+import com.gym.crm.app.entity.Training;
+import com.gym.crm.app.entity.User;
+import com.gym.crm.app.service.TraineeService;
+import com.gym.crm.app.service.TrainerService;
+import com.gym.crm.app.service.TrainingService;
+import com.gym.crm.app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -68,7 +68,7 @@ public class ServiceFacade {
         userService.update(user);
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUserById(Long id) {
         userService.deleteById(id);
     }
 }

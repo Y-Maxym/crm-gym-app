@@ -1,6 +1,6 @@
 package com.gym.crm.app.logging.aspect;
 
-import com.gym.crm.app.logging.LoggingHelper;
+import com.gym.crm.app.logging.LogHandler;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -25,9 +25,9 @@ import static com.gym.crm.app.util.Constants.INFO_USER_UTILS_RESULT;
 @Setter(onMethod_ = @Autowired)
 public class UserUtilsLoggingAspect {
 
-    private LoggingHelper utils;
+    private LogHandler utils;
 
-    @Pointcut("execution(* com.gym.crm.app.util.UserUtils.*(..))")
+    @Pointcut("execution(* com.gym.crm.app.service.UserProfileService.*(..))")
     public void userUtilsMethods() {
     }
 
