@@ -33,7 +33,7 @@ class UserServiceImplTest {
     private MessageHelper messageHelper;
 
     @Mock
-    private EntityValidator exceptionHelper;
+    private EntityValidator entityValidator;
 
     @Mock
     private UserProfileService userProfileService;
@@ -51,7 +51,7 @@ class UserServiceImplTest {
         User expected = DataUtils.getUserJohnDoePersisted();
         Long id = expected.getId();
 
-        doNothing().when(exceptionHelper).checkId(id);
+        doNothing().when(entityValidator).checkId(id);
 
         given(repository.findById(id))
                 .willReturn(Optional.of(expected));
@@ -71,7 +71,7 @@ class UserServiceImplTest {
         Long id = 1L;
         String message = "User with id %s not found".formatted(id);
 
-        doNothing().when(exceptionHelper).checkId(id);
+        doNothing().when(entityValidator).checkId(id);
 
         given(repository.findById(id))
                 .willReturn(Optional.empty());
@@ -96,7 +96,7 @@ class UserServiceImplTest {
 
         user = user.toBuilder().username(username).password(password).build();
 
-        doNothing().when(exceptionHelper).checkEntity(user);
+        doNothing().when(entityValidator).checkEntity(user);
 
         // when
         service.save(user);
@@ -159,8 +159,8 @@ class UserServiceImplTest {
         // given
         User user = DataUtils.getUserJohnDoePersisted();
 
-        doNothing().when(exceptionHelper).checkEntity(user);
-        doNothing().when(exceptionHelper).checkId(user.getId());
+        doNothing().when(entityValidator).checkEntity(user);
+        doNothing().when(entityValidator).checkId(user.getId());
 
         // when
         service.update(user);
@@ -175,7 +175,7 @@ class UserServiceImplTest {
         // given
         Long id = 1L;
 
-        doNothing().when(exceptionHelper).checkId(id);
+        doNothing().when(entityValidator).checkId(id);
 
         // when
         service.deleteById(id);

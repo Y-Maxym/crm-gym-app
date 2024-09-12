@@ -30,7 +30,7 @@ class TraineeServiceImplTest {
     private MessageHelper messageHelper;
 
     @Mock
-    private EntityValidator exceptionHelper;
+    private EntityValidator entityValidator;
 
     @Mock
     private EntityDao<Long, Trainee> repository;
@@ -45,7 +45,7 @@ class TraineeServiceImplTest {
         Trainee expected = DataUtils.getTraineeJohnDoePersisted();
         Long id = expected.getId();
 
-        doNothing().when(exceptionHelper).checkId(id);
+        doNothing().when(entityValidator).checkId(id);
 
         given(repository.findById(id))
                 .willReturn(Optional.of(expected));
@@ -65,7 +65,7 @@ class TraineeServiceImplTest {
         Long id = 1L;
         String message = "Trainee with id %s not found".formatted(id);
 
-        doNothing().when(exceptionHelper).checkId(id);
+        doNothing().when(entityValidator).checkId(id);
 
         given(repository.findById(id))
                 .willReturn(Optional.empty());
@@ -86,7 +86,7 @@ class TraineeServiceImplTest {
         // given
         Trainee trainee = DataUtils.getTraineeJohnDoePersisted();
 
-        doNothing().when(exceptionHelper).checkEntity(trainee);
+        doNothing().when(entityValidator).checkEntity(trainee);
 
         // when
         service.save(trainee);
@@ -101,8 +101,8 @@ class TraineeServiceImplTest {
         // given
         Trainee trainee = DataUtils.getTraineeJohnDoePersisted();
 
-        doNothing().when(exceptionHelper).checkEntity(trainee);
-        doNothing().when(exceptionHelper).checkId(trainee.getId());
+        doNothing().when(entityValidator).checkEntity(trainee);
+        doNothing().when(entityValidator).checkId(trainee.getId());
 
         // when
         service.update(trainee);
@@ -117,7 +117,7 @@ class TraineeServiceImplTest {
         // given
         Long id = 1L;
 
-        doNothing().when(exceptionHelper).checkId(id);
+        doNothing().when(entityValidator).checkId(id);
         doNothing().when(repository).deleteById(id);
 
         // when

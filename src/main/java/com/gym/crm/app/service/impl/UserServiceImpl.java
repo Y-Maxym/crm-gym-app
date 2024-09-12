@@ -8,12 +8,15 @@ import com.gym.crm.app.service.EntityValidator;
 import com.gym.crm.app.service.UserProfileService;
 import com.gym.crm.app.service.UserService;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static com.gym.crm.app.util.Constants.ERROR_USER_WITH_ID_NOT_FOUND;
+import static com.gym.crm.app.util.Constants.WARN_USER_WITH_ID_NOT_FOUND;
 import static java.util.Objects.isNull;
 
+@Slf4j
 @Service
 @Setter(onMethod_ = @Autowired)
 public class UserServiceImpl implements UserService {
@@ -67,6 +70,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(Long id) {
         entityValidator.checkId(id);
+
+        if (repository.findById(id).isEmpty()) {
+            log.warn(messageHelper.getMessage(WARN_USER_WITH_ID_NOT_FOUND, id));
+        }
 
         repository.deleteById(id);
     }

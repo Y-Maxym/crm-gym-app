@@ -30,7 +30,7 @@ class TrainingServiceImplTest {
     private MessageHelper messageHelper;
 
     @Mock
-    private EntityValidator exceptionHelper;
+    private EntityValidator entityValidator;
 
     @Mock
     private EntityDao<Long, Training> repository;
@@ -45,7 +45,7 @@ class TrainingServiceImplTest {
         Training expected = DataUtils.getTrainingEmilyDavisPersisted();
         Long id = expected.getId();
 
-        doNothing().when(exceptionHelper).checkId(id);
+        doNothing().when(entityValidator).checkId(id);
 
         given(repository.findById(id))
                 .willReturn(Optional.of(expected));
@@ -65,7 +65,7 @@ class TrainingServiceImplTest {
         Long id = 1L;
         String message = "Training with id %s not found".formatted(id);
 
-        doNothing().when(exceptionHelper).checkId(id);
+        doNothing().when(entityValidator).checkId(id);
 
         given(repository.findById(id))
                 .willReturn(Optional.empty());
@@ -86,7 +86,7 @@ class TrainingServiceImplTest {
         // given
         Training training = DataUtils.getTrainingEmilyDavisPersisted();
 
-        doNothing().when(exceptionHelper).checkEntity(training);
+        doNothing().when(entityValidator).checkEntity(training);
 
         // when
         service.save(training);

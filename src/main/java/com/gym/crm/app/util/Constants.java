@@ -60,6 +60,10 @@ public class Constants {
     public static final String ERROR_TRAINING_WITH_ID_NOT_FOUND = "ERROR.TRAINING.WITH.ID.NOT.FOUND";
     public static final String ERROR_USER_WITH_ID_NOT_FOUND = "ERROR.USER.WITH.ID.NOT.FOUND";
 
+    public static final String WARN_TRAINEE_WITH_ID_NOT_FOUND = "WARN.TRAINEE.WITH.ID.NOT.FOUND";
+    public static final String WARN_USER_WITH_ID_NOT_FOUND = "WARN.USER.WITH.ID.NOT.FOUND";
+
+
     public static final String ERROR_ENTITY_ID_CANNOT_BE_NULL = "ERROR.ENTITY.ID.CANNOT.BE.NULL";
     public static final String ERROR_ENTITY_ID_CANNOT_BE_ZERO = "ERROR.ENTITY.ID.CANNOT.BE.ZERO";
     public static final String ERROR_ENTITY_CANNOT_BE_NULL = "ERROR.ENTITY.CANNOT.BE.NULL";

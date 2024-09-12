@@ -30,7 +30,7 @@ class TrainerServiceImplTest {
     private MessageHelper messageHelper;
 
     @Mock
-    private EntityValidator exceptionHelper;
+    private EntityValidator entityValidator;
 
     @Mock
     private EntityDao<Long, Trainer> repository;
@@ -45,7 +45,7 @@ class TrainerServiceImplTest {
         Trainer expected = DataUtils.getTrainerEmilyDavisPersisted();
         Long id = expected.getId();
 
-        doNothing().when(exceptionHelper).checkId(id);
+        doNothing().when(entityValidator).checkId(id);
 
         given(repository.findById(id))
                 .willReturn(Optional.of(expected));
@@ -65,7 +65,7 @@ class TrainerServiceImplTest {
         Long id = 1L;
         String message = "Trainer with id %s not found".formatted(id);
 
-        doNothing().when(exceptionHelper).checkId(id);
+        doNothing().when(entityValidator).checkId(id);
 
         given(repository.findById(id))
                 .willReturn(Optional.empty());
@@ -86,7 +86,7 @@ class TrainerServiceImplTest {
         // given
         Trainer trainer = DataUtils.getTrainerEmilyDavisPersisted();
 
-        doNothing().when(exceptionHelper).checkEntity(trainer);
+        doNothing().when(entityValidator).checkEntity(trainer);
 
         // when
         service.save(trainer);
@@ -101,7 +101,7 @@ class TrainerServiceImplTest {
         // given
         Trainer trainer = DataUtils.getTrainerEmilyDavisPersisted();
 
-        doNothing().when(exceptionHelper).checkEntity(trainer);
+        doNothing().when(entityValidator).checkEntity(trainer);
 
         // when
         service.update(trainer);
