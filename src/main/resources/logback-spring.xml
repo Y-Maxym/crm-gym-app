@@ -1,0 +1,16 @@
+<configuration scan="true">
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
+
+    <property name="FILE_LOG_THRESHOLD" value="WARN"/>
+    <property name="LOG_FILE" value="logs/application.log"/>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+</configuration>
