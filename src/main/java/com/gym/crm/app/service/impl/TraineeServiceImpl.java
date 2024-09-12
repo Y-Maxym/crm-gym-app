@@ -4,7 +4,7 @@ import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.EntityDao;
-import com.gym.crm.app.service.EntityExceptionHelper;
+import com.gym.crm.app.service.EntityValidator;
 import com.gym.crm.app.service.TraineeService;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,30 +18,30 @@ public class TraineeServiceImpl implements TraineeService {
 
     private MessageHelper messageHelper;
     private EntityDao<Long, Trainee> repository;
-    private EntityExceptionHelper exceptionHelper;
+    private EntityValidator entityValidator;
 
     public Trainee findById(Long id) {
-        exceptionHelper.checkId(id);
+        entityValidator.checkId(id);
 
         return repository.findById(id)
                 .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINEE_WITH_ID_NOT_FOUND, id)));
     }
 
     public void save(Trainee trainee) {
-        exceptionHelper.checkEntity(trainee);
+        entityValidator.checkEntity(trainee);
 
         repository.save(trainee);
     }
 
     public void update(Trainee trainee) {
-        exceptionHelper.checkEntity(trainee);
-        exceptionHelper.checkId(trainee.getId());
+        entityValidator.checkEntity(trainee);
+        entityValidator.checkId(trainee.getId());
 
         repository.update(trainee);
     }
 
     public void deleteById(Long id) {
-        exceptionHelper.checkId(id);
+        entityValidator.checkId(id);
 
         repository.deleteById(id);
     }

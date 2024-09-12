@@ -4,7 +4,7 @@ import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.EntityDao;
-import com.gym.crm.app.service.EntityExceptionHelper;
+import com.gym.crm.app.service.EntityValidator;
 import com.gym.crm.app.service.UserProfileService;
 import com.gym.crm.app.utils.DataUtils;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +33,7 @@ class UserServiceImplTest {
     private MessageHelper messageHelper;
 
     @Mock
-    private EntityExceptionHelper exceptionHelper;
+    private EntityValidator exceptionHelper;
 
     @Mock
     private UserProfileService userProfileService;

@@ -4,7 +4,7 @@ import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.EntityDao;
-import com.gym.crm.app.service.EntityExceptionHelper;
+import com.gym.crm.app.service.EntityValidator;
 import com.gym.crm.app.service.UserProfileService;
 import com.gym.crm.app.service.UserService;
 import lombok.Setter;
@@ -21,11 +21,11 @@ public class UserServiceImpl implements UserService {
     private EntityDao<Long, User> repository;
     private MessageHelper messageHelper;
     private UserProfileService userProfileService;
-    private EntityExceptionHelper exceptionHelper;
+    private EntityValidator entityValidator;
 
     @Override
     public User findById(Long id) {
-        exceptionHelper.checkId(id);
+        entityValidator.checkId(id);
 
         return repository.findById(id)
                 .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_USER_WITH_ID_NOT_FOUND, id)));
@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void save(User user) {
-        exceptionHelper.checkEntity(user);
+        entityValidator.checkEntity(user);
 
         User preparedUser = prepareUserForSave(user);
 
@@ -58,15 +58,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(User user) {
-        exceptionHelper.checkEntity(user);
-        exceptionHelper.checkId(user.getId());
+        entityValidator.checkEntity(user);
+        entityValidator.checkId(user.getId());
 
         repository.update(user);
     }
 
     @Override
     public void deleteById(Long id) {
-        exceptionHelper.checkId(id);
+        entityValidator.checkId(id);
 
         repository.deleteById(id);
     }

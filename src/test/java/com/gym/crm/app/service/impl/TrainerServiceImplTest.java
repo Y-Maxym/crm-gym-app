@@ -4,7 +4,7 @@ import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.EntityDao;
-import com.gym.crm.app.service.EntityExceptionHelper;
+import com.gym.crm.app.service.EntityValidator;
 import com.gym.crm.app.utils.DataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ class TrainerServiceImplTest {
     private MessageHelper messageHelper;
 
     @Mock
-    private EntityExceptionHelper exceptionHelper;
+    private EntityValidator exceptionHelper;
 
     @Mock
     private EntityDao<Long, Trainer> repository;

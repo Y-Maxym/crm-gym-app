@@ -17,13 +17,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class EntityExceptionHelperTest {
+class EntityValidatorTest {
 
     @Mock
     private MessageHelper messageHelper;
 
     @InjectMocks
-    private EntityExceptionHelper entityExceptionHelper;
+    private EntityValidator entityValidator;
 
     @Test
     @DisplayName("Test check null id functionality")
@@ -33,7 +33,7 @@ class EntityExceptionHelperTest {
                 .willReturn("Entity id cannot be null");
 
         // when && then
-        assertThatThrownBy(() -> entityExceptionHelper.checkId(null))
+        assertThatThrownBy(() -> entityValidator.checkId(null))
                 .isInstanceOf(EntityValidationException.class)
                 .hasMessage("Entity id cannot be null");
     }
@@ -47,7 +47,7 @@ class EntityExceptionHelperTest {
                 .willReturn("Entity id cannot be less or equals zero");
 
         // when && then
-        assertThatThrownBy(() -> entityExceptionHelper.checkId(id))
+        assertThatThrownBy(() -> entityValidator.checkId(id))
                 .isInstanceOf(EntityValidationException.class)
                 .hasMessage("Entity id cannot be less or equals zero");
     }
@@ -61,7 +61,7 @@ class EntityExceptionHelperTest {
                 .willReturn("Entity id cannot be less or equals zero");
 
         // when && then
-        assertThatThrownBy(() -> entityExceptionHelper.checkId(id))
+        assertThatThrownBy(() -> entityValidator.checkId(id))
                 .isInstanceOf(EntityValidationException.class)
                 .hasMessage("Entity id cannot be less or equals zero");
     }
@@ -73,10 +73,10 @@ class EntityExceptionHelperTest {
         Long id = 1L;
 
         // when
-        entityExceptionHelper.checkId(id);
+        entityValidator.checkId(id);
 
         // then
-        Assertions.assertDoesNotThrow(() -> entityExceptionHelper.checkId(id));
+        Assertions.assertDoesNotThrow(() -> entityValidator.checkId(id));
     }
 
     @Test
@@ -87,7 +87,7 @@ class EntityExceptionHelperTest {
                 .willReturn("Entity cannot be null");
 
         // when & then
-        assertThatThrownBy(() -> entityExceptionHelper.checkEntity(null))
+        assertThatThrownBy(() -> entityValidator.checkEntity(null))
                 .isInstanceOf(EntityValidationException.class)
                 .hasMessage("Entity cannot be null");
     }
@@ -99,9 +99,9 @@ class EntityExceptionHelperTest {
         Object entity = new Object();
 
         // when
-        entityExceptionHelper.checkEntity(entity);
+        entityValidator.checkEntity(entity);
 
         // then
-        Assertions.assertDoesNotThrow(() -> entityExceptionHelper.checkEntity(entity));
+        Assertions.assertDoesNotThrow(() -> entityValidator.checkEntity(entity));
     }
 }

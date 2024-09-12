@@ -4,7 +4,7 @@ import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.EntityDao;
-import com.gym.crm.app.service.EntityExceptionHelper;
+import com.gym.crm.app.service.EntityValidator;
 import com.gym.crm.app.service.TrainerService;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,24 +18,24 @@ public class TrainerServiceImpl implements TrainerService {
 
     private MessageHelper messageHelper;
     private EntityDao<Long, Trainer> repository;
-    private EntityExceptionHelper exceptionHelper;
+    private EntityValidator entityValidator;
 
     public Trainer findById(Long id) {
-        exceptionHelper.checkId(id);
+        entityValidator.checkId(id);
 
         return repository.findById(id)
                 .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINER_WITH_ID_NOT_FOUND, id)));
     }
 
     public void save(Trainer trainer) {
-        exceptionHelper.checkEntity(trainer);
+        entityValidator.checkEntity(trainer);
 
         repository.save(trainer);
     }
 
     public void update(Trainer trainer) {
-        exceptionHelper.checkEntity(trainer);
-        exceptionHelper.checkId(trainer.getId());
+        entityValidator.checkEntity(trainer);
+        entityValidator.checkId(trainer.getId());
 
         repository.update(trainer);
     }

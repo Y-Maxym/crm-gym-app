@@ -13,7 +13,7 @@ import static java.util.Objects.isNull;
 
 @Component
 @Setter(onMethod_ = @Autowired)
-public class EntityExceptionHelper {
+public class EntityValidator {
 
     private MessageHelper messageHelper;
 

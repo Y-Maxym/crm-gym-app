@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 
 @Component
 @Setter(onMethod_ = @Autowired)
-public class InitStorage {
+public class StorageInitializer {
 
     private static final String INITIALIZE_DATA_ERROR = "Failed to initialize data from CSV files";
 
