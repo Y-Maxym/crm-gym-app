@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     private User prepareUserForSave(User user) {
         if (isNull(user.getUsername())) {
 
-            String username = generateUsername(user.getFirstName(), user.getLastName());
+            String username = userProfileService.generateUsername(user.getFirstName(), user.getLastName());
             user = user.toBuilder().username(username).build();
         }
 
@@ -69,19 +69,5 @@ public class UserServiceImpl implements UserService {
         exceptionHelper.checkId(id);
 
         repository.deleteById(id);
-    }
-
-    private String generateUsername(String firstName, String lastName) {
-        String username = firstName + "." + lastName;
-
-        if (isDuplicatedUsername(username)) {
-            username = userProfileService.generateUsernameWithSerialNumber(firstName, lastName);
-        }
-
-        return username;
-    }
-
-    private boolean isDuplicatedUsername(String username) {
-        return repository.findAll().stream().anyMatch(user -> user.getUsername().equals(username));
     }
 }

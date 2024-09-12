@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 public interface Parser<I, O> {
 
-    O parse(@NonNull I input);
+    O parse(@NonNull I inputLine);
 
     default <T> T parseValue(String[] data, int index, Function<String, T> parser) {
         return hasContentToParse(data, index) ? parser.apply(data[index]) : null;

@@ -22,8 +22,8 @@ public class TraineeParser implements Parser<String, Trainee> {
     private ParserHelper utils;
 
     @Override
-    public Trainee parse(@NonNull String input) {
-        String[] data = input.split(SPLIT_REGEX);
+    public Trainee parse(@NonNull String inputLine) {
+        String[] data = inputLine.split(SPLIT_REGEX);
 
         LocalDate dateOfBirth = parseValue(data, DATE_OF_BIRTH_INDEX, utils::parseDate);
         String address = extractStringValue(data, ADDRESS_INDEX);

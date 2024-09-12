@@ -19,8 +19,8 @@ public class TrainerParser implements Parser<String, Trainer> {
     private ParserHelper utils;
 
     @Override
-    public Trainer parse(@NonNull String input) {
-        String[] data = input.split(SPLIT_REGEX);
+    public Trainer parse(@NonNull String inputLine) {
+        String[] data = inputLine.split(SPLIT_REGEX);
 
         Long specializationId = parseValue(data, SPECIALIZATION_ID_INDEX, utils::parseLong);
 

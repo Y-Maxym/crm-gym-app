@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import static com.gym.crm.app.util.Constants.ERROR_USER_WITH_ID_NOT_FOUND;
@@ -23,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -115,14 +113,15 @@ class UserServiceImplTest {
 
         String firstName = user.getFirstName();
         String lastName = user.getLastName();
+        String username = "%s.%s".formatted(firstName, lastName);
         int passwordLength = 10;
         String password = "1234567890";
 
-        given(repository.findAll())
-                .willReturn(Collections.emptyList());
-
         given(userProfileService.generatePassword(passwordLength))
                 .willReturn(password);
+
+        given(userProfileService.generateUsername(firstName, lastName))
+                .willReturn(username);
 
         // when
         User actual = ReflectionTestUtils.invokeMethod(service, "prepareUserForSave", user);
@@ -132,7 +131,7 @@ class UserServiceImplTest {
         assertThat(actual.getUsername()).isEqualTo("%s.%s", firstName, lastName);
         assertThat(actual.getPassword()).isEqualTo(password);
 
-        verify(userProfileService, never()).generateUsernameWithSerialNumber(user.getFirstName(), user.getLastName());
+        verify(userProfileService, times(1)).generateUsername(user.getFirstName(), user.getLastName());
         verify(userProfileService, times(1)).generatePassword(10);
     }
 
@@ -183,81 +182,5 @@ class UserServiceImplTest {
 
         // then
         verify(repository, only()).deleteById(id);
-    }
-
-    @Test
-    @DisplayName("Test generate username without duplication")
-    public void givenFirstNameAndLastName_whenGenerateUsername_thenReturnsUsernameWithSerialNumberWithoutNumber() {
-        // given
-        String firstName = "John";
-        String lastName = "Doe";
-
-        given(repository.findAll())
-                .willReturn(Collections.emptyList());
-
-        // when
-        String username = ReflectionTestUtils.invokeMethod(service, "generateUsername", firstName, lastName);
-
-        // then
-        assertThat(username).isEqualTo("John.Doe");
-    }
-
-    @Test
-    @DisplayName("Test generate username with duplication")
-    public void givenDuplicatedUsername_whenGenerateUsername_thenUserProfileServiceIsCalled() {
-        // given
-        String firstName = "John";
-        String lastName = "Doe";
-
-        User existingUser = User.builder()
-                .username("John.Doe")
-                .build();
-
-        given(repository.findAll())
-                .willReturn(Collections.singletonList(existingUser));
-
-
-        // when
-        ReflectionTestUtils.invokeMethod(service, "generateUsername", firstName, lastName);
-
-        // then
-        verify(userProfileService, times(1)).generateUsernameWithSerialNumber(firstName, lastName);
-    }
-
-    @Test
-    @DisplayName("Test is duplicated username when username is not duplicated")
-    public void givenUsername_whenIsDuplicatedUsername_thenReturnsFalse() {
-        // given
-        String username = "uniqueUsername";
-
-        given(repository.findAll())
-                .willReturn(Collections.emptyList());
-
-        // when
-
-        Boolean isDuplicated = ReflectionTestUtils.invokeMethod(service, "isDuplicatedUsername", username);
-
-        // then
-        assertThat(isDuplicated).isFalse();
-    }
-
-    @Test
-    @DisplayName("Test isDuplicatedUsername when username is duplicated")
-    public void givenUsername_whenIsDuplicatedUsername_thenReturnsTrue() {
-        // given
-        String username = "John.Doe";
-
-        User existingUser = User.builder()
-                .username("John.Doe")
-                .build();
-
-        given(repository.findAll())
-                .willReturn(Collections.singletonList(existingUser));
-
-        // when
-        Boolean isDuplicated = ReflectionTestUtils.invokeMethod(service, "isDuplicatedUsername", username);
-
-        // then
-        assertThat(isDuplicated).isTrue();
     }
 }

@@ -20,12 +20,12 @@ public class UserParser implements Parser<String, User> {
     private UserProfileService userProfileService;
 
     @Override
-    public User parse(@NonNull String input) {
-        String[] data = input.split(SPLIT_REGEX);
+    public User parse(@NonNull String inputLine) {
+        String[] data = inputLine.split(SPLIT_REGEX);
 
         String firstName = extractStringValue(data, FIRST_NAME_INDEX);
         String lastName = extractStringValue(data, LAST_NAME_INDEX);
-        String username = userProfileService.generateUsernameWithSerialNumber(firstName, lastName);
+        String username = userProfileService.generateUsername(firstName, lastName);
         String password = userProfileService.generatePassword(10);
 
         return User.builder()

@@ -28,8 +28,8 @@ public class TrainingParser implements Parser<String, Training> {
     private ParserHelper utils;
 
     @Override
-    public Training parse(@NonNull String input) {
-        String[] data = input.split(SPLIT_REGEX);
+    public Training parse(@NonNull String inputLine) {
+        String[] data = inputLine.split(SPLIT_REGEX);
 
         Long traineeId = parseValue(data, TRAINEE_ID_INDEX, utils::parseLong);
         Long trainerId = parseValue(data, TRAINER_ID_INDEX, utils::parseLong);

@@ -42,7 +42,7 @@ class UserParserTest {
         int passwordLength = 10;
         String password = "1234567890";
 
-        given(userProfileService.generateUsernameWithSerialNumber(firstName, lastName))
+        given(userProfileService.generateUsername(firstName, lastName))
                 .willReturn(username);
 
         given(userProfileService.generatePassword(passwordLength))
@@ -73,7 +73,7 @@ class UserParserTest {
         int passwordLength = 10;
         String password = "1234567890";
 
-        given(userProfileService.generateUsernameWithSerialNumber(firstName, lastName))
+        given(userProfileService.generateUsername(firstName, lastName))
                 .willReturn(username);
 
         given(userProfileService.generatePassword(passwordLength))
