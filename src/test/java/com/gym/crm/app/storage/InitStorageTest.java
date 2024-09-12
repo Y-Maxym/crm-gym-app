@@ -35,10 +35,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class InitDataHelperTest {
+class InitStorageTest {
 
     @InjectMocks
-    private InitDataHelper initDataHelper;
+    private InitStorage initStorage;
 
     @Mock
     private TraineeParser traineeParser;
@@ -69,7 +69,7 @@ class InitDataHelperTest {
     public void givenCorrectPath_whenInitTraineeStorage_thenStorageIsInitialized() {
         // given
         Resource resource = new ClassPathResource("init/trainee-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "traineeSource", resource);
+        ReflectionTestUtils.setField(initStorage, "traineeSource", resource);
 
         Trainee traineeTransient = DataUtils.getTraineeJohnDoeTransient();
         User userTransient = DataUtils.getUserJohnDoeTransient();
@@ -83,7 +83,7 @@ class InitDataHelperTest {
         given(traineeParser.parse(anyString())).willReturn(traineeTransient);
 
         // when
-        ReflectionTestUtils.invokeMethod(initDataHelper, "initTraineeStorage");
+        ReflectionTestUtils.invokeMethod(initStorage, "initTraineeStorage");
 
         // then
         verify(traineeRepository).save(any(Trainee.class));
@@ -95,7 +95,7 @@ class InitDataHelperTest {
     public void givenCorrectPath_whenInitTrainerStorage_thenStorageIsInitialized() {
         // given
         Resource resource = new ClassPathResource("init/trainer-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainerSource", resource);
+        ReflectionTestUtils.setField(initStorage, "trainerSource", resource);
 
         Trainer trainerTransient = DataUtils.getTrainerEmilyDavisTransient();
         User userTransient = DataUtils.getUserEmilyDavisTransient();
@@ -109,7 +109,7 @@ class InitDataHelperTest {
         given(trainerParser.parse(anyString())).willReturn(trainerTransient);
 
         // when
-        ReflectionTestUtils.invokeMethod(initDataHelper, "initTrainerStorage");
+        ReflectionTestUtils.invokeMethod(initStorage, "initTrainerStorage");
 
         // then
         verify(trainerRepository).save(any(Trainer.class));
@@ -121,14 +121,14 @@ class InitDataHelperTest {
     public void givenCorrectPath_whenInitTrainingStorage_thenStorageIsInitialized() {
         // given
         Resource resource = new ClassPathResource("init/training-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainingSource", resource);
+        ReflectionTestUtils.setField(initStorage, "trainingSource", resource);
 
         Training trainingTransient = DataUtils.getTrainingEmilyDavisTransient();
 
         given(trainingParser.parse(anyString())).willReturn(trainingTransient);
 
         // when
-        ReflectionTestUtils.invokeMethod(initDataHelper, "initTrainingStorage");
+        ReflectionTestUtils.invokeMethod(initStorage, "initTrainingStorage");
 
         // then
         verify(trainingRepository).save(any(Training.class));
@@ -139,17 +139,17 @@ class InitDataHelperTest {
     public void givenIncorrectFilePath_whenInitTraineeStorage_thenExceptionIsThrown() {
         // given
         Resource traineeResource = new ClassPathResource("init/incorrect-trainee-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "traineeSource", traineeResource);
+        ReflectionTestUtils.setField(initStorage, "traineeSource", traineeResource);
 
         Resource trainerResource = new ClassPathResource("init/trainer-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainerSource", trainerResource);
+        ReflectionTestUtils.setField(initStorage, "trainerSource", trainerResource);
 
         Resource trainingResource = new ClassPathResource("init/training-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainingSource", trainingResource);
+        ReflectionTestUtils.setField(initStorage, "trainingSource", trainingResource);
 
         // when
         CSVFileReadException ex = assertThrows(CSVFileReadException.class, () -> {
-            ReflectionTestUtils.invokeMethod(initDataHelper, "init");
+            ReflectionTestUtils.invokeMethod(initStorage, "init");
         });
 
         // then
@@ -166,17 +166,17 @@ class InitDataHelperTest {
     public void givenIncorrectFilePath_whenInitTrainerStorage_thenExceptionIsThrown() {
         // given
         Resource traineeResource = new ClassPathResource("init/trainee-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "traineeSource", traineeResource);
+        ReflectionTestUtils.setField(initStorage, "traineeSource", traineeResource);
 
         Resource trainerResource = new ClassPathResource("init/incorrect-trainer-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainerSource", trainerResource);
+        ReflectionTestUtils.setField(initStorage, "trainerSource", trainerResource);
 
         Resource trainingResource = new ClassPathResource("init/training-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainingSource", trainingResource);
+        ReflectionTestUtils.setField(initStorage, "trainingSource", trainingResource);
 
         // when
         CSVFileReadException ex = assertThrows(CSVFileReadException.class, () -> {
-            ReflectionTestUtils.invokeMethod(initDataHelper, "init");
+            ReflectionTestUtils.invokeMethod(initStorage, "init");
         });
 
         // then
@@ -191,17 +191,17 @@ class InitDataHelperTest {
     public void givenIncorrectFilePath_whenInitTrainingStorage_thenExceptionIsThrown() {
         // given
         Resource traineeResource = new ClassPathResource("init/trainee-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "traineeSource", traineeResource);
+        ReflectionTestUtils.setField(initStorage, "traineeSource", traineeResource);
 
         Resource trainerResource = new ClassPathResource("init/trainer-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainerSource", trainerResource);
+        ReflectionTestUtils.setField(initStorage, "trainerSource", trainerResource);
 
         Resource trainingResource = new ClassPathResource("init/incorrect-training-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainingSource", trainingResource);
+        ReflectionTestUtils.setField(initStorage, "trainingSource", trainingResource);
 
         // when
         CSVFileReadException ex = assertThrows(CSVFileReadException.class, () -> {
-            ReflectionTestUtils.invokeMethod(initDataHelper, "init");
+            ReflectionTestUtils.invokeMethod(initStorage, "init");
         });
 
         // then
@@ -216,20 +216,20 @@ class InitDataHelperTest {
     public void givenIncorrectUserData_whenInitTraineeStorage_thenExceptionIsThrown() {
         // given
         Resource traineeResource = new ClassPathResource("init/trainee-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "traineeSource", traineeResource);
+        ReflectionTestUtils.setField(initStorage, "traineeSource", traineeResource);
 
         Resource trainerResource = new ClassPathResource("init/trainer-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainerSource", trainerResource);
+        ReflectionTestUtils.setField(initStorage, "trainerSource", trainerResource);
 
         Resource trainingResource = new ClassPathResource("init/training-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainingSource", trainingResource);
+        ReflectionTestUtils.setField(initStorage, "trainingSource", trainingResource);
 
         given(userParser.parse(anyString()))
                 .willThrow(new ParseException("Value cannot be null"));
 
         // when
         ParseException ex = assertThrows(ParseException.class, () -> {
-            ReflectionTestUtils.invokeMethod(initDataHelper, "initTraineeStorage");
+            ReflectionTestUtils.invokeMethod(initStorage, "initTraineeStorage");
         });
 
         // then
@@ -245,13 +245,13 @@ class InitDataHelperTest {
     public void givenIncorrectTraineeData_whenInitTraineeStorage_thenExceptionIsThrown() {
         // given
         Resource traineeResource = new ClassPathResource("init/trainee-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "traineeSource", traineeResource);
+        ReflectionTestUtils.setField(initStorage, "traineeSource", traineeResource);
 
         Resource trainerResource = new ClassPathResource("init/trainer-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainerSource", trainerResource);
+        ReflectionTestUtils.setField(initStorage, "trainerSource", trainerResource);
 
         Resource trainingResource = new ClassPathResource("init/training-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainingSource", trainingResource);
+        ReflectionTestUtils.setField(initStorage, "trainingSource", trainingResource);
 
         User userTransient = DataUtils.getUserJohnDoeTransient();
         User userPersisted = DataUtils.getUserJohnDoePersisted();
@@ -267,7 +267,7 @@ class InitDataHelperTest {
 
         // when
         ParseException ex = assertThrows(ParseException.class, () -> {
-            ReflectionTestUtils.invokeMethod(initDataHelper, "initTraineeStorage");
+            ReflectionTestUtils.invokeMethod(initStorage, "initTraineeStorage");
         });
 
         // then
@@ -284,20 +284,20 @@ class InitDataHelperTest {
     public void givenIncorrectUserData_whenInitTrainerStorage_thenExceptionIsThrown() {
         // given
         Resource traineeResource = new ClassPathResource("init/trainee-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "traineeSource", traineeResource);
+        ReflectionTestUtils.setField(initStorage, "traineeSource", traineeResource);
 
         Resource trainerResource = new ClassPathResource("init/trainer-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainerSource", trainerResource);
+        ReflectionTestUtils.setField(initStorage, "trainerSource", trainerResource);
 
         Resource trainingResource = new ClassPathResource("init/training-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainingSource", trainingResource);
+        ReflectionTestUtils.setField(initStorage, "trainingSource", trainingResource);
 
         given(userParser.parse(anyString()))
                 .willThrow(new ParseException("Value cannot be null"));
 
         // when
         ParseException ex = assertThrows(ParseException.class, () -> {
-            ReflectionTestUtils.invokeMethod(initDataHelper, "initTrainerStorage");
+            ReflectionTestUtils.invokeMethod(initStorage, "initTrainerStorage");
         });
 
         // then
@@ -312,13 +312,13 @@ class InitDataHelperTest {
     public void givenIncorrectTrainerData_whenInitTrainerStorage_thenExceptionIsThrown() {
         // given
         Resource traineeResource = new ClassPathResource("init/trainee-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "traineeSource", traineeResource);
+        ReflectionTestUtils.setField(initStorage, "traineeSource", traineeResource);
 
         Resource trainerResource = new ClassPathResource("init/trainer-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainerSource", trainerResource);
+        ReflectionTestUtils.setField(initStorage, "trainerSource", trainerResource);
 
         Resource trainingResource = new ClassPathResource("init/training-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainingSource", trainingResource);
+        ReflectionTestUtils.setField(initStorage, "trainingSource", trainingResource);
 
         User userTransient = DataUtils.getUserJohnDoeTransient();
         User userPersisted = DataUtils.getUserJohnDoePersisted();
@@ -334,7 +334,7 @@ class InitDataHelperTest {
 
         // when
         ParseException ex = assertThrows(ParseException.class, () -> {
-            ReflectionTestUtils.invokeMethod(initDataHelper, "initTrainerStorage");
+            ReflectionTestUtils.invokeMethod(initStorage, "initTrainerStorage");
         });
 
         // then
@@ -349,20 +349,20 @@ class InitDataHelperTest {
     public void givenIncorrectTrainingData_whenInitTrainingStorage_thenExceptionIsThrown() {
         // given
         Resource traineeResource = new ClassPathResource("init/trainee-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "traineeSource", traineeResource);
+        ReflectionTestUtils.setField(initStorage, "traineeSource", traineeResource);
 
         Resource trainerResource = new ClassPathResource("init/trainer-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainerSource", trainerResource);
+        ReflectionTestUtils.setField(initStorage, "trainerSource", trainerResource);
 
         Resource trainingResource = new ClassPathResource("init/training-test.csv");
-        ReflectionTestUtils.setField(initDataHelper, "trainingSource", trainingResource);
+        ReflectionTestUtils.setField(initStorage, "trainingSource", trainingResource);
 
         given(trainingParser.parse(anyString()))
                 .willThrow(new ParseException("Value cannot be null"));
 
         // when
         ParseException ex = assertThrows(ParseException.class, () -> {
-            ReflectionTestUtils.invokeMethod(initDataHelper, "initTrainingStorage");
+            ReflectionTestUtils.invokeMethod(initStorage, "initTrainingStorage");
         });
 
         // then
