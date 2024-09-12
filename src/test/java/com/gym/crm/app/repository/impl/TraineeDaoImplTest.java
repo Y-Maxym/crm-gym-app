@@ -22,7 +22,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -107,7 +106,7 @@ class TraineeDaoImplTest {
         assertThat(actual.getId()).isNotNull();
         assertThat(actual).isEqualTo(persisted);
 
-        verify(trainee, times(1)).toBuilder();
+        verify(trainee).toBuilder();
         verify(storage, only()).put(anyLong(), any(Trainee.class));
     }
 

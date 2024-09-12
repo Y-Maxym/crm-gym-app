@@ -25,7 +25,7 @@ import static com.gym.crm.app.util.Constants.INFO_REPOSITORY_RESULT;
 @Setter(onMethod_ = @Autowired)
 public class DaoLoggingAspect {
 
-    private LogHandler utils;
+    private LogHandler logHandler;
 
     @Pointcut("execution(* com.gym.crm.app.repository..*(..))")
     public void daoMethods() {
@@ -33,16 +33,16 @@ public class DaoLoggingAspect {
 
     @Before("daoMethods() && args(*)")
     public void logBefore(JoinPoint joinPoint) {
-        utils.logBefore(joinPoint, INFO_REPOSITORY_INPUT, DEBUG_REPOSITORY_INPUT);
+        logHandler.logBefore(joinPoint, INFO_REPOSITORY_INPUT, DEBUG_REPOSITORY_INPUT);
     }
 
     @AfterReturning(pointcut = "daoMethods()", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
-        utils.logAfterReturning(joinPoint, result, INFO_REPOSITORY_RESULT, DEBUG_REPOSITORY_RESULT);
+        logHandler.logAfterReturning(joinPoint, result, INFO_REPOSITORY_RESULT, DEBUG_REPOSITORY_RESULT);
     }
 
     @AfterThrowing(pointcut = "daoMethods()", throwing = "ex")
     public void logAfterThrowing(JoinPoint joinPoint, Exception ex) {
-        utils.logAfterThrowing(joinPoint, ex, INFO_REPOSITORY_EXCEPTION, DEBUG_REPOSITORY_EXCEPTION);
+        logHandler.logAfterThrowing(joinPoint, ex, INFO_REPOSITORY_EXCEPTION, DEBUG_REPOSITORY_EXCEPTION);
     }
 }

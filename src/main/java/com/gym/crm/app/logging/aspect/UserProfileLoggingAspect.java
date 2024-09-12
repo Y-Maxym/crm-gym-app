@@ -23,9 +23,9 @@ import static com.gym.crm.app.util.Constants.INFO_USER_UTILS_RESULT;
 @Aspect
 @Component
 @Setter(onMethod_ = @Autowired)
-public class UserUtilsLoggingAspect {
+public class UserProfileLoggingAspect {
 
-    private LogHandler utils;
+    private LogHandler logHandler;
 
     @Pointcut("execution(* com.gym.crm.app.service.UserProfileService.*(..))")
     public void userUtilsMethods() {
@@ -33,16 +33,16 @@ public class UserUtilsLoggingAspect {
 
     @Before("userUtilsMethods() && args(..)")
     public void logBefore(JoinPoint joinPoint) {
-        utils.logBefore(joinPoint, INFO_USER_UTILS_INPUT, DEBUG_USER_UTILS_INPUT);
+        logHandler.logBefore(joinPoint, INFO_USER_UTILS_INPUT, DEBUG_USER_UTILS_INPUT);
     }
 
     @AfterReturning(pointcut = "userUtilsMethods()", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
-        utils.logAfterReturning(joinPoint, result, INFO_USER_UTILS_RESULT, DEBUG_USER_UTILS_RESULT);
+        logHandler.logAfterReturning(joinPoint, result, INFO_USER_UTILS_RESULT, DEBUG_USER_UTILS_RESULT);
     }
 
     @AfterThrowing(pointcut = "userUtilsMethods()", throwing = "ex")
     public void logAfterThrowing(JoinPoint joinPoint, Exception ex) {
-        utils.logAfterThrowing(joinPoint, ex, INFO_USER_UTILS_EXCEPTION, DEBUG_USER_UTILS_EXCEPTION);
+        logHandler.logAfterThrowing(joinPoint, ex, INFO_USER_UTILS_EXCEPTION, DEBUG_USER_UTILS_EXCEPTION);
     }
 }

@@ -31,7 +31,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -273,9 +272,9 @@ class StorageInitializerTest {
         // then
         assertThat(ex.getMessage()).isEqualTo("Value cannot be null");
 
-        verify(userParser, times(1)).parse(anyString());
-        verify(userRepository, times(1)).save(any(User.class));
-        verify(traineeParser, times(1)).parse(anyString());
+        verify(userParser).parse(anyString());
+        verify(userRepository).save(any(User.class));
+        verify(traineeParser).parse(anyString());
         verify(traineeRepository, never()).save(any(Trainee.class));
     }
 
@@ -340,7 +339,7 @@ class StorageInitializerTest {
         // then
         assertThat(ex.getMessage()).isEqualTo("Value cannot be null");
 
-        verify(trainerParser, times(1)).parse(anyString());
+        verify(trainerParser).parse(anyString());
         verify(trainerRepository, never()).save(any(Trainer.class));
     }
 
@@ -368,7 +367,7 @@ class StorageInitializerTest {
         // then
         assertThat(ex.getMessage()).isEqualTo("Value cannot be null");
 
-        verify(trainingParser, times(1)).parse(anyString());
+        verify(trainingParser).parse(anyString());
         verify(trainingRepository, never()).save(any(Training.class));
     }
 }

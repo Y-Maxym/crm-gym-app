@@ -124,6 +124,6 @@ class TraineeServiceImplTest {
         service.deleteById(id);
 
         // then
-        verify(repository, only()).deleteById(id);
+        verify(repository).deleteById(id);
     }
 }

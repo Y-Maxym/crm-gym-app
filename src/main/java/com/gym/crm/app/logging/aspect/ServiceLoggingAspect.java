@@ -25,7 +25,7 @@ import static com.gym.crm.app.util.Constants.INFO_SERVICE_RESULT;
 @Setter(onMethod_ = @Autowired)
 public class ServiceLoggingAspect {
 
-    private LogHandler utils;
+    private LogHandler logHandler;
 
     @Pointcut("execution(* com.gym.crm.app.service..*(..))")
     public void serviceMethods() {
@@ -33,16 +33,16 @@ public class ServiceLoggingAspect {
 
     @Before("serviceMethods() && args(*)")
     public void logBefore(JoinPoint joinPoint) {
-        utils.logBefore(joinPoint, INFO_SERVICE_INPUT, DEBUG_SERVICE_INPUT);
+        logHandler.logBefore(joinPoint, INFO_SERVICE_INPUT, DEBUG_SERVICE_INPUT);
     }
 
     @AfterReturning(pointcut = "serviceMethods()", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
-        utils.logAfterReturning(joinPoint, result, INFO_SERVICE_RESULT, DEBUG_SERVICE_RESULT);
+        logHandler.logAfterReturning(joinPoint, result, INFO_SERVICE_RESULT, DEBUG_SERVICE_RESULT);
     }
 
     @AfterThrowing(pointcut = "serviceMethods()", throwing = "ex")
     public void logAfterThrowing(JoinPoint joinPoint, Exception ex) {
-        utils.logAfterThrowing(joinPoint, ex, INFO_SERVICE_EXCEPTION, DEBUG_SERVICE_EXCEPTION);
+        logHandler.logAfterThrowing(joinPoint, ex, INFO_SERVICE_EXCEPTION, DEBUG_SERVICE_EXCEPTION);
     }
 }

@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.only;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -131,8 +130,8 @@ class UserServiceImplTest {
         assertThat(actual.getUsername()).isEqualTo("%s.%s", firstName, lastName);
         assertThat(actual.getPassword()).isEqualTo(password);
 
-        verify(userProfileService, times(1)).generateUsername(user.getFirstName(), user.getLastName());
-        verify(userProfileService, times(1)).generatePassword(10);
+        verify(userProfileService).generateUsername(user.getFirstName(), user.getLastName());
+        verify(userProfileService).generatePassword(10);
     }
 
     @Test
@@ -181,6 +180,6 @@ class UserServiceImplTest {
         service.deleteById(id);
 
         // then
-        verify(repository, only()).deleteById(id);
+        verify(repository).deleteById(id);
     }
 }

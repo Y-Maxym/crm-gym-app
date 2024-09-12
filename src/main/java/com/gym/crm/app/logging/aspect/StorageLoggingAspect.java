@@ -25,7 +25,7 @@ import static com.gym.crm.app.util.Constants.INFO_STORAGE_RESULT;
 @Setter(onMethod_ = @Autowired)
 public class StorageLoggingAspect {
 
-    private LogHandler utils;
+    private LogHandler logHandler;
 
     @Pointcut("execution(* com.gym.crm.app.storage..*(..))")
     public void storageMethods() {
@@ -33,16 +33,16 @@ public class StorageLoggingAspect {
 
     @Before("storageMethods() && args(*)")
     public void logBefore(JoinPoint joinPoint) {
-        utils.logBefore(joinPoint, INFO_STORAGE_INPUT, DEBUG_STORAGE_INPUT);
+        logHandler.logBefore(joinPoint, INFO_STORAGE_INPUT, DEBUG_STORAGE_INPUT);
     }
 
     @AfterReturning(pointcut = "storageMethods()", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
-        utils.logAfterReturning(joinPoint, result, INFO_STORAGE_RESULT, DEBUG_STORAGE_RESULT);
+        logHandler.logAfterReturning(joinPoint, result, INFO_STORAGE_RESULT, DEBUG_STORAGE_RESULT);
     }
 
     @AfterThrowing(pointcut = "storageMethods()", throwing = "ex")
     public void logAfterThrowing(JoinPoint joinPoint, Exception ex) {
-        utils.logAfterThrowing(joinPoint, ex, INFO_STORAGE_EXCEPTION, DEBUG_STORAGE_EXCEPTION);
+        logHandler.logAfterThrowing(joinPoint, ex, INFO_STORAGE_EXCEPTION, DEBUG_STORAGE_EXCEPTION);
     }
 }
