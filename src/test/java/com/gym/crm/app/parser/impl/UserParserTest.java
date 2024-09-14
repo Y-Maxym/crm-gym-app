@@ -1,7 +1,7 @@
 package com.gym.crm.app.parser.impl;
 
 import com.gym.crm.app.entity.User;
-import com.gym.crm.app.service.UserProfileService;
+import com.gym.crm.app.service.common.UserProfileService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

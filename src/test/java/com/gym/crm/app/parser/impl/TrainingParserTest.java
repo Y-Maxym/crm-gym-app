@@ -41,21 +41,21 @@ class TrainingParserTest {
         // given
         String input = "1,1,Training Emily Davis,1,2020-01-01T10:00:00,2";
 
-        Long traineeId = 1L;
-        Long trainerId = 1L;
+        long traineeId = 1L;
+        long trainerId = 1L;
         String trainingName = "Training Emily Davis";
-        Long trainingTypeId = 1L;
+        long trainingTypeId = 1L;
         LocalDateTime trainingDate = LocalDateTime.of(2020, 1, 1, 10, 0, 0);
         int trainingDurationInHours = 2;
         Duration trainingDuration = Duration.ofHours(trainingDurationInHours);
 
-        given(utils.parseLong(traineeId.toString()))
+        given(utils.parseLong(String.valueOf(traineeId)))
                 .willReturn(traineeId);
 
-        given(utils.parseLong(trainerId.toString()))
+        given(utils.parseLong(String.valueOf(trainerId)))
                 .willReturn(trainerId);
 
-        given(utils.parseLong(trainingTypeId.toString()))
+        given(utils.parseLong(String.valueOf(trainingTypeId)))
                 .willReturn(trainingTypeId);
 
         given(utils.parseDateTime(anyString()))
@@ -85,11 +85,11 @@ class TrainingParserTest {
         String input = ",,Training Emily Davis,1,,2";
 
         String trainingName = "Training Emily Davis";
-        Long trainingTypeId = 1L;
+        long trainingTypeId = 1L;
         int trainingDurationInHours = 2;
         Duration trainingDuration = Duration.ofHours(trainingDurationInHours);
 
-        given(utils.parseLong(trainingTypeId.toString()))
+        given(utils.parseLong(String.valueOf(trainingTypeId)))
                 .willReturn(trainingTypeId);
 
 

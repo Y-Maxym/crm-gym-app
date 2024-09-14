@@ -4,7 +4,7 @@ import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.EntityDao;
-import com.gym.crm.app.service.EntityValidator;
+import com.gym.crm.app.service.common.EntityValidator;
 import com.gym.crm.app.service.TrainerService;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;

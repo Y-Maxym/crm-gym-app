@@ -2,6 +2,7 @@ package com.gym.crm.app.service;
 
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
+import com.gym.crm.app.service.common.EntityValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,7 @@ class EntityValidatorTest {
     @DisplayName("Test check zero id functionality")
     void givenZeroId_whenCheckId_thenExceptionIsThrows() {
         // given
-        Long id = 0L;
+        long id = 0L;
         given(messageHelper.getMessage(ERROR_ENTITY_ID_CANNOT_BE_ZERO))
                 .willReturn("Entity id cannot be less or equals zero");
 
@@ -56,7 +57,7 @@ class EntityValidatorTest {
     @DisplayName("Test check negative id functionality")
     void givenNegativeId_whenCheckId_thenExceptionIsThrows() {
         // given
-        Long id = -1L;
+        long id = -1L;
         given(messageHelper.getMessage(ERROR_ENTITY_ID_CANNOT_BE_ZERO))
                 .willReturn("Entity id cannot be less or equals zero");
 
@@ -70,7 +71,7 @@ class EntityValidatorTest {
     @DisplayName("Test check valid id functionality")
     void givenValidId_whenCheckId_thenExceptionIsThrows() {
         // given
-        Long id = 1L;
+        long id = 1L;
 
         // when
         entityValidator.checkId(id);

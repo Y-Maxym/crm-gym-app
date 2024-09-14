@@ -17,7 +17,7 @@ import static java.util.Objects.isNull;
 @Setter(onMethod_ = @Autowired)
 public class TrainerDaoImpl implements EntityDao<Long, Trainer> {
 
-    private static AtomicLong currentId = new AtomicLong(0);
+    private static final AtomicLong currentId = new AtomicLong(0);
 
     private Storage storage;
 

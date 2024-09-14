@@ -25,6 +25,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.function.Consumer;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,9 +37,6 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class StorageInitializerTest {
-
-    @InjectMocks
-    private StorageInitializer storageInitializer;
 
     @Mock
     private TraineeParser traineeParser;
@@ -63,12 +62,20 @@ class StorageInitializerTest {
     @Mock
     private UserDaoImpl userRepository;
 
+    @InjectMocks
+    private StorageInitializer storageInitializer;
+
     @Test
     @DisplayName("Test init trainee storage via correct file path functionality")
+    @SuppressWarnings("all")
     public void givenCorrectPath_whenInitTraineeStorage_thenStorageIsInitialized() {
         // given
-        Resource resource = new ClassPathResource("init/trainee-test.csv");
+        Resource resource = new ClassPathResource("init/trainee-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "traineeSource", resource);
+
+        Consumer<String> processLine = line -> {
+            ReflectionTestUtils.invokeMethod(storageInitializer, "processTraineeLine", line);
+        };
 
         Trainee traineeTransient = DataUtils.getTraineeJohnDoeTransient();
         User userTransient = DataUtils.getUserJohnDoeTransient();
@@ -82,7 +89,7 @@ class StorageInitializerTest {
         given(traineeParser.parse(anyString())).willReturn(traineeTransient);
 
         // when
-        ReflectionTestUtils.invokeMethod(storageInitializer, "initTraineeStorage");
+        ReflectionTestUtils.invokeMethod(storageInitializer, "initStorage", resource, processLine);
 
         // then
         verify(traineeRepository).save(any(Trainee.class));
@@ -91,10 +98,15 @@ class StorageInitializerTest {
 
     @Test
     @DisplayName("Test init trainer storage via correct file path functionality")
+    @SuppressWarnings("all")
     public void givenCorrectPath_whenInitTrainerStorage_thenStorageIsInitialized() {
         // given
-        Resource resource = new ClassPathResource("init/trainer-test.csv");
+        Resource resource = new ClassPathResource("init/trainer-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainerSource", resource);
+
+        Consumer<String> processLine = line -> {
+            ReflectionTestUtils.invokeMethod(storageInitializer, "processTrainerLine", line);
+        };
 
         Trainer trainerTransient = DataUtils.getTrainerEmilyDavisTransient();
         User userTransient = DataUtils.getUserEmilyDavisTransient();
@@ -108,7 +120,7 @@ class StorageInitializerTest {
         given(trainerParser.parse(anyString())).willReturn(trainerTransient);
 
         // when
-        ReflectionTestUtils.invokeMethod(storageInitializer, "initTrainerStorage");
+        ReflectionTestUtils.invokeMethod(storageInitializer, "initStorage", resource, processLine);
 
         // then
         verify(trainerRepository).save(any(Trainer.class));
@@ -117,17 +129,22 @@ class StorageInitializerTest {
 
     @Test
     @DisplayName("Test init training storage via correct file path functionality")
+    @SuppressWarnings("all")
     public void givenCorrectPath_whenInitTrainingStorage_thenStorageIsInitialized() {
         // given
-        Resource resource = new ClassPathResource("init/training-test.csv");
+        Resource resource = new ClassPathResource("init/training-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainingSource", resource);
+
+        Consumer<String> processLine = line -> {
+            ReflectionTestUtils.invokeMethod(storageInitializer, "processTrainingLine", line);
+        };
 
         Training trainingTransient = DataUtils.getTrainingEmilyDavisTransient();
 
         given(trainingParser.parse(anyString())).willReturn(trainingTransient);
 
         // when
-        ReflectionTestUtils.invokeMethod(storageInitializer, "initTrainingStorage");
+        ReflectionTestUtils.invokeMethod(storageInitializer, "initStorage", resource, processLine);
 
         // then
         verify(trainingRepository).save(any(Training.class));
@@ -135,15 +152,16 @@ class StorageInitializerTest {
 
     @Test
     @DisplayName("Test init trainee storage via incorrect file path functionality")
+    @SuppressWarnings("all")
     public void givenIncorrectFilePath_whenInitTraineeStorage_thenExceptionIsThrown() {
         // given
-        Resource traineeResource = new ClassPathResource("init/incorrect-trainee-test.csv");
+        Resource traineeResource = new ClassPathResource("init/incorrect-trainee-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "traineeSource", traineeResource);
 
-        Resource trainerResource = new ClassPathResource("init/trainer-test.csv");
+        Resource trainerResource = new ClassPathResource("init/trainer-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainerSource", trainerResource);
 
-        Resource trainingResource = new ClassPathResource("init/training-test.csv");
+        Resource trainingResource = new ClassPathResource("init/training-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainingSource", trainingResource);
 
         // when
@@ -162,15 +180,16 @@ class StorageInitializerTest {
 
     @Test
     @DisplayName("Test init trainer storage via incorrect file path functionality")
+    @SuppressWarnings("all")
     public void givenIncorrectFilePath_whenInitTrainerStorage_thenExceptionIsThrown() {
         // given
-        Resource traineeResource = new ClassPathResource("init/trainee-test.csv");
+        Resource traineeResource = new ClassPathResource("init/trainee-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "traineeSource", traineeResource);
 
-        Resource trainerResource = new ClassPathResource("init/incorrect-trainer-test.csv");
+        Resource trainerResource = new ClassPathResource("init/incorrect-trainer-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainerSource", trainerResource);
 
-        Resource trainingResource = new ClassPathResource("init/training-test.csv");
+        Resource trainingResource = new ClassPathResource("init/training-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainingSource", trainingResource);
 
         // when
@@ -187,15 +206,16 @@ class StorageInitializerTest {
 
     @Test
     @DisplayName("Test init training storage via incorrect file path functionality")
+    @SuppressWarnings("all")
     public void givenIncorrectFilePath_whenInitTrainingStorage_thenExceptionIsThrown() {
         // given
-        Resource traineeResource = new ClassPathResource("init/trainee-test.csv");
+        Resource traineeResource = new ClassPathResource("init/trainee-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "traineeSource", traineeResource);
 
-        Resource trainerResource = new ClassPathResource("init/trainer-test.csv");
+        Resource trainerResource = new ClassPathResource("init/trainer-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainerSource", trainerResource);
 
-        Resource trainingResource = new ClassPathResource("init/incorrect-training-test.csv");
+        Resource trainingResource = new ClassPathResource("init/incorrect-training-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainingSource", trainingResource);
 
         // when
@@ -212,23 +232,28 @@ class StorageInitializerTest {
 
     @Test
     @DisplayName("Test init trainee storage via incorrect user data functionality")
+    @SuppressWarnings("all")
     public void givenIncorrectUserData_whenInitTraineeStorage_thenExceptionIsThrown() {
         // given
-        Resource traineeResource = new ClassPathResource("init/trainee-test.csv");
+        Resource traineeResource = new ClassPathResource("init/trainee-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "traineeSource", traineeResource);
 
-        Resource trainerResource = new ClassPathResource("init/trainer-test.csv");
+        Resource trainerResource = new ClassPathResource("init/trainer-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainerSource", trainerResource);
 
-        Resource trainingResource = new ClassPathResource("init/training-test.csv");
+        Resource trainingResource = new ClassPathResource("init/training-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainingSource", trainingResource);
+
+        Consumer<String> processLine = line -> {
+            ReflectionTestUtils.invokeMethod(storageInitializer, "processTraineeLine", line);
+        };
 
         given(userParser.parse(anyString()))
                 .willThrow(new ParseException("Value cannot be null"));
 
         // when
         ParseException ex = assertThrows(ParseException.class, () -> {
-            ReflectionTestUtils.invokeMethod(storageInitializer, "initTraineeStorage");
+            ReflectionTestUtils.invokeMethod(storageInitializer, "initStorage", traineeResource, processLine);
         });
 
         // then
@@ -241,16 +266,21 @@ class StorageInitializerTest {
 
     @Test
     @DisplayName("Test init trainee storage via incorrect trainee data functionality")
+    @SuppressWarnings("all")
     public void givenIncorrectTraineeData_whenInitTraineeStorage_thenExceptionIsThrown() {
         // given
-        Resource traineeResource = new ClassPathResource("init/trainee-test.csv");
+        Resource traineeResource = new ClassPathResource("init/trainee-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "traineeSource", traineeResource);
 
-        Resource trainerResource = new ClassPathResource("init/trainer-test.csv");
+        Resource trainerResource = new ClassPathResource("init/trainer-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainerSource", trainerResource);
 
-        Resource trainingResource = new ClassPathResource("init/training-test.csv");
+        Resource trainingResource = new ClassPathResource("init/training-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainingSource", trainingResource);
+
+        Consumer<String> processLine = line -> {
+            ReflectionTestUtils.invokeMethod(storageInitializer, "processTraineeLine", line);
+        };
 
         User userTransient = DataUtils.getUserJohnDoeTransient();
         User userPersisted = DataUtils.getUserJohnDoePersisted();
@@ -266,7 +296,7 @@ class StorageInitializerTest {
 
         // when
         ParseException ex = assertThrows(ParseException.class, () -> {
-            ReflectionTestUtils.invokeMethod(storageInitializer, "initTraineeStorage");
+            ReflectionTestUtils.invokeMethod(storageInitializer, "initStorage", traineeResource, processLine);
         });
 
         // then
@@ -280,23 +310,28 @@ class StorageInitializerTest {
 
     @Test
     @DisplayName("Test init trainer storage via incorrect user data functionality")
+    @SuppressWarnings("all")
     public void givenIncorrectUserData_whenInitTrainerStorage_thenExceptionIsThrown() {
         // given
-        Resource traineeResource = new ClassPathResource("init/trainee-test.csv");
+        Resource traineeResource = new ClassPathResource("init/trainee-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "traineeSource", traineeResource);
 
-        Resource trainerResource = new ClassPathResource("init/trainer-test.csv");
+        Resource trainerResource = new ClassPathResource("init/trainer-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainerSource", trainerResource);
 
-        Resource trainingResource = new ClassPathResource("init/training-test.csv");
+        Resource trainingResource = new ClassPathResource("init/training-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainingSource", trainingResource);
+
+        Consumer<String> processLine = line -> {
+            ReflectionTestUtils.invokeMethod(storageInitializer, "processTrainerLine", line);
+        };
 
         given(userParser.parse(anyString()))
                 .willThrow(new ParseException("Value cannot be null"));
 
         // when
         ParseException ex = assertThrows(ParseException.class, () -> {
-            ReflectionTestUtils.invokeMethod(storageInitializer, "initTrainerStorage");
+            ReflectionTestUtils.invokeMethod(storageInitializer, "initStorage", trainerResource, processLine);
         });
 
         // then
@@ -308,16 +343,21 @@ class StorageInitializerTest {
 
     @Test
     @DisplayName("Test init trainer storage via incorrect trainer data functionality")
+    @SuppressWarnings("all")
     public void givenIncorrectTrainerData_whenInitTrainerStorage_thenExceptionIsThrown() {
         // given
-        Resource traineeResource = new ClassPathResource("init/trainee-test.csv");
+        Resource traineeResource = new ClassPathResource("init/trainee-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "traineeSource", traineeResource);
 
-        Resource trainerResource = new ClassPathResource("init/trainer-test.csv");
+        Resource trainerResource = new ClassPathResource("init/trainer-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainerSource", trainerResource);
 
-        Resource trainingResource = new ClassPathResource("init/training-test.csv");
+        Resource trainingResource = new ClassPathResource("init/training-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainingSource", trainingResource);
+
+        Consumer<String> processLine = line -> {
+            ReflectionTestUtils.invokeMethod(storageInitializer, "processTrainerLine", line);
+        };
 
         User userTransient = DataUtils.getUserJohnDoeTransient();
         User userPersisted = DataUtils.getUserJohnDoePersisted();
@@ -333,7 +373,7 @@ class StorageInitializerTest {
 
         // when
         ParseException ex = assertThrows(ParseException.class, () -> {
-            ReflectionTestUtils.invokeMethod(storageInitializer, "initTrainerStorage");
+            ReflectionTestUtils.invokeMethod(storageInitializer, "initStorage", trainerResource, processLine);
         });
 
         // then
@@ -345,23 +385,28 @@ class StorageInitializerTest {
 
     @Test
     @DisplayName("Test init training storage via incorrect training data functionality")
+    @SuppressWarnings("all")
     public void givenIncorrectTrainingData_whenInitTrainingStorage_thenExceptionIsThrown() {
         // given
-        Resource traineeResource = new ClassPathResource("init/trainee-test.csv");
+        Resource traineeResource = new ClassPathResource("init/trainee-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "traineeSource", traineeResource);
 
-        Resource trainerResource = new ClassPathResource("init/trainer-test.csv");
+        Resource trainerResource = new ClassPathResource("init/trainer-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainerSource", trainerResource);
 
-        Resource trainingResource = new ClassPathResource("init/training-test.csv");
+        Resource trainingResource = new ClassPathResource("init/training-test-init-data.csv");
         ReflectionTestUtils.setField(storageInitializer, "trainingSource", trainingResource);
+
+        Consumer<String> processLine = line -> {
+            ReflectionTestUtils.invokeMethod(storageInitializer, "processTrainingLine", line);
+        };
 
         given(trainingParser.parse(anyString()))
                 .willThrow(new ParseException("Value cannot be null"));
 
         // when
         ParseException ex = assertThrows(ParseException.class, () -> {
-            ReflectionTestUtils.invokeMethod(storageInitializer, "initTrainingStorage");
+            ReflectionTestUtils.invokeMethod(storageInitializer, "initStorage", trainingResource, processLine);
         });
 
         // then

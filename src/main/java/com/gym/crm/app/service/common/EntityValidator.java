@@ -1,4 +1,4 @@
-package com.gym.crm.app.service;
+package com.gym.crm.app.service.common;
 
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;

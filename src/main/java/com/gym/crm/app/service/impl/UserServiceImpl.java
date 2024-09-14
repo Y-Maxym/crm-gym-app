@@ -4,8 +4,8 @@ import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.EntityDao;
-import com.gym.crm.app.service.EntityValidator;
-import com.gym.crm.app.service.UserProfileService;
+import com.gym.crm.app.service.common.EntityValidator;
+import com.gym.crm.app.service.common.UserProfileService;
 import com.gym.crm.app.service.UserService;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +45,6 @@ public class UserServiceImpl implements UserService {
 
     private User prepareUserForSave(User user) {
         if (isNull(user.getUsername())) {
-
             String username = userProfileService.generateUsername(user.getFirstName(), user.getLastName());
             user = user.toBuilder().username(username).build();
         }

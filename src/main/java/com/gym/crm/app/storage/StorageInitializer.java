@@ -20,7 +20,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 @Component
@@ -54,35 +56,20 @@ public class StorageInitializer {
     @PostConstruct
     private void init() {
         try {
-            initTraineeStorage();
-            initTrainerStorage();
-            initTrainingStorage();
+            initStorage(traineeSource, this::processTraineeLine);
+            initStorage(trainerSource, this::processTrainerLine);
+            initStorage(trainingSource, this::processTrainingLine);
         } catch (Exception e) {
             throw new CSVFileReadException(INITIALIZE_DATA_ERROR, e);
         }
     }
 
-    private void initTraineeStorage() throws IOException {
-        try (Stream<String> lines = Files.lines(traineeSource.getFile().toPath())) {
+    private void initStorage(Resource fileSource, Consumer<String> processLine) throws IOException {
+        Path filePath = fileSource.getFile().toPath();
 
+        try (Stream<String> lines = Files.lines(filePath)) {
             List<String> dataLines = lines.skip(1).toList();
-            dataLines.forEach(this::processTraineeLine);
-        }
-    }
-
-    private void initTrainerStorage() throws IOException {
-        try (Stream<String> lines = Files.lines(trainerSource.getFile().toPath())) {
-
-            List<String> dataLines = lines.skip(1).toList();
-            dataLines.forEach(this::processTrainerLine);
-        }
-    }
-
-    private void initTrainingStorage() throws IOException {
-        try (Stream<String> lines = Files.lines(trainingSource.getFile().toPath())) {
-
-            List<String> dataLines = lines.skip(1).toList();
-            dataLines.forEach(this::processTrainingLine);
+            dataLines.forEach(processLine);
         }
     }
 

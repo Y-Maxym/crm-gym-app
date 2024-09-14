@@ -13,16 +13,15 @@ import org.springframework.stereotype.Component;
 public class TrainerParser implements Parser<String, Trainer> {
 
     private static final int SPECIALIZATION_ID_INDEX = 2;
-
     private static final String SPLIT_REGEX = ",";
 
-    private ParserHelper utils;
+    private ParserHelper parserHelper;
 
     @Override
     public Trainer parse(@NonNull String inputLine) {
-        String[] data = inputLine.split(SPLIT_REGEX);
+        String[] entityFields = inputLine.split(SPLIT_REGEX);
 
-        Long specializationId = parseValue(data, SPECIALIZATION_ID_INDEX, utils::parseLong);
+        Long specializationId = parseValue(entityFields, SPECIALIZATION_ID_INDEX, parserHelper::parseLong);
 
         return Trainer.builder()
                 .specializationId(specializationId)

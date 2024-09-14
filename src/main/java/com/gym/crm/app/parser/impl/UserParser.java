@@ -2,7 +2,7 @@ package com.gym.crm.app.parser.impl;
 
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.parser.Parser;
-import com.gym.crm.app.service.UserProfileService;
+import com.gym.crm.app.service.common.UserProfileService;
 import lombok.NonNull;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +21,10 @@ public class UserParser implements Parser<String, User> {
 
     @Override
     public User parse(@NonNull String inputLine) {
-        String[] data = inputLine.split(SPLIT_REGEX);
+        String[] entityFields = inputLine.split(SPLIT_REGEX);
 
-        String firstName = extractStringValue(data, FIRST_NAME_INDEX);
-        String lastName = extractStringValue(data, LAST_NAME_INDEX);
+        String firstName = extractStringValue(entityFields, FIRST_NAME_INDEX);
+        String lastName = extractStringValue(entityFields, LAST_NAME_INDEX);
         String username = userProfileService.generateUsername(firstName, lastName);
         String password = userProfileService.generatePassword(10);
 

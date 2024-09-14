@@ -25,19 +25,19 @@ public class TrainingParser implements Parser<String, Training> {
 
     private static final String SPLIT_REGEX = ",";
 
-    private ParserHelper utils;
+    private ParserHelper parserHelper;
 
     @Override
     public Training parse(@NonNull String inputLine) {
-        String[] data = inputLine.split(SPLIT_REGEX);
+        String[] entityFields = inputLine.split(SPLIT_REGEX);
 
-        Long traineeId = parseValue(data, TRAINEE_ID_INDEX, utils::parseLong);
-        Long trainerId = parseValue(data, TRAINER_ID_INDEX, utils::parseLong);
-        String trainingName = extractStringValue(data, TRAINING_NAME_INDEX);
-        Long trainingTypeId = parseValue(data, TRAINING_TYPE_ID_INDEX, utils::parseLong);
-        LocalDateTime trainingDate = parseValue(data, TRAINING_DATE_INDEX, utils::parseDateTime);
+        Long traineeId = parseValue(entityFields, TRAINEE_ID_INDEX, parserHelper::parseLong);
+        Long trainerId = parseValue(entityFields, TRAINER_ID_INDEX, parserHelper::parseLong);
+        String trainingName = extractStringValue(entityFields, TRAINING_NAME_INDEX);
+        Long trainingTypeId = parseValue(entityFields, TRAINING_TYPE_ID_INDEX, parserHelper::parseLong);
+        LocalDateTime trainingDate = parseValue(entityFields, TRAINING_DATE_INDEX, parserHelper::parseDateTime);
 
-        Duration trainingDuration = Optional.ofNullable(parseValue(data, TRAINING_DURATION_INDEX, utils::parseInt))
+        Duration trainingDuration = Optional.ofNullable(parseValue(entityFields, TRAINING_DURATION_INDEX, parserHelper::parseInt))
                 .map(Duration::ofHours)
                 .orElse(null);
 
