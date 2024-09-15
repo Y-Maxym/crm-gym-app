@@ -12,9 +12,9 @@ import java.util.concurrent.atomic.AtomicLong;
 @Setter(onMethod_ = @Autowired)
 public class UserProfileService {
 
-    private static final String USERNAME_TEMPLATE = "%s.%s";
-
     private static final AtomicLong serialNumber = new AtomicLong(1L);
+
+    private static final String USERNAME_TEMPLATE = "%s.%s";
 
     private PasswordGenerator passwordGenerator;
     private EntityDao<Long, User> repository;

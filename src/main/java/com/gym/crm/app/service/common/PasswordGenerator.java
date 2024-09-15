@@ -1,6 +1,6 @@
 package com.gym.crm.app.service.common;
 
-import com.gym.crm.app.exception.HashPasswordException;
+import com.gym.crm.app.exception.PasswordOperationException;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -71,7 +71,7 @@ public class PasswordGenerator {
 
             return Base64.getEncoder().encodeToString(hashedPasswordBytes);
         } catch (Exception e) {
-            throw new HashPasswordException(HASHED_EXCEPTION, e);
+            throw new PasswordOperationException(HASHED_EXCEPTION, e);
         }
     }
 }

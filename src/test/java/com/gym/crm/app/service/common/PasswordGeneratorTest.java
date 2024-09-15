@@ -1,6 +1,6 @@
 package com.gym.crm.app.service.common;
 
-import com.gym.crm.app.exception.HashPasswordException;
+import com.gym.crm.app.exception.PasswordOperationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -90,7 +90,7 @@ class PasswordGeneratorTest {
                 .willThrow(new NoSuchAlgorithmException());
 
         // when
-        HashPasswordException ex = assertThrows(HashPasswordException.class, () -> {
+        PasswordOperationException ex = assertThrows(PasswordOperationException.class, () -> {
             ReflectionTestUtils.invokeMethod(generator, "hashPassword", plainPassword, salt);
         });
         Throwable cause = ex.getCause();

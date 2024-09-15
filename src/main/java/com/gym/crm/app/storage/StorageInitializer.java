@@ -55,40 +55,41 @@ public class StorageInitializer {
 
     @PostConstruct
     private void init() {
+        initStorage(traineeSource, this::processTraineeLine);
+        initStorage(trainerSource, this::processTrainerLine);
+        initStorage(trainingSource, this::processTrainingLine);
+    }
+
+    private void initStorage(Resource fileSource, Consumer<String> processLine) {
         try {
-            initStorage(traineeSource, this::processTraineeLine);
-            initStorage(trainerSource, this::processTrainerLine);
-            initStorage(trainingSource, this::processTrainingLine);
+            getFileContent(fileSource).forEach(processLine);
         } catch (Exception e) {
             throw new CSVFileReadException(INITIALIZE_DATA_ERROR, e);
         }
     }
 
-    private void initStorage(Resource fileSource, Consumer<String> processLine) throws IOException {
+    private List<String> getFileContent(Resource fileSource) throws IOException {
         Path filePath = fileSource.getFile().toPath();
 
         try (Stream<String> lines = Files.lines(filePath)) {
-            List<String> dataLines = lines.skip(1).toList();
-            dataLines.forEach(processLine);
+            return lines.skip(1).toList();
         }
     }
 
     private void processTraineeLine(String line) {
-        User user = userParser.parse(line);
-        User savedUser = userRepository.save(user);
+        long userId = saveUser(line);
 
         Trainee trainee = traineeParser.parse(line);
-        Trainee updatedTrainee = trainee.toBuilder().userId(savedUser.getId()).build();
+        Trainee updatedTrainee = trainee.toBuilder().userId(userId).build();
 
         traineeRepository.save(updatedTrainee);
     }
 
     private void processTrainerLine(String line) {
-        User user = userParser.parse(line);
-        User savedUser = userRepository.save(user);
+        long userId = saveUser(line);
 
         Trainer trainer = trainerParser.parse(line);
-        Trainer updatedTrainer = trainer.toBuilder().userId(savedUser.getId()).build();
+        Trainer updatedTrainer = trainer.toBuilder().userId(userId).build();
 
         trainerRepository.save(updatedTrainer);
     }
@@ -96,5 +97,12 @@ public class StorageInitializer {
     private void processTrainingLine(String line) {
         Training training = trainingParser.parse(line);
         trainingRepository.save(training);
+    }
+
+    private long saveUser(String line) {
+        User user = userParser.parse(line);
+        User savedUser = userRepository.save(user);
+
+        return savedUser.getId();
     }
 }

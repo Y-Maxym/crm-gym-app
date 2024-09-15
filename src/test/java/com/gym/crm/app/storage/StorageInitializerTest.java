@@ -25,6 +25,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -252,12 +255,14 @@ class StorageInitializerTest {
                 .willThrow(new ParseException("Value cannot be null"));
 
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> {
+        CSVFileReadException ex = assertThrows(CSVFileReadException.class, () -> {
             ReflectionTestUtils.invokeMethod(storageInitializer, "initStorage", traineeResource, processLine);
         });
 
         // then
-        assertThat(ex.getMessage()).isEqualTo("Value cannot be null");
+        assertThat(ex.getMessage()).isEqualTo("Failed to initialize data from CSV files");
+        assertThat(ex).hasCauseInstanceOf(ParseException.class);
+        assertThat(ex.getCause()).hasMessage("Value cannot be null");
 
         verify(userRepository, never()).save(any(User.class));
         verify(traineeParser, never()).parse(anyString());
@@ -295,12 +300,14 @@ class StorageInitializerTest {
                 .willThrow(new ParseException("Value cannot be null"));
 
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> {
+        CSVFileReadException ex = assertThrows(CSVFileReadException.class, () -> {
             ReflectionTestUtils.invokeMethod(storageInitializer, "initStorage", traineeResource, processLine);
         });
 
         // then
-        assertThat(ex.getMessage()).isEqualTo("Value cannot be null");
+        assertThat(ex.getMessage()).isEqualTo("Failed to initialize data from CSV files");
+        assertThat(ex).hasCauseInstanceOf(ParseException.class);
+        assertThat(ex.getCause()).hasMessage("Value cannot be null");
 
         verify(userParser).parse(anyString());
         verify(userRepository).save(any(User.class));
@@ -330,12 +337,14 @@ class StorageInitializerTest {
                 .willThrow(new ParseException("Value cannot be null"));
 
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> {
+        CSVFileReadException ex = assertThrows(CSVFileReadException.class, () -> {
             ReflectionTestUtils.invokeMethod(storageInitializer, "initStorage", trainerResource, processLine);
         });
 
         // then
-        assertThat(ex.getMessage()).isEqualTo("Value cannot be null");
+        assertThat(ex.getMessage()).isEqualTo("Failed to initialize data from CSV files");
+        assertThat(ex).hasCauseInstanceOf(ParseException.class);
+        assertThat(ex.getCause()).hasMessage("Value cannot be null");
 
         verify(trainerParser, never()).parse(anyString());
         verify(trainerRepository, never()).save(any(Trainer.class));
@@ -372,12 +381,14 @@ class StorageInitializerTest {
                 .willThrow(new ParseException("Value cannot be null"));
 
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> {
+        CSVFileReadException ex = assertThrows(CSVFileReadException.class, () -> {
             ReflectionTestUtils.invokeMethod(storageInitializer, "initStorage", trainerResource, processLine);
         });
 
         // then
-        assertThat(ex.getMessage()).isEqualTo("Value cannot be null");
+        assertThat(ex.getMessage()).isEqualTo("Failed to initialize data from CSV files");
+        assertThat(ex).hasCauseInstanceOf(ParseException.class);
+        assertThat(ex.getCause()).hasMessage("Value cannot be null");
 
         verify(trainerParser).parse(anyString());
         verify(trainerRepository, never()).save(any(Trainer.class));
@@ -405,14 +416,38 @@ class StorageInitializerTest {
                 .willThrow(new ParseException("Value cannot be null"));
 
         // when
-        ParseException ex = assertThrows(ParseException.class, () -> {
+        CSVFileReadException ex = assertThrows(CSVFileReadException.class, () -> {
             ReflectionTestUtils.invokeMethod(storageInitializer, "initStorage", trainingResource, processLine);
         });
 
         // then
-        assertThat(ex.getMessage()).isEqualTo("Value cannot be null");
+        assertThat(ex.getMessage()).isEqualTo("Failed to initialize data from CSV files");
+        assertThat(ex).hasCauseInstanceOf(ParseException.class);
+        assertThat(ex.getCause()).hasMessage("Value cannot be null");
 
         verify(trainingParser).parse(anyString());
         verify(trainingRepository, never()).save(any(Training.class));
+    }
+
+    @Test
+    @DisplayName("Test get file content with incorrect file path")
+    public void givenIncorrectFilePath_whenGetFileContent_thenExceptionIsThrown() {
+        // given
+        Resource traineeResource = new ClassPathResource("init/incorrect-trainee-test-init-data.csv");
+        ReflectionTestUtils.setField(storageInitializer, "traineeSource", traineeResource);
+
+        Resource trainerResource = new ClassPathResource("init/trainer-test-init-data.csv");
+        ReflectionTestUtils.setField(storageInitializer, "trainerSource", trainerResource);
+
+        Resource trainingResource = new ClassPathResource("init/training-test-init-data.csv");
+        ReflectionTestUtils.setField(storageInitializer, "trainingSource", trainingResource);
+
+        // when
+        UndeclaredThrowableException ex = assertThrows(UndeclaredThrowableException.class, () -> {
+            ReflectionTestUtils.invokeMethod(storageInitializer, "getFileContent", traineeResource);
+        });
+
+        // then
+        assertThat(ex).hasCauseInstanceOf(FileNotFoundException.class);
     }
 }
