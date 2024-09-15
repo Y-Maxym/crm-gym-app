@@ -39,13 +39,12 @@ class UserParserTest {
         String firstName = "John";
         String lastName = "Doe";
         String username = "John.Doe";
-        int passwordLength = 10;
         String password = "1234567890";
 
         given(userProfileService.generateUsername(firstName, lastName))
                 .willReturn(username);
 
-        given(userProfileService.generatePassword(passwordLength))
+        given(userProfileService.generatePassword())
                 .willReturn(password);
 
         // when
@@ -70,13 +69,12 @@ class UserParserTest {
         String firstName = "John";
         String lastName = "";
         String username = "John.";
-        int passwordLength = 10;
         String password = "1234567890";
 
         given(userProfileService.generateUsername(firstName, lastName))
                 .willReturn(username);
 
-        given(userProfileService.generatePassword(passwordLength))
+        given(userProfileService.generatePassword())
                 .willReturn(password);
 
         // when

@@ -26,7 +26,7 @@ public class UserParser implements Parser<String, User> {
         String firstName = extractStringValue(entityFields, FIRST_NAME_INDEX);
         String lastName = extractStringValue(entityFields, LAST_NAME_INDEX);
         String username = userProfileService.generateUsername(firstName, lastName);
-        String password = userProfileService.generatePassword(10);
+        String password = userProfileService.generatePassword();
 
         return User.builder()
                 .firstName(firstName)

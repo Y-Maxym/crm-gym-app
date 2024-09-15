@@ -23,7 +23,7 @@ import static com.gym.crm.app.util.Constants.INFO_PARSE_UTILS_RESULT;
 @Aspect
 @Component
 @Setter(onMethod_ = @Autowired)
-public class ParserUtilsLoggingAspect {
+public class ParserHelperLoggingAspect {
 
     private LogHandler logHandler;
 

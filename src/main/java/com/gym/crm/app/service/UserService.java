@@ -6,7 +6,7 @@ public interface UserService {
 
     User findById(Long id);
 
-    void save(User user);
+    User save(User user);
 
     void update(User user);
 

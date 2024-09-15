@@ -99,10 +99,17 @@ class UserServiceImplTest {
 
         doNothing().when(entityValidator).checkEntity(user);
 
+        given(userProfileService.generatePassword())
+                .willReturn(password);
+
+        given(repository.save(user))
+                .willReturn(user);
+
         // when
         service.save(user);
 
         // then
+        verify(userProfileService).generatePassword();
         verify(repository, only()).save(user);
     }
 
@@ -115,17 +122,16 @@ class UserServiceImplTest {
         String firstName = user.getFirstName();
         String lastName = user.getLastName();
         String username = "%s.%s".formatted(firstName, lastName);
-        int passwordLength = 10;
         String password = "1234567890";
 
-        given(userProfileService.generatePassword(passwordLength))
+        given(userProfileService.hashPassword(password))
                 .willReturn(password);
 
         given(userProfileService.generateUsername(firstName, lastName))
                 .willReturn(username);
 
         // when
-        User actual = ReflectionTestUtils.invokeMethod(service, "prepareUserForSave", user);
+        User actual = ReflectionTestUtils.invokeMethod(service, "prepareUserForSave", user, password);
 
         // then
         assertThat(actual).isNotNull();
@@ -133,7 +139,7 @@ class UserServiceImplTest {
         assertThat(actual.getPassword()).isEqualTo(password);
 
         verify(userProfileService).generateUsername(user.getFirstName(), user.getLastName());
-        verify(userProfileService).generatePassword(10);
+        verify(userProfileService).hashPassword(password);
     }
 
     @Test
@@ -147,7 +153,7 @@ class UserServiceImplTest {
         User user = persisted.toBuilder().username(username).password(password).build();
 
         // when
-        User actual = ReflectionTestUtils.invokeMethod(service, "prepareUserForSave", user);
+        User actual = ReflectionTestUtils.invokeMethod(service, "prepareUserForSave", user, password);
 
         // then
         assertThat(actual).isNotNull();

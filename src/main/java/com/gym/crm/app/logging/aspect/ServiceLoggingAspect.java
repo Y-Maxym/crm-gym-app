@@ -27,7 +27,7 @@ public class ServiceLoggingAspect {
 
     private LogHandler logHandler;
 
-    @Pointcut("execution(* com.gym.crm.app.service..*(..))")
+    @Pointcut("execution(* com.gym.crm.app.service.impl..*(..))")
     public void serviceMethods() {
     }
 
