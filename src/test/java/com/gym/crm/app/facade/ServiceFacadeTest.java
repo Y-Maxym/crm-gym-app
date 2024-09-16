@@ -42,7 +42,7 @@ class ServiceFacadeTest {
     @DisplayName("Test find trainee by id functionality")
     void givenTraineeId_whenFindTraineeById_thenReturnTrainee() {
         // given
-        Long id = 1L;
+        long id = 1L;
         Trainee expectedTrainee = DataUtils.getTraineeJohnDoePersisted();
 
         given(traineeService.findById(id))
@@ -85,7 +85,7 @@ class ServiceFacadeTest {
     @DisplayName("Test delete trainee by id functionality")
     void givenTraineeId_whenDeleteTraineeById_thenDelegateDeleteToService() {
         // given
-        Long id = 1L;
+        long id = 1L;
 
         // when
         serviceFacade.deleteTraineeById(id);
@@ -98,7 +98,7 @@ class ServiceFacadeTest {
     @DisplayName("Test find trainer by id functionality")
     void givenTrainerId_whenFindTrainerById_thenReturnTrainer() {
         // given
-        Long id = 1L;
+        long id = 1L;
         Trainer expectedTrainer = DataUtils.getTrainerDavidBrownPersisted();
         given(trainerService.findById(id))
                 .willReturn(expectedTrainer);
@@ -140,7 +140,7 @@ class ServiceFacadeTest {
     @DisplayName("Test find training by id functionality")
     void givenTrainingId_whenFindTrainingById_thenReturnTraining() {
         // given
-        Long id = 1L;
+        long id = 1L;
         Training expectedTraining = DataUtils.getTrainingDavidBrownPersisted();
 
         given(trainingService.findById(id))
@@ -170,7 +170,7 @@ class ServiceFacadeTest {
     @DisplayName("Test find user by id functionality")
     void givenUserId_whenFindUserById_thenReturnUser() {
         // given
-        Long id = 1L;
+        long id = 1L;
         User expectedUser = DataUtils.getUserJohnDoePersisted();
 
         given(userService.findById(id))
@@ -213,7 +213,7 @@ class ServiceFacadeTest {
     @DisplayName("Test delete user by id functionality")
     void givenUserId_whenDeleteUserById_thenDelegateDeleteToServiceById() {
         // given
-        Long id = 1L;
+        long id = 1L;
 
         // when
         serviceFacade.deleteUserById(id);

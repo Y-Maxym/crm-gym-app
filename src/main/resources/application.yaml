@@ -10,3 +10,7 @@ storage:
     trainee: ${INIT_DATA_TRAINEE_PATH}
     trainer: ${INIT_DATA_TRAINER_PATH}
     training: ${INIT_DATA_TRAINING_PATH}
+
+security:
+  password:
+    length: ${PASSWORD_LENGTH:10}

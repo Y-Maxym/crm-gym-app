@@ -56,7 +56,7 @@ class StorageTest {
     @DisplayName("Test get by incorrect id functionality")
     public void givenIncorrectId_whenGet_thenEntityNotFound() {
         // given
-        Long id = 1L;
+        long id = 1L;
 
         // when
         Trainee actual = storage.get(id, Trainee.class);
@@ -167,6 +167,7 @@ class StorageTest {
 
     @Test
     @DisplayName("Test define storage not found functionality")
+    @SuppressWarnings("all")
     public void givenClass_whenDefineStorage_thenStorageNotFound() {
         // given
         Class<?> clazz = Constants.class;

@@ -4,7 +4,7 @@ import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.EntityDao;
-import com.gym.crm.app.service.EntityValidator;
+import com.gym.crm.app.service.common.EntityValidator;
 import com.gym.crm.app.utils.DataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,7 +43,7 @@ class TrainerServiceImplTest {
     public void givenId_whenFindById_thenTrainerIsReturned() {
         // given
         Trainer expected = DataUtils.getTrainerEmilyDavisPersisted();
-        Long id = expected.getId();
+        long id = expected.getId();
 
         doNothing().when(entityValidator).checkId(id);
 
@@ -62,7 +62,7 @@ class TrainerServiceImplTest {
     @DisplayName("Test find trainer by incorrect id functionality")
     public void givenIncorrectId_whenFindById_thenExceptionIsThrown() {
         // given
-        Long id = 1L;
+        long id = 1L;
         String message = "Trainer with id %s not found".formatted(id);
 
         doNothing().when(entityValidator).checkId(id);

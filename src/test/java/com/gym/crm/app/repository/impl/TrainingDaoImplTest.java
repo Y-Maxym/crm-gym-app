@@ -39,7 +39,7 @@ class TrainingDaoImplTest {
     public void givenId_whenFindById_thenTrainingIsReturned() {
         // given
         Training expected = DataUtils.getTrainingEmilyDavisPersisted();
-        Long id = expected.getId();
+        long id = expected.getId();
 
         given(storage.get(id, Training.class))
                 .willReturn(expected);
@@ -56,7 +56,7 @@ class TrainingDaoImplTest {
     @DisplayName("Test find training by incorrect id functionality")
     public void givenIncorrectId_whenFindById_thenNullIsReturned() {
         // given
-        Long id = 1L;
+        long id = 1L;
 
         given(storage.get(id, Training.class))
                 .willReturn(null);
@@ -114,7 +114,7 @@ class TrainingDaoImplTest {
     public void givenTrainingWithId_whenSaveTraining_thenStorageIsCalled() {
         // given
         Training training = spy(DataUtils.getTrainingDavidBrownPersisted());
-        Long id = training.getId();
+        long id = training.getId();
 
         given(storage.put(id, training))
                 .willReturn(training);
@@ -134,7 +134,7 @@ class TrainingDaoImplTest {
     public void givenTraining_whenUpdateTraining_thenStorageIsCalled() {
         // given
         Training training = spy(DataUtils.getTrainingDavidBrownPersisted());
-        Long id = training.getId();
+        long id = training.getId();
 
         given(storage.put(id, training))
                 .willReturn(training);
@@ -152,7 +152,7 @@ class TrainingDaoImplTest {
     @DisplayName("Test delete training by id functionality")
     public void givenId_whenDeleteById_thenStorageIsCalled() {
         // given
-        Long id = 1L;
+        long id = 1L;
 
         doNothing().when(storage).remove(id, Training.class);
 

@@ -1,4 +1,4 @@
-package com.gym.crm.app.service;
+package com.gym.crm.app.service.common;
 
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
@@ -23,7 +23,7 @@ class EntityValidatorTest {
     private MessageHelper messageHelper;
 
     @InjectMocks
-    private EntityValidator entityValidator;
+    private EntityValidator validator;
 
     @Test
     @DisplayName("Test check null id functionality")
@@ -33,7 +33,7 @@ class EntityValidatorTest {
                 .willReturn("Entity id cannot be null");
 
         // when && then
-        assertThatThrownBy(() -> entityValidator.checkId(null))
+        assertThatThrownBy(() -> validator.checkId(null))
                 .isInstanceOf(EntityValidationException.class)
                 .hasMessage("Entity id cannot be null");
     }
@@ -42,12 +42,12 @@ class EntityValidatorTest {
     @DisplayName("Test check zero id functionality")
     void givenZeroId_whenCheckId_thenExceptionIsThrows() {
         // given
-        Long id = 0L;
+        long id = 0L;
         given(messageHelper.getMessage(ERROR_ENTITY_ID_CANNOT_BE_ZERO))
                 .willReturn("Entity id cannot be less or equals zero");
 
         // when && then
-        assertThatThrownBy(() -> entityValidator.checkId(id))
+        assertThatThrownBy(() -> validator.checkId(id))
                 .isInstanceOf(EntityValidationException.class)
                 .hasMessage("Entity id cannot be less or equals zero");
     }
@@ -56,12 +56,12 @@ class EntityValidatorTest {
     @DisplayName("Test check negative id functionality")
     void givenNegativeId_whenCheckId_thenExceptionIsThrows() {
         // given
-        Long id = -1L;
+        long id = -1L;
         given(messageHelper.getMessage(ERROR_ENTITY_ID_CANNOT_BE_ZERO))
                 .willReturn("Entity id cannot be less or equals zero");
 
         // when && then
-        assertThatThrownBy(() -> entityValidator.checkId(id))
+        assertThatThrownBy(() -> validator.checkId(id))
                 .isInstanceOf(EntityValidationException.class)
                 .hasMessage("Entity id cannot be less or equals zero");
     }
@@ -70,13 +70,13 @@ class EntityValidatorTest {
     @DisplayName("Test check valid id functionality")
     void givenValidId_whenCheckId_thenExceptionIsThrows() {
         // given
-        Long id = 1L;
+        long id = 1L;
 
         // when
-        entityValidator.checkId(id);
+        validator.checkId(id);
 
         // then
-        Assertions.assertDoesNotThrow(() -> entityValidator.checkId(id));
+        Assertions.assertDoesNotThrow(() -> validator.checkId(id));
     }
 
     @Test
@@ -87,7 +87,7 @@ class EntityValidatorTest {
                 .willReturn("Entity cannot be null");
 
         // when & then
-        assertThatThrownBy(() -> entityValidator.checkEntity(null))
+        assertThatThrownBy(() -> validator.checkEntity(null))
                 .isInstanceOf(EntityValidationException.class)
                 .hasMessage("Entity cannot be null");
     }
@@ -99,9 +99,9 @@ class EntityValidatorTest {
         Object entity = new Object();
 
         // when
-        entityValidator.checkEntity(entity);
+        validator.checkEntity(entity);
 
         // then
-        Assertions.assertDoesNotThrow(() -> entityValidator.checkEntity(entity));
+        Assertions.assertDoesNotThrow(() -> validator.checkEntity(entity));
     }
 }

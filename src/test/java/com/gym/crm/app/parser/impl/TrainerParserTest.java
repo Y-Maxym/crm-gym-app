@@ -37,9 +37,9 @@ class TrainerParserTest {
         // given
         String input = "Emily,Davis,1";
 
-        Long specializationId = 1L;
+        long specializationId = 1L;
 
-        given(utils.parseLong(specializationId.toString()))
+        given(utils.parseLong(String.valueOf(specializationId)))
                 .willReturn(specializationId);
 
         // when

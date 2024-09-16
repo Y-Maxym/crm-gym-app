@@ -4,9 +4,9 @@ import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.EntityDao;
-import com.gym.crm.app.service.EntityValidator;
-import com.gym.crm.app.service.UserProfileService;
 import com.gym.crm.app.service.UserService;
+import com.gym.crm.app.service.common.EntityValidator;
+import com.gym.crm.app.service.common.UserProfileService;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,25 +35,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(User user) {
+    public User save(User user) {
         entityValidator.checkEntity(user);
 
-        User preparedUser = prepareUserForSave(user);
+        String password = userProfileService.generatePassword();
 
-        repository.save(preparedUser);
+        User preparedUser = prepareUserForSave(user, password);
+
+        user = repository.save(preparedUser);
+
+        return user.toBuilder().password(password).build();
     }
 
-    private User prepareUserForSave(User user) {
+    private User prepareUserForSave(User user, String password) {
         if (isNull(user.getUsername())) {
-
             String username = userProfileService.generateUsername(user.getFirstName(), user.getLastName());
             user = user.toBuilder().username(username).build();
         }
 
         if (isNull(user.getPassword())) {
-
-            String password = userProfileService.generatePassword(10);
-            user = user.toBuilder().password(password).build();
+            String hashedPassword = userProfileService.hashPassword(password);
+            user = user.toBuilder().password(hashedPassword).build();
         }
 
         return user;

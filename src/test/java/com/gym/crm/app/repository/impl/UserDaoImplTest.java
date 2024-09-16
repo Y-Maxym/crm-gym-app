@@ -39,7 +39,7 @@ class UserDaoImplTest {
     public void givenId_whenFindById_thenUserIsReturned() {
         // given
         User expected = DataUtils.getUserJohnDoePersisted();
-        Long id = expected.getId();
+        long id = expected.getId();
 
         given(storage.get(id, User.class))
                 .willReturn(expected);
@@ -56,7 +56,7 @@ class UserDaoImplTest {
     @DisplayName("Test find user by incorrect id functionality")
     public void givenIncorrectId_whenFindById_thenNullIsReturned() {
         // given
-        Long id = 1L;
+        long id = 1L;
 
         given(storage.get(id, User.class))
                 .willReturn(null);
@@ -115,7 +115,7 @@ class UserDaoImplTest {
     public void givenUserWithId_whenSaveUser_thenStorageIsCalled() {
         // given
         User user = spy(DataUtils.getUserJohnDoePersisted());
-        Long id = user.getId();
+        long id = user.getId();
 
         given(storage.put(id, user))
                 .willReturn(user);
@@ -135,7 +135,7 @@ class UserDaoImplTest {
     public void givenUser_whenUpdateUser_thenStorageIsCalled() {
         // given
         User user = spy(DataUtils.getUserJohnDoePersisted());
-        Long id = user.getId();
+        long id = user.getId();
 
         given(storage.put(id, user))
                 .willReturn(user);
@@ -153,7 +153,7 @@ class UserDaoImplTest {
     @DisplayName("Test delete user by id functionality")
     public void givenId_whenDeleteById_thenStorageIsCalled() {
         // given
-        Long id = 1L;
+        long id = 1L;
 
         doNothing().when(storage).remove(id, User.class);
 

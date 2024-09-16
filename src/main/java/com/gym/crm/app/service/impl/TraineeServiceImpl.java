@@ -4,7 +4,7 @@ import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.EntityDao;
-import com.gym.crm.app.service.EntityValidator;
+import com.gym.crm.app.service.common.EntityValidator;
 import com.gym.crm.app.service.TraineeService;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

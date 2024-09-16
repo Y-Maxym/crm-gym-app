@@ -1,9 +1,8 @@
-package com.gym.crm.app.service;
+package com.gym.crm.app.service.common;
 
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.repository.EntityDao;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,9 +11,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Collections;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class UserProfileServiceTest {
@@ -22,49 +23,50 @@ class UserProfileServiceTest {
     @Mock
     private EntityDao<Long, User> repository;
 
+    @Mock
+    private PasswordGenerator passwordGenerator;
+
     @InjectMocks
     private UserProfileService service;
 
     @Test
-    @DisplayName("Test generate password with valid length")
-    public void givenLength_whenGeneratePassword_thenReturnsPasswordOfCorrectLength() {
-        // given
-        int length = 12;
-
+    @DisplayName("Test generate password functionality")
+    public void whenGeneratePassword_thenPasswordGeneratorIsCalled() {
         // when
-        String password = service.generatePassword(length);
+        service.generatePassword();
 
         // then
-        assertThat(password).hasSize(length);
+        verify(passwordGenerator).generatePassword();
     }
 
-    @RepeatedTest(5)
-    @DisplayName("Test generate password contains allowed characters")
-    public void givenLength_whenGeneratePassword_thenContainsOnlyAllowedCharacters() {
+    @Test
+    @DisplayName("Test hash password functionality")
+    public void givenPassword_whenHashPassword_thenPasswordGeneratorIsCalled() {
         // given
-        int length = 100;
+        String password = "password";
 
         // when
-        String password = service.generatePassword(length);
+        service.hashPassword(password);
 
         // then
-        assertThat(password).matches("[a-zA-Z0-9]+");
+        verify(passwordGenerator).hashPassword(password);
     }
 
     @Test
     @DisplayName("Test generate username with serial number functionality")
-    public void givenFirstNameAndLastName_whenGenerateUsernameWithSerialNumber_thenReturnsUsernameWithSerialNumber() {
+    @SuppressWarnings("all")
+    public void givenFirstNameAndLastName_whenAddSerialNumberToUsername_thenReturnsUsername() {
         // given
-        String firstName = "John";
-        String lastName = "Doe";
+        String username = "John.Doe";
 
-        ReflectionTestUtils.setField(service, "serialNumber", 1);
+        AtomicLong serialNumber = (AtomicLong) ReflectionTestUtils.getField(service, "serialNumber");
+        serialNumber.set(1L);
 
         // when
-        String username = ReflectionTestUtils.invokeMethod(service, "generateUsernameWithSerialNumber", firstName, lastName);
+        String actualUsername = ReflectionTestUtils.invokeMethod(service, "addSerialNumberToUsername", username);
 
         // then
-        assertThat(username).isEqualTo("John.Doe1");
+        assertThat(actualUsername).isEqualTo("John.Doe1");
     }
 
 
@@ -87,6 +89,7 @@ class UserProfileServiceTest {
 
     @Test
     @DisplayName("Test generate username with duplication")
+    @SuppressWarnings("all")
     public void givenDuplicatedUsername_whenGenerateUsername_thenUserProfileServiceIsCalled() {
         // given
         String firstName = "John";
@@ -99,7 +102,8 @@ class UserProfileServiceTest {
         given(repository.findAll())
                 .willReturn(Collections.singletonList(existingUser));
 
-        ReflectionTestUtils.setField(service, "serialNumber", 1);
+        AtomicLong serialNumber = (AtomicLong) ReflectionTestUtils.getField(service, "serialNumber");
+        serialNumber.set(1L);
 
         // when
         String username = service.generateUsername(firstName, lastName);

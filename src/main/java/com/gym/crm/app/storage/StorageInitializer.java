@@ -20,7 +20,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 @Component
@@ -53,55 +55,41 @@ public class StorageInitializer {
 
     @PostConstruct
     private void init() {
+        initStorage(traineeSource, this::processTraineeLine);
+        initStorage(trainerSource, this::processTrainerLine);
+        initStorage(trainingSource, this::processTrainingLine);
+    }
+
+    private void initStorage(Resource fileSource, Consumer<String> processLine) {
         try {
-            initTraineeStorage();
-            initTrainerStorage();
-            initTrainingStorage();
+            getFileContent(fileSource).forEach(processLine);
         } catch (Exception e) {
             throw new CSVFileReadException(INITIALIZE_DATA_ERROR, e);
         }
     }
 
-    private void initTraineeStorage() throws IOException {
-        try (Stream<String> lines = Files.lines(traineeSource.getFile().toPath())) {
+    private List<String> getFileContent(Resource fileSource) throws IOException {
+        Path filePath = fileSource.getFile().toPath();
 
-            List<String> dataLines = lines.skip(1).toList();
-            dataLines.forEach(this::processTraineeLine);
-        }
-    }
-
-    private void initTrainerStorage() throws IOException {
-        try (Stream<String> lines = Files.lines(trainerSource.getFile().toPath())) {
-
-            List<String> dataLines = lines.skip(1).toList();
-            dataLines.forEach(this::processTrainerLine);
-        }
-    }
-
-    private void initTrainingStorage() throws IOException {
-        try (Stream<String> lines = Files.lines(trainingSource.getFile().toPath())) {
-
-            List<String> dataLines = lines.skip(1).toList();
-            dataLines.forEach(this::processTrainingLine);
+        try (Stream<String> lines = Files.lines(filePath)) {
+            return lines.skip(1).toList();
         }
     }
 
     private void processTraineeLine(String line) {
-        User user = userParser.parse(line);
-        User savedUser = userRepository.save(user);
+        long userId = saveUser(line);
 
         Trainee trainee = traineeParser.parse(line);
-        Trainee updatedTrainee = trainee.toBuilder().userId(savedUser.getId()).build();
+        Trainee updatedTrainee = trainee.toBuilder().userId(userId).build();
 
         traineeRepository.save(updatedTrainee);
     }
 
     private void processTrainerLine(String line) {
-        User user = userParser.parse(line);
-        User savedUser = userRepository.save(user);
+        long userId = saveUser(line);
 
         Trainer trainer = trainerParser.parse(line);
-        Trainer updatedTrainer = trainer.toBuilder().userId(savedUser.getId()).build();
+        Trainer updatedTrainer = trainer.toBuilder().userId(userId).build();
 
         trainerRepository.save(updatedTrainer);
     }
@@ -109,5 +97,12 @@ public class StorageInitializer {
     private void processTrainingLine(String line) {
         Training training = trainingParser.parse(line);
         trainingRepository.save(training);
+    }
+
+    private long saveUser(String line) {
+        User user = userParser.parse(line);
+        User savedUser = userRepository.save(user);
+
+        return savedUser.getId();
     }
 }

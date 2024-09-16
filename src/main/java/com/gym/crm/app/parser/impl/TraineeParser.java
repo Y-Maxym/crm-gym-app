@@ -19,14 +19,14 @@ public class TraineeParser implements Parser<String, Trainee> {
 
     private static final String SPLIT_REGEX = ",";
 
-    private ParserHelper utils;
+    private ParserHelper parserHelper;
 
     @Override
     public Trainee parse(@NonNull String inputLine) {
-        String[] data = inputLine.split(SPLIT_REGEX);
+        String[] entityFields = inputLine.split(SPLIT_REGEX);
 
-        LocalDate dateOfBirth = parseValue(data, DATE_OF_BIRTH_INDEX, utils::parseDate);
-        String address = extractStringValue(data, ADDRESS_INDEX);
+        LocalDate dateOfBirth = parseValue(entityFields, DATE_OF_BIRTH_INDEX, parserHelper::parseDate);
+        String address = extractStringValue(entityFields, ADDRESS_INDEX);
 
         return Trainee.builder()
                 .dateOfBirth(dateOfBirth)

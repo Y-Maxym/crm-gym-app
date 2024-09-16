@@ -4,8 +4,8 @@ import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.EntityDao;
-import com.gym.crm.app.service.EntityValidator;
-import com.gym.crm.app.service.UserProfileService;
+import com.gym.crm.app.service.common.EntityValidator;
+import com.gym.crm.app.service.common.UserProfileService;
 import com.gym.crm.app.utils.DataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,10 +18,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Optional;
 
 import static com.gym.crm.app.util.Constants.ERROR_USER_WITH_ID_NOT_FOUND;
+import static com.gym.crm.app.util.Constants.WARN_USER_WITH_ID_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 
@@ -48,7 +50,7 @@ class UserServiceImplTest {
     public void givenId_whenFindById_thenUserIsReturned() {
         // given
         User expected = DataUtils.getUserJohnDoePersisted();
-        Long id = expected.getId();
+        long id = expected.getId();
 
         doNothing().when(entityValidator).checkId(id);
 
@@ -67,7 +69,7 @@ class UserServiceImplTest {
     @DisplayName("Test find user by incorrect id functionality")
     public void givenIncorrectId_whenFindById_thenExceptionIsThrown() {
         // given
-        Long id = 1L;
+        long id = 1L;
         String message = "User with id %s not found".formatted(id);
 
         doNothing().when(entityValidator).checkId(id);
@@ -97,10 +99,17 @@ class UserServiceImplTest {
 
         doNothing().when(entityValidator).checkEntity(user);
 
+        given(userProfileService.generatePassword())
+                .willReturn(password);
+
+        given(repository.save(user))
+                .willReturn(user);
+
         // when
         service.save(user);
 
         // then
+        verify(userProfileService).generatePassword();
         verify(repository, only()).save(user);
     }
 
@@ -113,17 +122,16 @@ class UserServiceImplTest {
         String firstName = user.getFirstName();
         String lastName = user.getLastName();
         String username = "%s.%s".formatted(firstName, lastName);
-        int passwordLength = 10;
         String password = "1234567890";
 
-        given(userProfileService.generatePassword(passwordLength))
+        given(userProfileService.hashPassword(password))
                 .willReturn(password);
 
         given(userProfileService.generateUsername(firstName, lastName))
                 .willReturn(username);
 
         // when
-        User actual = ReflectionTestUtils.invokeMethod(service, "prepareUserForSave", user);
+        User actual = ReflectionTestUtils.invokeMethod(service, "prepareUserForSave", user, password);
 
         // then
         assertThat(actual).isNotNull();
@@ -131,7 +139,7 @@ class UserServiceImplTest {
         assertThat(actual.getPassword()).isEqualTo(password);
 
         verify(userProfileService).generateUsername(user.getFirstName(), user.getLastName());
-        verify(userProfileService).generatePassword(10);
+        verify(userProfileService).hashPassword(password);
     }
 
     @Test
@@ -145,7 +153,7 @@ class UserServiceImplTest {
         User user = persisted.toBuilder().username(username).password(password).build();
 
         // when
-        User actual = ReflectionTestUtils.invokeMethod(service, "prepareUserForSave", user);
+        User actual = ReflectionTestUtils.invokeMethod(service, "prepareUserForSave", user, password);
 
         // then
         assertThat(actual).isNotNull();
@@ -172,14 +180,38 @@ class UserServiceImplTest {
     @DisplayName("Test delete user by id functionality")
     public void givenId_whenDeleteById_thenRepositoryIsCalled() {
         // given
-        Long id = 1L;
+        long id = 1L;
 
         doNothing().when(entityValidator).checkId(id);
+        doNothing().when(repository).deleteById(id);
+
+        given(repository.findById(id))
+                .willReturn(Optional.of(DataUtils.getUserJohnDoePersisted()));
 
         // when
         service.deleteById(id);
 
         // then
+        verify(messageHelper, never()).getMessage(WARN_USER_WITH_ID_NOT_FOUND, id);
+        verify(repository).deleteById(id);
+    }
+
+    @Test
+    @DisplayName("Test delete user by incorrect id functionality")
+    public void givenIncorrectId_whenDeleteById_thenRepositoryIsCalled() {
+        // given
+        long id = 1L;
+
+        doNothing().when(entityValidator).checkId(id);
+
+        given(repository.findById(id))
+                .willReturn(Optional.empty());
+
+        // when
+        service.deleteById(id);
+
+        // then
+        verify(messageHelper).getMessage(WARN_USER_WITH_ID_NOT_FOUND, id);
         verify(repository).deleteById(id);
     }
 }

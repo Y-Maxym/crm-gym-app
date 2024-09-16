@@ -27,7 +27,7 @@ public class UserProfileLoggingAspect {
 
     private LogHandler logHandler;
 
-    @Pointcut("execution(* com.gym.crm.app.service.UserProfileService.*(..))")
+    @Pointcut("execution(* com.gym.crm.app.service.common.UserProfileService.*(..))")
     public void userUtilsMethods() {
     }
 
