@@ -5,11 +5,16 @@ spring:
   config:
     import: optional:file:.env[.properties]
 
-storage:
-  file-path:
-    trainee: ${INIT_DATA_TRAINEE_PATH}
-    trainer: ${INIT_DATA_TRAINER_PATH}
-    training: ${INIT_DATA_TRAINING_PATH}
+  datasource:
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    default-schema: public
+    enabled: true
 
 security:
   password:
