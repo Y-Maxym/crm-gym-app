@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: gym-crm-app
+
+  config:
+    import: optional:file:local.env[.properties]

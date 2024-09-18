@@ -53,6 +53,5 @@ The application is fully covered with unit tests, using **JUnit** and **Mockito*
 - **Line Coverage**: ![Coverage](.github/badges/jacoco.svg)
 - **Branch Coverage**: ![Branches](.github/badges/branches.svg)
 
-
-
-
+## License
+This project is open-source and available under the [MIT License](LICENSE).
