@@ -13,3 +13,5 @@ databaseChangeLog:
       file: db/changelog/2024-09-17-add-foreign-keys.yaml
   - include:
       file: db/changelog/2024-09-17-insert-initial-data.yaml
+  - include:
+      file: db/changelog/2024-09-19-update-columns-and-foreign-key.yaml

@@ -5,7 +5,7 @@ import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.EntityDao;
 import com.gym.crm.app.service.common.EntityValidator;
-import com.gym.crm.app.utils.DataUtils;
+import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,7 +44,7 @@ class TraineeServiceImplTest {
     @DisplayName("Test find trainee by id functionality")
     public void givenId_whenFindById_thenTraineeIsReturned() {
         // given
-        Trainee expected = DataUtils.getTraineeJohnDoePersisted();
+        Trainee expected = EntityTestData.getPersistedTraineeJohnDoe();
         long id = expected.getId();
 
         doNothing().when(entityValidator).checkId(id);
@@ -86,7 +86,7 @@ class TraineeServiceImplTest {
     @DisplayName("Test save trainee functionality")
     public void givenSaveTrainee_whenSave_thenRepositoryIsCalled() {
         // given
-        Trainee trainee = DataUtils.getTraineeJohnDoePersisted();
+        Trainee trainee = EntityTestData.getPersistedTraineeJohnDoe();
 
         doNothing().when(entityValidator).checkEntity(trainee);
 
@@ -101,7 +101,7 @@ class TraineeServiceImplTest {
     @DisplayName("Test update trainee functionality")
     public void givenUpdatedTrainee_whenUpdate_thenRepositoryIsCalled() {
         // given
-        Trainee trainee = DataUtils.getTraineeJohnDoePersisted();
+        Trainee trainee = EntityTestData.getPersistedTraineeJohnDoe();
 
         doNothing().when(entityValidator).checkEntity(trainee);
         doNothing().when(entityValidator).checkId(trainee.getId());
@@ -123,7 +123,7 @@ class TraineeServiceImplTest {
         doNothing().when(repository).deleteById(id);
 
         given(repository.findById(id))
-                .willReturn(Optional.of(DataUtils.getTraineeJohnDoePersisted()));
+                .willReturn(Optional.of(EntityTestData.getPersistedTraineeJohnDoe()));
 
         // when
         service.deleteById(id);

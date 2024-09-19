@@ -2,7 +2,7 @@ package com.gym.crm.app.repository.impl;
 
 import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.storage.Storage;
-import com.gym.crm.app.utils.DataUtils;
+import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +38,7 @@ class TrainingDaoImplTest {
     @DisplayName("Test find training by id functionality")
     public void givenId_whenFindById_thenTrainingIsReturned() {
         // given
-        Training expected = DataUtils.getTrainingEmilyDavisPersisted();
+        Training expected = EntityTestData.getPersistedTrainingEmilyDavis();
         long id = expected.getId();
 
         given(storage.get(id, Training.class))
@@ -72,8 +72,8 @@ class TrainingDaoImplTest {
     @DisplayName("Test find all training functionality")
     public void givenTrainings_whenFindAll_thenTrainingsIsReturned() {
         // given
-        Training training1 = DataUtils.getTrainingDavidBrownPersisted();
-        Training training2 = DataUtils.getTrainingEmilyDavisPersisted();
+        Training training1 = EntityTestData.getPersistedTrainingDavidBrown();
+        Training training2 = EntityTestData.getPersistedTrainingEmilyDavis();
 
         List<Training> expected = List.of(training1, training2);
 
@@ -92,8 +92,8 @@ class TrainingDaoImplTest {
     @DisplayName("Test save training without id functionality")
     public void givenTraining_whenSaveTraining_thenStorageIsCalled() {
         // given
-        Training training = spy(DataUtils.getTrainingEmilyDavisTransient());
-        Training persisted = DataUtils.getTrainingEmilyDavisPersisted();
+        Training training = spy(EntityTestData.getTransientTrainingEmilyDavis());
+        Training persisted = EntityTestData.getPersistedTrainingEmilyDavis();
 
         given(storage.put(anyLong(), any(Training.class)))
                 .willReturn(persisted);
@@ -113,7 +113,7 @@ class TrainingDaoImplTest {
     @DisplayName("Test save training with id functionality")
     public void givenTrainingWithId_whenSaveTraining_thenStorageIsCalled() {
         // given
-        Training training = spy(DataUtils.getTrainingDavidBrownPersisted());
+        Training training = spy(EntityTestData.getPersistedTrainingDavidBrown());
         long id = training.getId();
 
         given(storage.put(id, training))
@@ -133,7 +133,7 @@ class TrainingDaoImplTest {
     @DisplayName("Test update training functionality")
     public void givenTraining_whenUpdateTraining_thenStorageIsCalled() {
         // given
-        Training training = spy(DataUtils.getTrainingDavidBrownPersisted());
+        Training training = spy(EntityTestData.getPersistedTrainingDavidBrown());
         long id = training.getId();
 
         given(storage.put(id, training))

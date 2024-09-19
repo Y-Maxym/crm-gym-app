@@ -4,7 +4,7 @@ import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.exception.StorageNotFoundException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.util.Constants;
-import com.gym.crm.app.utils.DataUtils;
+import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class StorageTest {
     @DisplayName("Test get by id functionality")
     public void givenId_whenGet_thenEntityFound() {
         // given
-        Trainee expected = DataUtils.getTraineeJohnDoePersisted();
+        Trainee expected = EntityTestData.getPersistedTraineeJohnDoe();
 
         storage.put(expected.getId(), expected);
 
@@ -69,9 +69,9 @@ class StorageTest {
     @DisplayName("Test get all functionality")
     public void givenEntities_whenGetAll_thenEntitiesFound() {
         // given
-        Trainee trainee1 = DataUtils.getTraineeJohnDoePersisted();
-        Trainee trainee2 = DataUtils.getTraineeJaneSmithPersisted();
-        Trainee trainee3 = DataUtils.getTraineeMichaelJohnsonPersisted();
+        Trainee trainee1 = EntityTestData.getPersistedTraineeJohnDoe();
+        Trainee trainee2 = EntityTestData.getPersistedTraineeJaneSmith();
+        Trainee trainee3 = EntityTestData.getPersistedTraineeMichaelJohnson();
 
         storage.put(trainee1.getId(), trainee1);
         storage.put(trainee2.getId(), trainee2);
@@ -103,7 +103,7 @@ class StorageTest {
     @DisplayName("Test put entity functionality")
     public void givenEntity_whenPut_thenEntityIsReturned() {
         // given
-        Trainee expected = DataUtils.getTraineeJohnDoePersisted();
+        Trainee expected = EntityTestData.getPersistedTraineeJohnDoe();
 
         // when
         storage.put(expected.getId(), expected);
@@ -118,7 +118,7 @@ class StorageTest {
     @DisplayName("Test put entity functionality")
     public void givenId_whenRemove_thenSuccess() {
         // given
-        Trainee expected = DataUtils.getTraineeJohnDoePersisted();
+        Trainee expected = EntityTestData.getPersistedTraineeJohnDoe();
         storage.put(expected.getId(), expected);
 
         // when
@@ -134,9 +134,9 @@ class StorageTest {
     @DisplayName("Test clear functionality")
     public void givenEntities_whenClear_thenSuccess() {
         // given
-        Trainee trainee1 = DataUtils.getTraineeJohnDoePersisted();
-        Trainee trainee2 = DataUtils.getTraineeJaneSmithPersisted();
-        Trainee trainee3 = DataUtils.getTraineeMichaelJohnsonPersisted();
+        Trainee trainee1 = EntityTestData.getPersistedTraineeJohnDoe();
+        Trainee trainee2 = EntityTestData.getPersistedTraineeJaneSmith();
+        Trainee trainee3 = EntityTestData.getPersistedTraineeMichaelJohnson();
 
         storage.put(trainee1.getId(), trainee1);
         storage.put(trainee2.getId(), trainee2);

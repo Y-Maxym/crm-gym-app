@@ -2,7 +2,7 @@ package com.gym.crm.app.repository.impl;
 
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.storage.Storage;
-import com.gym.crm.app.utils.DataUtils;
+import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +38,7 @@ class UserDaoImplTest {
     @DisplayName("Test find user by id functionality")
     public void givenId_whenFindById_thenUserIsReturned() {
         // given
-        User expected = DataUtils.getUserJohnDoePersisted();
+        User expected = EntityTestData.getPersistedUserJohnDoe();
         long id = expected.getId();
 
         given(storage.get(id, User.class))
@@ -72,9 +72,9 @@ class UserDaoImplTest {
     @DisplayName("Test find all user functionality")
     public void givenUsers_whenFindAll_thenUsersIsReturned() {
         // given
-        User user1 = DataUtils.getUserJohnDoePersisted();
-        User user2 = DataUtils.getUserJaneSmithPersisted();
-        User user3 = DataUtils.getUserMichaelJohnsonPersisted();
+        User user1 = EntityTestData.getPersistedUserJohnDoe();
+        User user2 = EntityTestData.getPersistedUserJaneSmith();
+        User user3 = EntityTestData.getPersistedUserMichaelJohnson();
 
         List<User> expected = List.of(user1, user2, user3);
 
@@ -93,8 +93,8 @@ class UserDaoImplTest {
     @DisplayName("Test save user without id functionality")
     public void givenUser_whenSaveUser_thenStorageIsCalled() {
         // given
-        User user = spy(DataUtils.getUserJohnDoeTransient());
-        User persisted = DataUtils.getUserJohnDoePersisted();
+        User user = spy(EntityTestData.getTransientUserJohnDoe());
+        User persisted = EntityTestData.getPersistedUserJohnDoe();
 
         given(storage.put(anyLong(), any(User.class)))
                 .willReturn(persisted);
@@ -114,7 +114,7 @@ class UserDaoImplTest {
     @DisplayName("Test save user with id functionality")
     public void givenUserWithId_whenSaveUser_thenStorageIsCalled() {
         // given
-        User user = spy(DataUtils.getUserJohnDoePersisted());
+        User user = spy(EntityTestData.getPersistedUserJohnDoe());
         long id = user.getId();
 
         given(storage.put(id, user))
@@ -134,7 +134,7 @@ class UserDaoImplTest {
     @DisplayName("Test update user functionality")
     public void givenUser_whenUpdateUser_thenStorageIsCalled() {
         // given
-        User user = spy(DataUtils.getUserJohnDoePersisted());
+        User user = spy(EntityTestData.getPersistedUserJohnDoe());
         long id = user.getId();
 
         given(storage.put(id, user))

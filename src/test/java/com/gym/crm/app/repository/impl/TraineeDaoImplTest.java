@@ -2,7 +2,7 @@ package com.gym.crm.app.repository.impl;
 
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.storage.Storage;
-import com.gym.crm.app.utils.DataUtils;
+import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +38,7 @@ class TraineeDaoImplTest {
     @DisplayName("Test find trainee by id functionality")
     public void givenId_whenFindById_thenTraineeIsReturned() {
         // given
-        Trainee expected = DataUtils.getTraineeJohnDoePersisted();
+        Trainee expected = EntityTestData.getPersistedTraineeJohnDoe();
         long id = expected.getId();
 
         given(storage.get(id, Trainee.class))
@@ -72,9 +72,9 @@ class TraineeDaoImplTest {
     @DisplayName("Test find all trainee functionality")
     public void givenTrainees_whenFindAll_thenTraineesIsReturned() {
         // given
-        Trainee trainee1 = DataUtils.getTraineeJohnDoePersisted();
-        Trainee trainee2 = DataUtils.getTraineeJaneSmithPersisted();
-        Trainee trainee3 = DataUtils.getTraineeMichaelJohnsonPersisted();
+        Trainee trainee1 = EntityTestData.getPersistedTraineeJohnDoe();
+        Trainee trainee2 = EntityTestData.getPersistedTraineeJaneSmith();
+        Trainee trainee3 = EntityTestData.getPersistedTraineeMichaelJohnson();
 
         List<Trainee> expected = List.of(trainee1, trainee2, trainee3);
 
@@ -93,8 +93,8 @@ class TraineeDaoImplTest {
     @DisplayName("Test save trainee without id functionality")
     public void givenTrainee_whenSaveTrainee_thenStorageIsCalled() {
         // given
-        Trainee trainee = spy(DataUtils.getTraineeJohnDoeTransient());
-        Trainee persisted = DataUtils.getTraineeJohnDoePersisted();
+        Trainee trainee = spy(EntityTestData.getTransientTraineeJohnDoe());
+        Trainee persisted = EntityTestData.getPersistedTraineeJohnDoe();
 
         given(storage.put(anyLong(), any(Trainee.class)))
                 .willReturn(persisted);
@@ -114,7 +114,7 @@ class TraineeDaoImplTest {
     @DisplayName("Test save trainee with id functionality")
     public void givenTraineeWithId_whenSaveTrainee_thenStorageIsCalled() {
         // given
-        Trainee trainee = spy(DataUtils.getTraineeJohnDoePersisted());
+        Trainee trainee = spy(EntityTestData.getPersistedTraineeJohnDoe());
         long id = trainee.getId();
 
         given(storage.put(id, trainee))
@@ -134,7 +134,7 @@ class TraineeDaoImplTest {
     @DisplayName("Test update trainee functionality")
     public void givenTrainee_whenUpdateTrainee_thenStorageIsCalled() {
         // given
-        Trainee trainee = spy(DataUtils.getTraineeJohnDoePersisted());
+        Trainee trainee = spy(EntityTestData.getPersistedTraineeJohnDoe());
         long id = trainee.getId();
 
         given(storage.put(id, trainee))
