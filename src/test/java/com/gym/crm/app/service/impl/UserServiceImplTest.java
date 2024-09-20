@@ -6,7 +6,7 @@ import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.EntityDao;
 import com.gym.crm.app.service.common.EntityValidator;
 import com.gym.crm.app.service.common.UserProfileService;
-import com.gym.crm.app.utils.DataUtils;
+import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,7 +49,7 @@ class UserServiceImplTest {
     @DisplayName("Test find user by id functionality")
     public void givenId_whenFindById_thenUserIsReturned() {
         // given
-        User expected = DataUtils.getUserJohnDoePersisted();
+        User expected = EntityTestData.getPersistedUserJohnDoe();
         long id = expected.getId();
 
         doNothing().when(entityValidator).checkId(id);
@@ -91,7 +91,7 @@ class UserServiceImplTest {
     @DisplayName("Test save user functionality")
     public void givenSaveUser_whenSave_thenRepositoryIsCalled() {
         // given
-        User user = DataUtils.getUserJohnDoePersisted();
+        User user = EntityTestData.getPersistedUserJohnDoe();
         String username = user.getFirstName() + "." + user.getLastName();
         String password = "1234567890";
 
@@ -117,7 +117,7 @@ class UserServiceImplTest {
     @DisplayName("Test prepare user without username and password functionality")
     public void givenSaveUserWithoutUsernamePassword_whenSave_thenRepositoryIsCalled() {
         // given
-        User user = DataUtils.getUserJohnDoeTransient();
+        User user = EntityTestData.getTransientUserJohnDoe();
 
         String firstName = user.getFirstName();
         String lastName = user.getLastName();
@@ -146,7 +146,7 @@ class UserServiceImplTest {
     @DisplayName("Test prepare user with full data functionality")
     public void givenSaveUserWithFullData_whenPrepareUserForSave_thenUserIsReturned() {
         // given
-        User persisted = DataUtils.getUserJohnDoePersisted();
+        User persisted = EntityTestData.getPersistedUserJohnDoe();
         String username = persisted.getFirstName() + "." + persisted.getLastName();
         String password = "1234567890";
 
@@ -164,7 +164,7 @@ class UserServiceImplTest {
     @DisplayName("Test update user functionality")
     public void givenUpdatedUser_whenUpdate_thenRepositoryIsCalled() {
         // given
-        User user = DataUtils.getUserJohnDoePersisted();
+        User user = EntityTestData.getPersistedUserJohnDoe();
 
         doNothing().when(entityValidator).checkEntity(user);
         doNothing().when(entityValidator).checkId(user.getId());
@@ -186,7 +186,7 @@ class UserServiceImplTest {
         doNothing().when(repository).deleteById(id);
 
         given(repository.findById(id))
-                .willReturn(Optional.of(DataUtils.getUserJohnDoePersisted()));
+                .willReturn(Optional.of(EntityTestData.getPersistedUserJohnDoe()));
 
         // when
         service.deleteById(id);

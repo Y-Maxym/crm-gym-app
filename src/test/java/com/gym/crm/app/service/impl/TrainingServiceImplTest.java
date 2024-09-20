@@ -5,7 +5,7 @@ import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.EntityDao;
 import com.gym.crm.app.service.common.EntityValidator;
-import com.gym.crm.app.utils.DataUtils;
+import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +42,7 @@ class TrainingServiceImplTest {
     @DisplayName("Test find training by id functionality")
     public void givenId_whenFindById_thenTrainingIsReturned() {
         // given
-        Training expected = DataUtils.getTrainingEmilyDavisPersisted();
+        Training expected = EntityTestData.getPersistedTrainingEmilyDavis();
         long id = expected.getId();
 
         doNothing().when(entityValidator).checkId(id);
@@ -84,7 +84,7 @@ class TrainingServiceImplTest {
     @DisplayName("Test save training functionality")
     public void givenSaveTraining_whenSave_thenRepositoryIsCalled() {
         // given
-        Training training = DataUtils.getTrainingEmilyDavisPersisted();
+        Training training = EntityTestData.getPersistedTrainingEmilyDavis();
 
         doNothing().when(entityValidator).checkEntity(training);
 

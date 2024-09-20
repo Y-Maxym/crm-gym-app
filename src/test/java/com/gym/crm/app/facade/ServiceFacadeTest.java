@@ -8,7 +8,7 @@ import com.gym.crm.app.service.TraineeService;
 import com.gym.crm.app.service.TrainerService;
 import com.gym.crm.app.service.TrainingService;
 import com.gym.crm.app.service.UserService;
-import com.gym.crm.app.utils.DataUtils;
+import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +43,7 @@ class ServiceFacadeTest {
     void givenTraineeId_whenFindTraineeById_thenReturnTrainee() {
         // given
         long id = 1L;
-        Trainee expectedTrainee = DataUtils.getTraineeJohnDoePersisted();
+        Trainee expectedTrainee = EntityTestData.getPersistedTraineeJohnDoe();
 
         given(traineeService.findById(id))
                 .willReturn(expectedTrainee);
@@ -59,7 +59,7 @@ class ServiceFacadeTest {
     @DisplayName("Test save trainee functionality")
     void givenTrainee_whenSaveTrainee_thenDelegateSaveToService() {
         // given
-        Trainee trainee = DataUtils.getTraineeJohnDoePersisted();
+        Trainee trainee = EntityTestData.getPersistedTraineeJohnDoe();
 
         // when
         serviceFacade.saveTrainee(trainee);
@@ -72,7 +72,7 @@ class ServiceFacadeTest {
     @DisplayName("Test update trainee functionality")
     void givenTrainee_whenUpdateTrainee_thenDelegateUpdateToService() {
         // given
-        Trainee trainee = DataUtils.getTraineeJohnDoePersisted();
+        Trainee trainee = EntityTestData.getPersistedTraineeJohnDoe();
 
         // when
         serviceFacade.updateTrainee(trainee);
@@ -99,7 +99,7 @@ class ServiceFacadeTest {
     void givenTrainerId_whenFindTrainerById_thenReturnTrainer() {
         // given
         long id = 1L;
-        Trainer expectedTrainer = DataUtils.getTrainerDavidBrownPersisted();
+        Trainer expectedTrainer = EntityTestData.getPersistedTrainerDavidBrown();
         given(trainerService.findById(id))
                 .willReturn(expectedTrainer);
 
@@ -114,7 +114,7 @@ class ServiceFacadeTest {
     @DisplayName("Test save trainer functionality")
     void givenTrainer_whenSaveTrainer_thenDelegateSaveToService() {
         // given
-        Trainer trainer = DataUtils.getTrainerDavidBrownPersisted();
+        Trainer trainer = EntityTestData.getPersistedTrainerDavidBrown();
 
         // when
         serviceFacade.saveTrainer(trainer);
@@ -127,7 +127,7 @@ class ServiceFacadeTest {
     @DisplayName("Test update trainer functionality")
     void givenTrainer_whenUpdateTrainer_thenDelegateUpdateToService() {
         // given
-        Trainer trainer = DataUtils.getTrainerDavidBrownPersisted();
+        Trainer trainer = EntityTestData.getPersistedTrainerDavidBrown();
 
         // when
         serviceFacade.updateTrainer(trainer);
@@ -141,7 +141,7 @@ class ServiceFacadeTest {
     void givenTrainingId_whenFindTrainingById_thenReturnTraining() {
         // given
         long id = 1L;
-        Training expectedTraining = DataUtils.getTrainingDavidBrownPersisted();
+        Training expectedTraining = EntityTestData.getPersistedTrainingDavidBrown();
 
         given(trainingService.findById(id))
                 .willReturn(expectedTraining);
@@ -157,7 +157,7 @@ class ServiceFacadeTest {
     @DisplayName("Test save training functionality")
     void givenTraining_whenSaveTraining_thenDelegateSaveToService() {
         // given
-        Training training = DataUtils.getTrainingDavidBrownPersisted();
+        Training training = EntityTestData.getPersistedTrainingDavidBrown();
 
         // when
         serviceFacade.saveTraining(training);
@@ -171,7 +171,7 @@ class ServiceFacadeTest {
     void givenUserId_whenFindUserById_thenReturnUser() {
         // given
         long id = 1L;
-        User expectedUser = DataUtils.getUserJohnDoePersisted();
+        User expectedUser = EntityTestData.getPersistedUserJohnDoe();
 
         given(userService.findById(id))
                 .willReturn(expectedUser);
@@ -187,7 +187,7 @@ class ServiceFacadeTest {
     @DisplayName("Test save user functionality")
     void givenUser_whenSaveUser_thenDelegateSaveToService() {
         // given
-        User user = DataUtils.getUserJohnDoePersisted();
+        User user = EntityTestData.getPersistedUserJohnDoe();
 
         // when
         serviceFacade.saveUser(user);
@@ -200,7 +200,7 @@ class ServiceFacadeTest {
     @DisplayName("Test update user functionality")
     void givenUser_whenUpdateUser_thenDelegateUpdateToService() {
         // given
-        User user = DataUtils.getUserJohnDoePersisted();
+        User user = EntityTestData.getPersistedUserJohnDoe();
 
         // when
         serviceFacade.updateUser(user);

@@ -3,15 +3,14 @@ package com.gym.crm.app.utils;
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
+import com.gym.crm.app.entity.TrainingType;
 import com.gym.crm.app.entity.User;
 
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-public class DataUtils {
+public class EntityTestData {
 
-    public static User getUserJohnDoePersisted() {
+    public static User getPersistedUserJohnDoe() {
         return User.builder()
                 .id(1L)
                 .firstName("John")
@@ -21,7 +20,7 @@ public class DataUtils {
     }
 
 
-    public static User getUserJaneSmithPersisted() {
+    public static User getPersistedUserJaneSmith() {
         return User.builder()
                 .id(2L)
                 .firstName("Jane")
@@ -30,7 +29,7 @@ public class DataUtils {
                 .build();
     }
 
-    public static User getUserMichaelJohnsonPersisted() {
+    public static User getPersistedUserMichaelJohnson() {
         return User.builder()
                 .id(3L)
                 .firstName("Michael")
@@ -39,7 +38,7 @@ public class DataUtils {
                 .build();
     }
 
-    public static User getUserEmilyDavisPersisted() {
+    public static User getPersistedUserEmilyDavis() {
         return User.builder()
                 .id(4L)
                 .firstName("Emily")
@@ -48,7 +47,7 @@ public class DataUtils {
                 .build();
     }
 
-    public static User getUserDavidBrownPersisted() {
+    public static User getPersistedUserDavidBrown() {
         return User.builder()
                 .id(5L)
                 .firstName("David")
@@ -57,74 +56,74 @@ public class DataUtils {
                 .build();
     }
 
-    public static Trainee getTraineeJohnDoePersisted() {
+    public static Trainee getPersistedTraineeJohnDoe() {
         return Trainee.builder()
-                .userId(1L)
+                .user(getPersistedUserJohnDoe())
                 .id(1L)
                 .dateOfBirth(LocalDate.parse("2000-01-01"))
                 .address("Address1")
                 .build();
     }
 
-    public static Trainee getTraineeJaneSmithPersisted() {
+    public static Trainee getPersistedTraineeJaneSmith() {
         return Trainee.builder()
-                .userId(2L)
+                .user(getPersistedUserJaneSmith())
                 .id(2L)
                 .dateOfBirth(LocalDate.parse("2000-01-01"))
                 .address("Address2")
                 .build();
     }
 
-    public static Trainee getTraineeMichaelJohnsonPersisted() {
+    public static Trainee getPersistedTraineeMichaelJohnson() {
         return Trainee.builder()
-                .userId(3L)
+                .user(getPersistedUserMichaelJohnson())
                 .id(3L)
                 .dateOfBirth(LocalDate.parse("2000-01-01"))
                 .address("Address3")
                 .build();
     }
 
-    public static Trainer getTrainerEmilyDavisPersisted() {
+    public static Trainer getPersistedTrainerEmilyDavis() {
         return Trainer.builder()
-                .userId(4L)
+                .user(getPersistedUserEmilyDavis())
                 .id(1L)
-                .specializationId(1L)
+                .specialization(getTrainingTypeYoga())
                 .build();
     }
 
-    public static Trainer getTrainerDavidBrownPersisted() {
+    public static Trainer getPersistedTrainerDavidBrown() {
         return Trainer.builder()
-                .userId(5L)
+                .user(getPersistedUserDavidBrown())
                 .id(2L)
-                .specializationId(2L)
+                .specialization(getTrainingTypeFitness())
                 .build();
     }
 
-    public static Training getTrainingEmilyDavisPersisted() {
+    public static Training getPersistedTrainingEmilyDavis() {
         return Training.builder()
                 .id(1L)
-                .traineeId(1L)
-                .trainerId(1L)
+                .trainee(getPersistedTraineeJohnDoe())
+                .trainer(getPersistedTrainerEmilyDavis())
                 .trainingName("Training Emily Davis")
-                .trainingTypeId(1L)
-                .trainingDate(LocalDateTime.parse("2020-01-01T10:00:00"))
-                .trainingDuration(Duration.ofHours(2))
+                .trainingType(getTrainingTypeYoga())
+                .trainingDate(LocalDate.parse("2020-01-01"))
+                .trainingDuration(2)
                 .build();
     }
 
-    public static Training getTrainingDavidBrownPersisted() {
+    public static Training getPersistedTrainingDavidBrown() {
         return Training.builder()
                 .id(2L)
-                .traineeId(2L)
-                .trainerId(2L)
+                .trainee(getPersistedTraineeJaneSmith())
+                .trainer(getPersistedTrainerDavidBrown())
                 .trainingName("Training David Brown")
-                .trainingTypeId(1L)
-                .trainingDate(LocalDateTime.parse("2020-01-02T12:00:00"))
-                .trainingDuration(Duration.ofHours(2))
+                .trainingType(getTrainingTypeYoga())
+                .trainingDate(LocalDate.parse("2020-01-02"))
+                .trainingDuration(2)
                 .build();
     }
 
-    public static User getUserJohnDoeTransient() {
+    public static User getTransientUserJohnDoe() {
         return User.builder()
                 .firstName("John")
                 .lastName("Doe")
@@ -133,7 +132,7 @@ public class DataUtils {
     }
 
 
-    public static User getUserJaneSmithTransient() {
+    public static User getTransientUserJaneSmith() {
         return User.builder()
                 .firstName("Jane")
                 .lastName("Smith")
@@ -141,7 +140,7 @@ public class DataUtils {
                 .build();
     }
 
-    public static User getUserMichaelJohnsonTransient() {
+    public static User getTransientUserMichaelJohnson() {
         return User.builder()
                 .firstName("Michael")
                 .lastName("Johnson")
@@ -149,7 +148,7 @@ public class DataUtils {
                 .build();
     }
 
-    public static User getUserEmilyDavisTransient() {
+    public static User getTransientUserEmilyDavis() {
         return User.builder()
                 .firstName("Emily")
                 .lastName("Davis")
@@ -157,7 +156,7 @@ public class DataUtils {
                 .build();
     }
 
-    public static User getUserDavidBrownTransient() {
+    public static User getTransientUserDavidBrown() {
         return User.builder()
                 .firstName("David")
                 .lastName("Brown")
@@ -165,58 +164,72 @@ public class DataUtils {
                 .build();
     }
 
-    public static Trainee getTraineeJohnDoeTransient() {
+    public static Trainee getTransientTraineeJohnDoe() {
         return Trainee.builder()
                 .dateOfBirth(LocalDate.parse("2000-01-01"))
                 .address("Address1")
                 .build();
     }
 
-    public static Trainee getTraineeJaneSmithTransient() {
+    public static Trainee getTransientTraineeJaneSmith() {
         return Trainee.builder()
                 .dateOfBirth(LocalDate.parse("2000-01-01"))
                 .address("Address2")
                 .build();
     }
 
-    public static Trainee getTraineeMichaelJohnsonTransient() {
+    public static Trainee getTransientTraineeMichaelJohnson() {
         return Trainee.builder()
                 .dateOfBirth(LocalDate.parse("2000-01-01"))
                 .address("Address3")
                 .build();
     }
 
-    public static Trainer getTrainerEmilyDavisTransient() {
+    public static Trainer getTransientTrainerEmilyDavis() {
         return Trainer.builder()
-                .specializationId(1L)
+                .specialization(getTrainingTypeYoga())
                 .build();
     }
 
-    public static Trainer getTrainerDavidBrownTransient() {
+    public static Trainer getTransientTrainerDavidBrown() {
         return Trainer.builder()
-                .specializationId(2L)
+                .specialization(getTrainingTypeFitness())
                 .build();
     }
 
-    public static Training getTrainingEmilyDavisTransient() {
+    public static Training getTransientTrainingEmilyDavis() {
         return Training.builder()
-                .traineeId(1L)
-                .trainerId(1L)
+                .trainee(getPersistedTraineeJohnDoe())
+                .trainer(getPersistedTrainerEmilyDavis())
                 .trainingName("Training Emily Davis")
-                .trainingTypeId(1L)
-                .trainingDate(LocalDateTime.parse("2020-01-01T10:00:00"))
-                .trainingDuration(Duration.ofHours(2))
+                .trainingType(getTrainingTypeYoga())
+                .trainingDate(LocalDate.parse("2020-01-01"))
+                .trainingDuration(2)
                 .build();
     }
 
-    public static Training getTrainingDavidBrownTransient() {
+    public static Training getTransientTrainingDavidBrown() {
         return Training.builder()
-                .traineeId(2L)
-                .trainerId(2L)
+                .trainee(getPersistedTraineeJaneSmith())
+                .trainer(getPersistedTrainerDavidBrown())
                 .trainingName("Training David Brown")
-                .trainingTypeId(1L)
-                .trainingDate(LocalDateTime.parse("2020-01-02T12:00:00"))
-                .trainingDuration(Duration.ofHours(2))
+                .trainingType(getTrainingTypeYoga())
+                .trainingDate(LocalDate.parse("2020-01-02"))
+                .trainingDuration(2)
+                .build();
+    }
+
+    public static TrainingType getTrainingTypeYoga() {
+        return TrainingType.builder()
+                .id(1L)
+                .trainingTypeName("Yoga")
+                .build();
+    }
+
+    public static TrainingType getTrainingTypeFitness() {
+        return TrainingType.builder()
+                .id(2L)
+                .trainingTypeName("Fitness")
                 .build();
     }
 }
