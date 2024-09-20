@@ -3,7 +3,7 @@ package com.gym.crm.app.service.impl;
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
-import com.gym.crm.app.repository.EntityDao;
+import com.gym.crm.app.repository.UserDao;
 import com.gym.crm.app.service.common.EntityValidator;
 import com.gym.crm.app.service.common.UserProfileService;
 import com.gym.crm.app.utils.EntityTestData;
@@ -40,7 +40,7 @@ class UserServiceImplTest {
     private UserProfileService userProfileService;
 
     @Mock
-    private EntityDao<Long, User> repository;
+    private UserDao repository;
 
     @InjectMocks
     private UserServiceImpl service;
@@ -117,12 +117,12 @@ class UserServiceImplTest {
     @DisplayName("Test prepare user without username and password functionality")
     public void givenSaveUserWithoutUsernamePassword_whenSave_thenRepositoryIsCalled() {
         // given
-        User user = EntityTestData.getTransientUserJohnDoe();
+        User user = EntityTestData.getTransientUserJohnDoeWithoutData();
 
         String firstName = user.getFirstName();
         String lastName = user.getLastName();
         String username = "%s.%s".formatted(firstName, lastName);
-        String password = "1234567890";
+        String password = "password";
 
         given(userProfileService.hashPassword(password))
                 .willReturn(password);

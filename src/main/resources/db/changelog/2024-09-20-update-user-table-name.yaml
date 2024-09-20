@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: GCA-4-update-user-table-name
+      author: maxym
+      comment: Update user table name
+      changes:
+        - renameTable:
+            schemaName: public
+            oldTableName: user
+            newTableName: users

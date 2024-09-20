@@ -3,7 +3,7 @@ package com.gym.crm.app.service.impl;
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
-import com.gym.crm.app.repository.EntityDao;
+import com.gym.crm.app.repository.UserDao;
 import com.gym.crm.app.service.UserService;
 import com.gym.crm.app.service.common.EntityValidator;
 import com.gym.crm.app.service.common.UserProfileService;
@@ -21,7 +21,7 @@ import static java.util.Objects.isNull;
 @Setter(onMethod_ = @Autowired)
 public class UserServiceImpl implements UserService {
 
-    private EntityDao<Long, User> repository;
+    private UserDao repository;
     private MessageHelper messageHelper;
     private UserProfileService userProfileService;
     private EntityValidator entityValidator;

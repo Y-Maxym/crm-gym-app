@@ -15,16 +15,19 @@ public class EntityTestData {
                 .id(1L)
                 .firstName("John")
                 .lastName("Doe")
+                .username("John.Doe")
+                .password("password")
                 .isActive(true)
                 .build();
     }
-
 
     public static User getPersistedUserJaneSmith() {
         return User.builder()
                 .id(2L)
                 .firstName("Jane")
                 .lastName("Smith")
+                .username("Jane.Smith")
+                .password("password")
                 .isActive(true)
                 .build();
     }
@@ -34,6 +37,8 @@ public class EntityTestData {
                 .id(3L)
                 .firstName("Michael")
                 .lastName("Johnson")
+                .username("Michael.Johnson")
+                .password("password")
                 .isActive(true)
                 .build();
     }
@@ -43,6 +48,8 @@ public class EntityTestData {
                 .id(4L)
                 .firstName("Emily")
                 .lastName("Davis")
+                .username("Emily.Davis")
+                .password("password")
                 .isActive(true)
                 .build();
     }
@@ -52,6 +59,8 @@ public class EntityTestData {
                 .id(5L)
                 .firstName("David")
                 .lastName("Brown")
+                .username("David.Brown")
+                .password("password")
                 .isActive(true)
                 .build();
     }
@@ -127,15 +136,26 @@ public class EntityTestData {
         return User.builder()
                 .firstName("John")
                 .lastName("Doe")
+                .username("John.Doe")
+                .password("password")
                 .isActive(true)
                 .build();
     }
 
+    public static User getTransientUserJohnDoeWithoutData() {
+        return User.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .isActive(true)
+                .build();
+    }
 
     public static User getTransientUserJaneSmith() {
         return User.builder()
                 .firstName("Jane")
                 .lastName("Smith")
+                .username("Jane.Smith")
+                .password("password")
                 .isActive(true)
                 .build();
     }
@@ -144,6 +164,8 @@ public class EntityTestData {
         return User.builder()
                 .firstName("Michael")
                 .lastName("Johnson")
+                .username("Michael.Johnson")
+                .password("password")
                 .isActive(true)
                 .build();
     }
@@ -152,6 +174,8 @@ public class EntityTestData {
         return User.builder()
                 .firstName("Emily")
                 .lastName("Davis")
+                .username("Emily.Davis")
+                .password("password")
                 .isActive(true)
                 .build();
     }
@@ -160,12 +184,15 @@ public class EntityTestData {
         return User.builder()
                 .firstName("David")
                 .lastName("Brown")
+                .username("David.Brown")
+                .password("password")
                 .isActive(true)
                 .build();
     }
 
     public static Trainee getTransientTraineeJohnDoe() {
         return Trainee.builder()
+                .user(getTransientUserJohnDoe())
                 .dateOfBirth(LocalDate.parse("2000-01-01"))
                 .address("Address1")
                 .build();
@@ -173,6 +200,7 @@ public class EntityTestData {
 
     public static Trainee getTransientTraineeJaneSmith() {
         return Trainee.builder()
+                .user(getTransientUserJaneSmith())
                 .dateOfBirth(LocalDate.parse("2000-01-01"))
                 .address("Address2")
                 .build();
@@ -180,6 +208,7 @@ public class EntityTestData {
 
     public static Trainee getTransientTraineeMichaelJohnson() {
         return Trainee.builder()
+                .user(getTransientUserMichaelJohnson())
                 .dateOfBirth(LocalDate.parse("2000-01-01"))
                 .address("Address3")
                 .build();
@@ -187,20 +216,22 @@ public class EntityTestData {
 
     public static Trainer getTransientTrainerEmilyDavis() {
         return Trainer.builder()
+                .user(getTransientUserEmilyDavis())
                 .specialization(getTrainingTypeYoga())
                 .build();
     }
 
     public static Trainer getTransientTrainerDavidBrown() {
         return Trainer.builder()
+                .user(getTransientUserDavidBrown())
                 .specialization(getTrainingTypeFitness())
                 .build();
     }
 
     public static Training getTransientTrainingEmilyDavis() {
         return Training.builder()
-                .trainee(getPersistedTraineeJohnDoe())
-                .trainer(getPersistedTrainerEmilyDavis())
+                .trainee(getTransientTraineeJaneSmith())
+                .trainer(getTransientTrainerEmilyDavis())
                 .trainingName("Training Emily Davis")
                 .trainingType(getTrainingTypeYoga())
                 .trainingDate(LocalDate.parse("2020-01-01"))
@@ -210,8 +241,8 @@ public class EntityTestData {
 
     public static Training getTransientTrainingDavidBrown() {
         return Training.builder()
-                .trainee(getPersistedTraineeJaneSmith())
-                .trainer(getPersistedTrainerDavidBrown())
+                .trainee(getTransientTraineeJohnDoe())
+                .trainer(getTransientTrainerDavidBrown())
                 .trainingName("Training David Brown")
                 .trainingType(getTrainingTypeYoga())
                 .trainingDate(LocalDate.parse("2020-01-02"))
@@ -221,7 +252,7 @@ public class EntityTestData {
 
     public static TrainingType getTrainingTypeYoga() {
         return TrainingType.builder()
-                .id(1L)
+                .id(3L)
                 .trainingTypeName("Yoga")
                 .build();
     }

@@ -1,5 +1,6 @@
 package com.gym.crm.app.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -50,7 +51,7 @@ public final class Trainee {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToOne(optional = false, fetch = FetchType.EAGER)
+    @OneToOne(optional = false, fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "id",

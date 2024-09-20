@@ -1,7 +1,7 @@
 package com.gym.crm.app.service.common;
 
 import com.gym.crm.app.entity.User;
-import com.gym.crm.app.repository.EntityDao;
+import com.gym.crm.app.repository.UserDao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 class UserProfileServiceTest {
 
     @Mock
-    private EntityDao<Long, User> repository;
+    private UserDao repository;
 
     @Mock
     private PasswordGenerator passwordGenerator;
