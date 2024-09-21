@@ -4,18 +4,19 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
-public abstract class CrudDao<ID, T> {
+public abstract class CrudRepository<T, ID> {
+
+    private final Class<T> clazz;
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    private final Class<T> clazz;
 
     protected T execute(Function<EntityManager, T> action) {
         return action.apply(entityManager);
@@ -54,9 +55,7 @@ public abstract class CrudDao<ID, T> {
 
     public void saveAll(T... entities) {
         execute(entityManager -> {
-            for (T entity : entities) {
-                entityManager.persist(entity);
-            }
+            Arrays.stream(entities).forEach(entityManager::persist);
         });
     }
 

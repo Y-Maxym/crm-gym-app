@@ -3,7 +3,7 @@ package com.gym.crm.app.service.impl;
 import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
-import com.gym.crm.app.repository.TrainingDao;
+import com.gym.crm.app.repository.impl.TrainingRepositoryImpl;
 import com.gym.crm.app.service.common.EntityValidator;
 import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +33,7 @@ class TrainingServiceImplTest {
     private EntityValidator entityValidator;
 
     @Mock
-    private TrainingDao repository;
+    private TrainingRepositoryImpl repository;
 
     @InjectMocks
     private TrainingServiceImpl service;

@@ -3,7 +3,7 @@ package com.gym.crm.app.service.impl;
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
-import com.gym.crm.app.repository.TraineeDao;
+import com.gym.crm.app.repository.TraineeRepository;
 import com.gym.crm.app.service.TraineeService;
 import com.gym.crm.app.service.common.EntityValidator;
 import lombok.Setter;
@@ -20,7 +20,7 @@ import static com.gym.crm.app.util.Constants.WARN_TRAINEE_WITH_ID_NOT_FOUND;
 public class TraineeServiceImpl implements TraineeService {
 
     private MessageHelper messageHelper;
-    private TraineeDao repository;
+    private TraineeRepository repository;
     private EntityValidator entityValidator;
 
     public Trainee findById(Long id) {

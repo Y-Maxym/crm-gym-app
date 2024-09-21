@@ -24,13 +24,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-class TrainerDaoTest {
+class TrainerRepositoryImplTest {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
-    private TrainerDao repository;
+    private TrainerRepository repository;
 
     @BeforeEach
     public void setUp() {
@@ -42,7 +42,7 @@ class TrainerDaoTest {
     public void givenId_whenFindById_thenTrainerIsReturned() {
         // given
         Trainer expected = EntityTestData.getTransientTrainerEmilyDavis();
-        repository.save(expected);
+        entityManager.persist(expected);
 
         // when
         Optional<Trainer> actual = repository.findById(expected.getId());
@@ -72,12 +72,31 @@ class TrainerDaoTest {
         Trainer trainer1 = EntityTestData.getTransientTrainerEmilyDavis();
         Trainer trainer2 = EntityTestData.getTransientTrainerDavidBrown();
 
-        repository.saveAll(trainer1, trainer2);
+        entityManager.persist(trainer1);
+        entityManager.persist(trainer2);
 
         // when
         List<Trainer> actual = repository.findAll();
 
         // then
+        assertThat(actual.size()).isEqualTo(2);
+        assertThat(actual).containsAll(List.of(trainer1, trainer2));
+    }
+
+    @Test
+    @DisplayName("Test save all trainer functionality")
+    public void givenTrainers_whenSaveAll_thenTrainersIsSaved() {
+        // given
+        Trainer trainer1 = EntityTestData.getTransientTrainerEmilyDavis();
+        Trainer trainer2 = EntityTestData.getTransientTrainerDavidBrown();
+
+        // when
+        repository.saveAll(trainer1, trainer2);
+
+        // then
+        List<Trainer> actual = entityManager.createQuery("from Trainer", Trainer.class)
+                .getResultList();
+
         assertThat(actual.size()).isEqualTo(2);
         assertThat(actual).containsAll(List.of(trainer1, trainer2));
     }
@@ -114,10 +133,9 @@ class TrainerDaoTest {
     public void givenTrainer_whenUpdateTrainer_thenTrainerIsUpdated() {
         // given
         Trainer trainer = EntityTestData.getTransientTrainerEmilyDavis();
-        repository.save(trainer);
+        entityManager.persist(trainer);
 
         // when
-
         Trainer actual = repository.update(trainer);
 
         // then
@@ -130,36 +148,36 @@ class TrainerDaoTest {
     public void givenId_whenDeleteById_thenTrainerIsDeleted() {
         // given
         Trainer trainer = EntityTestData.getTransientTrainerEmilyDavis();
-        repository.save(trainer);
+        entityManager.persist(trainer);
 
         // when
         repository.deleteById(trainer.getId());
 
-        entityManager.clear();
-
-        Optional<Trainer> actual = repository.findById(trainer.getId());
-
         // then
-        assertThat(actual.isEmpty()).isTrue();
+        entityManager.clear();
+        Trainer actual = entityManager.find(Trainer.class, trainer.getId());
+
+        assertThat(actual).isNull();
     }
 
     @Test
-    @DisplayName("Test delete trainer by id functionality")
+    @DisplayName("Test delete all trainers functionality")
     public void whenDeleteAll_thenTrainersIsDeleted() {
         // given
         Trainer trainer1 = EntityTestData.getTransientTrainerEmilyDavis();
         Trainer trainer2 = EntityTestData.getTransientTrainerDavidBrown();
 
-        repository.saveAll(trainer1, trainer2);
+        entityManager.persist(trainer1);
+        entityManager.persist(trainer2);
 
         // when
         repository.deleteAll();
 
-        entityManager.clear();
-
-        List<Trainer> actual = repository.findAll();
-
         // then
+        entityManager.clear();
+        List<Trainer> actual = entityManager.createQuery("from Trainer", Trainer.class)
+                .getResultList();
+
         assertThat(actual).isEmpty();
     }
 
@@ -168,7 +186,7 @@ class TrainerDaoTest {
     public void givenUsername_whenFindByUsername_thenTrainerIsFound() {
         // given
         Trainer expected = EntityTestData.getTransientTrainerEmilyDavis();
-        repository.save(expected);
+        entityManager.persist(expected);
 
         // when
         Optional<Trainer> actual = repository.findByUsername(expected.getUser().getUsername());
@@ -183,7 +201,7 @@ class TrainerDaoTest {
     public void givenIncorrectUsername_whenFindByUsername_thenTrainerIsFound() {
         // given
         Trainer expected = EntityTestData.getTransientTrainerEmilyDavis();
-        repository.save(expected);
+        entityManager.persist(expected);
 
         // when
         Optional<Trainer> actual = repository.findByUsername("username");

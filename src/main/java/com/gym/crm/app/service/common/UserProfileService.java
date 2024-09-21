@@ -1,6 +1,6 @@
 package com.gym.crm.app.service.common;
 
-import com.gym.crm.app.repository.UserDao;
+import com.gym.crm.app.repository.UserRepository;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ public class UserProfileService {
     private static final String USERNAME_TEMPLATE = "%s.%s";
 
     private PasswordGenerator passwordGenerator;
-    private UserDao repository;
+    private UserRepository repository;
 
     public String generatePassword() {
         return passwordGenerator.generatePassword();

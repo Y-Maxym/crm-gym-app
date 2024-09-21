@@ -23,13 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-class TrainingDaoTest {
+class TrainingRepositoryImplTest {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
-    private TrainingDao repository;
+    private TrainingRepository repository;
 
     @BeforeEach
     public void setUp() {
@@ -41,7 +41,7 @@ class TrainingDaoTest {
     public void givenId_whenFindById_thenTrainingIsReturned() {
         // given
         Training expected = EntityTestData.getTransientTrainingEmilyDavis();
-        repository.save(expected);
+        entityManager.persist(expected);
 
         // when
         Optional<Training> actual = repository.findById(expected.getId());
@@ -71,12 +71,31 @@ class TrainingDaoTest {
         Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
         Training training2 = EntityTestData.getTransientTrainingDavidBrown();
 
-        repository.saveAll(training1, training2);
+        entityManager.persist(training1);
+        entityManager.persist(training2);
 
         // when
         List<Training> actual = repository.findAll();
 
         // then
+        assertThat(actual.size()).isEqualTo(2);
+        assertThat(actual).containsAll(List.of(training1, training2));
+    }
+
+    @Test
+    @DisplayName("Test save all training functionality")
+    public void givenTrainings_whenSaveAll_thenTrainingsIsSaved() {
+        // given
+        Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
+        Training training2 = EntityTestData.getTransientTrainingDavidBrown();
+
+        // when
+        repository.saveAll(training1, training2);
+
+        // then
+        List<Training> actual = entityManager.createQuery("from Training", Training.class)
+                .getResultList();
+
         assertThat(actual.size()).isEqualTo(2);
         assertThat(actual).containsAll(List.of(training1, training2));
     }
@@ -113,10 +132,9 @@ class TrainingDaoTest {
     public void givenTraining_whenUpdateTraining_thenTrainingIsUpdated() {
         // given
         Training training = EntityTestData.getTransientTrainingEmilyDavis();
-        repository.save(training);
+        entityManager.persist(training);
 
         // when
-
         Training actual = repository.update(training);
 
         // then
@@ -128,16 +146,15 @@ class TrainingDaoTest {
     public void givenId_whenDeleteById_thenTrainingIsDeleted() {
         // given
         Training training = EntityTestData.getTransientTrainingEmilyDavis();
-        repository.save(training);
+        entityManager.persist(training);
 
         // when
         repository.deleteById(training.getId());
 
-        entityManager.clear();
-
-        Optional<Training> actual = repository.findById(training.getId());
-
         // then
-        assertThat(actual.isEmpty()).isTrue();
+        entityManager.clear();
+        Training actual = entityManager.find(Training.class, training.getId());
+
+        assertThat(actual).isNull();
     }
 }

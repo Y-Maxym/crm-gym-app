@@ -23,13 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-class UserDaoTest {
+class UserRepositoryImplTest {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
-    private UserDao repository;
+    private UserRepository repository;
 
     @BeforeEach
     public void setUp() {
@@ -41,7 +41,7 @@ class UserDaoTest {
     public void givenId_whenFindById_thenUserIsReturned() {
         // given
         User expected = EntityTestData.getTransientUserJohnDoe();
-        repository.save(expected);
+        entityManager.persist(expected);
 
         // when
         Optional<User> actual = repository.findById(expected.getId());
@@ -72,12 +72,33 @@ class UserDaoTest {
         User user2 = EntityTestData.getTransientUserJaneSmith();
         User user3 = EntityTestData.getTransientUserMichaelJohnson();
 
-        repository.saveAll(user1, user2, user3);
+        entityManager.persist(user1);
+        entityManager.persist(user2);
+        entityManager.persist(user3);
 
         // when
         List<User> actual = repository.findAll();
 
         // then
+        assertThat(actual.size()).isEqualTo(3);
+        assertThat(actual).containsAll(List.of(user1, user2, user3));
+    }
+
+    @Test
+    @DisplayName("Test save all user functionality")
+    public void givenUsers_whenSaveAll_thenUsersIsSaved() {
+        // given
+        User user1 = EntityTestData.getTransientUserJohnDoe();
+        User user2 = EntityTestData.getTransientUserJaneSmith();
+        User user3 = EntityTestData.getTransientUserMichaelJohnson();
+
+        // when
+        repository.saveAll(user1, user2, user3);
+
+        // then
+        List<User> actual = entityManager.createQuery("from User", User.class)
+                .getResultList();
+
         assertThat(actual.size()).isEqualTo(3);
         assertThat(actual).containsAll(List.of(user1, user2, user3));
     }
@@ -111,17 +132,15 @@ class UserDaoTest {
 
     @Test
     @DisplayName("Test update user functionality")
-    @SuppressWarnings("all")
     public void givenUser_whenUpdateUser_thenUserIsUpdated() {
         // given
         User userToSave = EntityTestData.getTransientUserJohnDoe();
-        repository.save(userToSave);
+        entityManager.persist(userToSave);
 
-        // when
-        User userToUpdate = repository.findById(userToSave.getId())
-                .orElse(null);
+        User userToUpdate = entityManager.find(User.class, userToSave.getId());
         userToUpdate = userToUpdate.toBuilder().isActive(false).build();
 
+        // when
         User actual = repository.update(userToUpdate);
 
         // then
@@ -134,16 +153,15 @@ class UserDaoTest {
     public void givenId_whenDeleteById_thenUserIsDeleted() {
         // given
         User user = EntityTestData.getTransientUserJohnDoe();
-        repository.save(user);
+        entityManager.persist(user);
 
         // when
         repository.deleteById(user.getId());
 
-        entityManager.clear();
-
-        Optional<User> actual = repository.findById(user.getId());
-
         // then
-        assertThat(actual.isEmpty()).isTrue();
+        entityManager.clear();
+        User actual = entityManager.find(User.class, user.getId());
+
+        assertThat(actual).isNull();
     }
 }

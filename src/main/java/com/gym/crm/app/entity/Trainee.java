@@ -26,7 +26,7 @@ import java.util.Set;
 
 @Entity
 @Table(
-        name = "trainee",
+        name = "trainees",
         schema = "public",
         indexes = @Index(name = "trainee_pkey", unique = true, columnList = "id")
 )
@@ -64,7 +64,7 @@ public final class Trainee {
     @EqualsAndHashCode.Exclude
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "training",
+            name = "trainings",
             joinColumns = @JoinColumn(name = "trainee_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "trainer_id", referencedColumnName = "id")
     )

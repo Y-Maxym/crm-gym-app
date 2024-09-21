@@ -23,13 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-class TraineeDaoTest {
+class TraineeRepositoryImplTest {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
-    private TraineeDao repository;
+    private TraineeRepository repository;
 
     @BeforeEach
     public void setUp() {
@@ -41,7 +41,7 @@ class TraineeDaoTest {
     public void givenId_whenFindById_thenTraineeIsReturned() {
         // given
         Trainee expected = EntityTestData.getTransientTraineeJohnDoe();
-        repository.save(expected);
+        entityManager.persist(expected);
 
         // when
         Optional<Trainee> actual = repository.findById(expected.getId());
@@ -72,12 +72,33 @@ class TraineeDaoTest {
         Trainee trainee2 = EntityTestData.getTransientTraineeJaneSmith();
         Trainee trainee3 = EntityTestData.getTransientTraineeMichaelJohnson();
 
-        repository.saveAll(trainee1, trainee2, trainee3);
+        entityManager.persist(trainee1);
+        entityManager.persist(trainee2);
+        entityManager.persist(trainee3);
 
         // when
         List<Trainee> actual = repository.findAll();
 
         // then
+        assertThat(actual.size()).isEqualTo(3);
+        assertThat(actual).containsAll(List.of(trainee1, trainee2, trainee3));
+    }
+
+    @Test
+    @DisplayName("Test save all trainee functionality")
+    public void givenTrainees_whenSaveAll_thenTraineesIsSaved() {
+        // given
+        Trainee trainee1 = EntityTestData.getTransientTraineeJohnDoe();
+        Trainee trainee2 = EntityTestData.getTransientTraineeJaneSmith();
+        Trainee trainee3 = EntityTestData.getTransientTraineeMichaelJohnson();
+
+        // when
+        repository.saveAll(trainee1, trainee2, trainee3);
+
+        // then
+        List<Trainee> actual = entityManager.createQuery("from Trainee", Trainee.class)
+                .getResultList();
+
         assertThat(actual.size()).isEqualTo(3);
         assertThat(actual).containsAll(List.of(trainee1, trainee2, trainee3));
     }
@@ -111,19 +132,17 @@ class TraineeDaoTest {
 
     @Test
     @DisplayName("Test update trainee functionality")
-    @SuppressWarnings("all")
     public void givenTrainee_whenUpdateTrainee_thenTraineeIsUpdated() {
         // given
         Trainee traineeToSave = EntityTestData.getTransientTraineeJohnDoe();
-        repository.save(traineeToSave);
+        entityManager.persist(traineeToSave);
 
         String updatedAddress = "updated address";
 
-        // when
-        Trainee traineeToUpdate = repository.findById(traineeToSave.getId())
-                .orElse(null);
+        Trainee traineeToUpdate = entityManager.find(Trainee.class, traineeToSave.getId());
         traineeToUpdate = traineeToUpdate.toBuilder().address(updatedAddress).build();
 
+        // when
         Trainee actual = repository.update(traineeToUpdate);
 
         // then
@@ -136,37 +155,39 @@ class TraineeDaoTest {
     public void givenId_whenDeleteById_thenTraineeIsDeleted() {
         // given
         Trainee trainee = EntityTestData.getTransientTraineeJohnDoe();
-        repository.save(trainee);
+        entityManager.persist(trainee);
 
         // when
         repository.deleteById(trainee.getId());
 
-        entityManager.clear();
-
-        Optional<Trainee> actual = repository.findById(trainee.getId());
-
         // then
-        assertThat(actual.isEmpty()).isTrue();
+        entityManager.clear();
+        Trainee actual = entityManager.find(Trainee.class, trainee.getId());
+
+        assertThat(actual).isNull();
     }
 
     @Test
-    @DisplayName("Test delete trainee by id functionality")
+    @DisplayName("Test delete all trainees functionality")
     public void whenDeleteAll_thenTraineesIsDeleted() {
         // given
         Trainee trainee1 = EntityTestData.getTransientTraineeJohnDoe();
         Trainee trainee2 = EntityTestData.getTransientTraineeJaneSmith();
         Trainee trainee3 = EntityTestData.getTransientTraineeMichaelJohnson();
 
-        repository.saveAll(trainee1, trainee2, trainee3);
+        entityManager.persist(trainee1);
+        entityManager.persist(trainee2);
+        entityManager.persist(trainee3);
 
         // when
         repository.deleteAll();
 
+        // then
         entityManager.clear();
 
-        List<Trainee> actual = repository.findAll();
+        List<Trainee> actual = entityManager.createQuery("from Trainee ", Trainee.class)
+                .getResultList();
 
-        // then
         assertThat(actual).isEmpty();
     }
 
@@ -175,7 +196,7 @@ class TraineeDaoTest {
     public void givenUsername_whenFindByUsername_thenTraineeIsFound() {
         // given
         Trainee expected = EntityTestData.getTransientTraineeJohnDoe();
-        repository.save(expected);
+        entityManager.persist(expected);
 
         // when
         Optional<Trainee> actual = repository.findByUsername(expected.getUser().getUsername());
@@ -190,7 +211,7 @@ class TraineeDaoTest {
     public void givenIncorrectUsername_whenFindByUsername_thenTraineeIsFound() {
         // given
         Trainee expected = EntityTestData.getTransientTraineeJohnDoe();
-        repository.save(expected);
+        entityManager.persist(expected);
 
         // when
         Optional<Trainee> actual = repository.findByUsername("username");
@@ -204,17 +225,16 @@ class TraineeDaoTest {
     public void givenUsername_whenDeleteByUsername_thenTraineeIsDeleted() {
         // given
         Trainee trainee = EntityTestData.getTransientTraineeJohnDoe();
-        repository.save(trainee);
-
+        entityManager.persist(trainee);
         String username = trainee.getUser().getUsername();
+
         // when
         repository.deleteByUsername(username);
 
-        entityManager.clear();
-
-        Optional<Trainee> actual = repository.findById(trainee.getId());
-
         // then
-        assertThat(actual.isEmpty()).isTrue();
+        entityManager.clear();
+        Trainee actual = entityManager.find(Trainee.class, trainee.getId());
+
+        assertThat(actual).isNull();
     }
 }

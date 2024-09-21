@@ -3,7 +3,7 @@ package com.gym.crm.app.service.impl;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
-import com.gym.crm.app.repository.TrainerDao;
+import com.gym.crm.app.repository.TrainerRepository;
 import com.gym.crm.app.service.TrainerService;
 import com.gym.crm.app.service.common.EntityValidator;
 import lombok.Setter;
@@ -17,7 +17,7 @@ import static com.gym.crm.app.util.Constants.ERROR_TRAINER_WITH_ID_NOT_FOUND;
 public class TrainerServiceImpl implements TrainerService {
 
     private MessageHelper messageHelper;
-    private TrainerDao repository;
+    private TrainerRepository repository;
     private EntityValidator entityValidator;
 
     public Trainer findById(Long id) {

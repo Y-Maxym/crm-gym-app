@@ -1,6 +1,8 @@
-package com.gym.crm.app.repository;
+package com.gym.crm.app.repository.impl;
 
 import com.gym.crm.app.entity.Trainer;
+import com.gym.crm.app.repository.TrainerRepository;
+import jakarta.persistence.NoResultException;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -10,20 +12,20 @@ import java.util.Optional;
 
 @Repository
 @Setter(onMethod_ = @Autowired)
-public class TrainerDao extends CrudDao<Long, Trainer> {
-
-    public TrainerDao() {
-        super(Trainer.class);
-    }
+public class TrainerRepositoryImpl extends TrainerRepository {
 
     public Optional<Trainer> findByUsername(String username) {
-        List<Trainer> trainers = executeForList(entityManager -> {
-            return entityManager.createQuery("FROM Trainer t WHERE t.user.username = :username", Trainer.class)
-                    .setParameter("username", username)
-                    .getResultList();
-        });
+        try {
+            Trainer trainer = execute(entityManager -> {
+                return entityManager.createQuery("FROM Trainer t WHERE t.user.username = :username", Trainer.class)
+                        .setParameter("username", username)
+                        .getSingleResult();
+            });
 
-        return trainers.isEmpty() ? Optional.empty() : Optional.of(trainers.get(0));
+            return Optional.ofNullable(trainer);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     public List<Trainer> getTrainersNotAssignedByTraineeUsername(String username) {

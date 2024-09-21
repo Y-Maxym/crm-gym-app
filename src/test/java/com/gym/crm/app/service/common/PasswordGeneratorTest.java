@@ -59,7 +59,6 @@ class PasswordGeneratorTest {
 
     @Test
     @DisplayName("Test password verification with correct password")
-    @SuppressWarnings("all")
     public void givenStoredPassword_whenIsPasswordCorrect_thenReturnsTrueForCorrectPassword() {
         // given
         String plainPassword = "mySecurePassword";
@@ -78,7 +77,6 @@ class PasswordGeneratorTest {
 
     @Test
     @DisplayName("Test hashPassword method handles exceptions correctly")
-    @SuppressWarnings("all")
     public void givenValidInputs_whenHashPassword_thenDoesNotThrowException() throws NoSuchAlgorithmException {
         // given
         String plainPassword = "password";

@@ -3,7 +3,7 @@ package com.gym.crm.app.service.impl;
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
-import com.gym.crm.app.repository.UserDao;
+import com.gym.crm.app.repository.impl.UserRepositoryImpl;
 import com.gym.crm.app.service.common.EntityValidator;
 import com.gym.crm.app.service.common.UserProfileService;
 import com.gym.crm.app.utils.EntityTestData;
@@ -40,7 +40,7 @@ class UserServiceImplTest {
     private UserProfileService userProfileService;
 
     @Mock
-    private UserDao repository;
+    private UserRepositoryImpl repository;
 
     @InjectMocks
     private UserServiceImpl service;
