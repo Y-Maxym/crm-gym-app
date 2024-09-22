@@ -5,6 +5,7 @@ import com.gym.crm.app.utils.EntityTestData;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.hibernate.PersistentObjectException;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,8 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Testcontainers
 @Transactional
-class TraineeRepositoryImplTest {
+class TraineeRepositoryImplTest extends AbstractPostgreSQLContainerTest {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -31,9 +34,15 @@ class TraineeRepositoryImplTest {
     @Autowired
     private TraineeRepository repository;
 
+    @BeforeAll
+    public static void beforeAll() {
+        POSTGRE_SQL_CONTAINER.start();
+    }
+
     @BeforeEach
     public void setUp() {
-        repository.deleteAll();
+        entityManager.createQuery("DELETE FROM Trainee")
+                .executeUpdate();
     }
 
     @Test
@@ -80,25 +89,6 @@ class TraineeRepositoryImplTest {
         List<Trainee> actual = repository.findAll();
 
         // then
-        assertThat(actual.size()).isEqualTo(3);
-        assertThat(actual).containsAll(List.of(trainee1, trainee2, trainee3));
-    }
-
-    @Test
-    @DisplayName("Test save all trainee functionality")
-    public void givenTrainees_whenSaveAll_thenTraineesIsSaved() {
-        // given
-        Trainee trainee1 = EntityTestData.getTransientTraineeJohnDoe();
-        Trainee trainee2 = EntityTestData.getTransientTraineeJaneSmith();
-        Trainee trainee3 = EntityTestData.getTransientTraineeMichaelJohnson();
-
-        // when
-        repository.saveAll(trainee1, trainee2, trainee3);
-
-        // then
-        List<Trainee> actual = entityManager.createQuery("from Trainee", Trainee.class)
-                .getResultList();
-
         assertThat(actual.size()).isEqualTo(3);
         assertThat(actual).containsAll(List.of(trainee1, trainee2, trainee3));
     }
@@ -165,30 +155,6 @@ class TraineeRepositoryImplTest {
         Trainee actual = entityManager.find(Trainee.class, trainee.getId());
 
         assertThat(actual).isNull();
-    }
-
-    @Test
-    @DisplayName("Test delete all trainees functionality")
-    public void whenDeleteAll_thenTraineesIsDeleted() {
-        // given
-        Trainee trainee1 = EntityTestData.getTransientTraineeJohnDoe();
-        Trainee trainee2 = EntityTestData.getTransientTraineeJaneSmith();
-        Trainee trainee3 = EntityTestData.getTransientTraineeMichaelJohnson();
-
-        entityManager.persist(trainee1);
-        entityManager.persist(trainee2);
-        entityManager.persist(trainee3);
-
-        // when
-        repository.deleteAll();
-
-        // then
-        entityManager.clear();
-
-        List<Trainee> actual = entityManager.createQuery("from Trainee ", Trainee.class)
-                .getResultList();
-
-        assertThat(actual).isEmpty();
     }
 
     @Test

@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,8 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Testcontainers
 @Transactional
-class TrainingRepositoryImplTest {
+class TrainingRepositoryImplTest extends AbstractPostgreSQLContainerTest {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -33,7 +35,8 @@ class TrainingRepositoryImplTest {
 
     @BeforeEach
     public void setUp() {
-        repository.deleteAll();
+        entityManager.createQuery("DELETE FROM Training")
+                .executeUpdate();
     }
 
     @Test
@@ -78,24 +81,6 @@ class TrainingRepositoryImplTest {
         List<Training> actual = repository.findAll();
 
         // then
-        assertThat(actual.size()).isEqualTo(2);
-        assertThat(actual).containsAll(List.of(training1, training2));
-    }
-
-    @Test
-    @DisplayName("Test save all training functionality")
-    public void givenTrainings_whenSaveAll_thenTrainingsIsSaved() {
-        // given
-        Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
-        Training training2 = EntityTestData.getTransientTrainingDavidBrown();
-
-        // when
-        repository.saveAll(training1, training2);
-
-        // then
-        List<Training> actual = entityManager.createQuery("from Training", Training.class)
-                .getResultList();
-
         assertThat(actual.size()).isEqualTo(2);
         assertThat(actual).containsAll(List.of(training1, training2));
     }

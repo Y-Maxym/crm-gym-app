@@ -4,13 +4,9 @@ import com.gym.crm.app.entity.Trainee;
 
 import java.util.Optional;
 
-public abstract class TraineeRepository extends CrudRepository<Trainee, Long> {
+public interface TraineeRepository extends CrudRepository<Trainee> {
 
-    public TraineeRepository() {
-        super(Trainee.class);
-    }
+    Optional<Trainee> findByUsername(String username);
 
-    public abstract Optional<Trainee> findByUsername(String username);
-
-    public abstract void deleteByUsername(String username);
+    void deleteByUsername(String username);
 }

@@ -3,16 +3,17 @@ package com.gym.crm.app.repository.impl;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.repository.TrainerRepository;
 import jakarta.persistence.NoResultException;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-@Setter(onMethod_ = @Autowired)
-public class TrainerRepositoryImpl extends TrainerRepository {
+public class TrainerRepositoryImpl extends CrudRepositoryImpl<Trainer> implements TrainerRepository {
+
+    public TrainerRepositoryImpl() {
+        super(Trainer.class);
+    }
 
     public Optional<Trainer> findByUsername(String username) {
         try {

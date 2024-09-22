@@ -23,7 +23,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(
-        name = "trainings",
+        name = "training",
         schema = "public",
         indexes = @Index(name = "training_pkey", unique = true, columnList = "id")
 )

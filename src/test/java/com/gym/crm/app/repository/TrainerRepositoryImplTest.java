@@ -6,6 +6,7 @@ import com.gym.crm.app.utils.EntityTestData;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.hibernate.PersistentObjectException;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,8 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Testcontainers
 @Transactional
-class TrainerRepositoryImplTest {
+class TrainerRepositoryImplTest extends AbstractPostgreSQLContainerTest {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -32,9 +35,15 @@ class TrainerRepositoryImplTest {
     @Autowired
     private TrainerRepository repository;
 
+    @BeforeAll
+    public static void beforeAll() {
+        POSTGRE_SQL_CONTAINER.start();
+    }
+
     @BeforeEach
     public void setUp() {
-        repository.deleteAll();
+        entityManager.createQuery("DELETE FROM Trainer")
+                .executeUpdate();
     }
 
     @Test
@@ -79,24 +88,6 @@ class TrainerRepositoryImplTest {
         List<Trainer> actual = repository.findAll();
 
         // then
-        assertThat(actual.size()).isEqualTo(2);
-        assertThat(actual).containsAll(List.of(trainer1, trainer2));
-    }
-
-    @Test
-    @DisplayName("Test save all trainer functionality")
-    public void givenTrainers_whenSaveAll_thenTrainersIsSaved() {
-        // given
-        Trainer trainer1 = EntityTestData.getTransientTrainerEmilyDavis();
-        Trainer trainer2 = EntityTestData.getTransientTrainerDavidBrown();
-
-        // when
-        repository.saveAll(trainer1, trainer2);
-
-        // then
-        List<Trainer> actual = entityManager.createQuery("from Trainer", Trainer.class)
-                .getResultList();
-
         assertThat(actual.size()).isEqualTo(2);
         assertThat(actual).containsAll(List.of(trainer1, trainer2));
     }
@@ -158,27 +149,6 @@ class TrainerRepositoryImplTest {
         Trainer actual = entityManager.find(Trainer.class, trainer.getId());
 
         assertThat(actual).isNull();
-    }
-
-    @Test
-    @DisplayName("Test delete all trainers functionality")
-    public void whenDeleteAll_thenTrainersIsDeleted() {
-        // given
-        Trainer trainer1 = EntityTestData.getTransientTrainerEmilyDavis();
-        Trainer trainer2 = EntityTestData.getTransientTrainerDavidBrown();
-
-        entityManager.persist(trainer1);
-        entityManager.persist(trainer2);
-
-        // when
-        repository.deleteAll();
-
-        // then
-        entityManager.clear();
-        List<Trainer> actual = entityManager.createQuery("from Trainer", Trainer.class)
-                .getResultList();
-
-        assertThat(actual).isEmpty();
     }
 
     @Test

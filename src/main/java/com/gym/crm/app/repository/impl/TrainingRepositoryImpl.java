@@ -1,11 +1,13 @@
 package com.gym.crm.app.repository.impl;
 
+import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.repository.TrainingRepository;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@Setter(onMethod_ = @Autowired)
-public class TrainingRepositoryImpl extends TrainingRepository {
+public class TrainingRepositoryImpl extends CrudRepositoryImpl<Training> implements TrainingRepository {
+
+    public TrainingRepositoryImpl() {
+        super(Training.class);
+    }
 }

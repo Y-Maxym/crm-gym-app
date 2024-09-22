@@ -16,7 +16,7 @@ import lombok.ToString;
 
 @Entity
 @Table(
-        name = "training_types",
+        name = "training_type",
         schema = "public",
         indexes = @Index(name = "training_type_pkey", unique = true, columnList = "id")
 )

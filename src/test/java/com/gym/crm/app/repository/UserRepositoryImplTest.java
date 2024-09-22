@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,8 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Testcontainers
 @Transactional
-class UserRepositoryImplTest {
+class UserRepositoryImplTest extends AbstractPostgreSQLContainerTest {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -33,7 +35,8 @@ class UserRepositoryImplTest {
 
     @BeforeEach
     public void setUp() {
-        repository.deleteAll();
+        entityManager.createQuery("DELETE FROM User")
+                .executeUpdate();
     }
 
     @Test
@@ -80,25 +83,6 @@ class UserRepositoryImplTest {
         List<User> actual = repository.findAll();
 
         // then
-        assertThat(actual.size()).isEqualTo(3);
-        assertThat(actual).containsAll(List.of(user1, user2, user3));
-    }
-
-    @Test
-    @DisplayName("Test save all user functionality")
-    public void givenUsers_whenSaveAll_thenUsersIsSaved() {
-        // given
-        User user1 = EntityTestData.getTransientUserJohnDoe();
-        User user2 = EntityTestData.getTransientUserJaneSmith();
-        User user3 = EntityTestData.getTransientUserMichaelJohnson();
-
-        // when
-        repository.saveAll(user1, user2, user3);
-
-        // then
-        List<User> actual = entityManager.createQuery("from User", User.class)
-                .getResultList();
-
         assertThat(actual.size()).isEqualTo(3);
         assertThat(actual).containsAll(List.of(user1, user2, user3));
     }
