@@ -53,7 +53,6 @@ class UserServiceImplTest {
         long id = expected.getId();
 
         doNothing().when(entityValidator).checkId(id);
-
         given(repository.findById(id))
                 .willReturn(Optional.of(expected));
 
@@ -73,10 +72,8 @@ class UserServiceImplTest {
         String message = "User with id %s not found".formatted(id);
 
         doNothing().when(entityValidator).checkId(id);
-
         given(repository.findById(id))
                 .willReturn(Optional.empty());
-
         given(messageHelper.getMessage(ERROR_USER_WITH_ID_NOT_FOUND, id))
                 .willReturn(message);
 
@@ -98,10 +95,8 @@ class UserServiceImplTest {
         user = user.toBuilder().username(username).password(password).build();
 
         doNothing().when(entityValidator).checkEntity(user);
-
         given(userProfileService.generatePassword())
                 .willReturn(password);
-
         given(repository.save(user))
                 .willReturn(user);
 
@@ -126,7 +121,6 @@ class UserServiceImplTest {
 
         given(userProfileService.hashPassword(password))
                 .willReturn(password);
-
         given(userProfileService.generateUsername(firstName, lastName))
                 .willReturn(username);
 
@@ -184,7 +178,6 @@ class UserServiceImplTest {
 
         doNothing().when(entityValidator).checkId(id);
         doNothing().when(repository).deleteById(id);
-
         given(repository.findById(id))
                 .willReturn(Optional.of(EntityTestData.getPersistedUserJohnDoe()));
 

@@ -3,18 +3,10 @@ package com.gym.crm.app.repository;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.utils.EntityTestData;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.hibernate.PersistentObjectException;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
@@ -23,28 +15,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
-@ActiveProfiles("test")
 @Testcontainers
-@Transactional
-class TrainerRepositoryImplTest extends AbstractPostgreSQLContainerTest {
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @Autowired
-    private TrainerRepository repository;
-
-    @BeforeAll
-    public static void beforeAll() {
-        POSTGRE_SQL_CONTAINER.start();
-    }
-
-    @BeforeEach
-    public void setUp() {
-        entityManager.createQuery("DELETE FROM Trainer")
-                .executeUpdate();
-    }
+class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository> {
 
     @Test
     @DisplayName("Test find trainer by id functionality")
@@ -132,7 +104,6 @@ class TrainerRepositoryImplTest extends AbstractPostgreSQLContainerTest {
         // then
         assertThat(actual).isNotNull();
     }
-
 
     @Test
     @DisplayName("Test delete trainer by id functionality")

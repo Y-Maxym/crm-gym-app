@@ -46,7 +46,6 @@ class TrainingServiceImplTest {
         long id = expected.getId();
 
         doNothing().when(entityValidator).checkId(id);
-
         given(repository.findById(id))
                 .willReturn(Optional.of(expected));
 
@@ -66,10 +65,8 @@ class TrainingServiceImplTest {
         String message = "Training with id %s not found".formatted(id);
 
         doNothing().when(entityValidator).checkId(id);
-
         given(repository.findById(id))
                 .willReturn(Optional.empty());
-
         given(messageHelper.getMessage(ERROR_TRAINING_WITH_ID_NOT_FOUND, id))
                 .willReturn(message);
 

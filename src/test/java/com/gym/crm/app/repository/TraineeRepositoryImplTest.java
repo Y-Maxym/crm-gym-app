@@ -2,18 +2,10 @@ package com.gym.crm.app.repository;
 
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.utils.EntityTestData;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.hibernate.PersistentObjectException;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
@@ -22,28 +14,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
-@ActiveProfiles("test")
 @Testcontainers
-@Transactional
-class TraineeRepositoryImplTest extends AbstractPostgreSQLContainerTest {
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @Autowired
-    private TraineeRepository repository;
-
-    @BeforeAll
-    public static void beforeAll() {
-        POSTGRE_SQL_CONTAINER.start();
-    }
-
-    @BeforeEach
-    public void setUp() {
-        entityManager.createQuery("DELETE FROM Trainee")
-                .executeUpdate();
-    }
+class TraineeRepositoryImplTest extends AbstractTestRepository<TraineeRepository> {
 
     @Test
     @DisplayName("Test find trainee by id functionality")
