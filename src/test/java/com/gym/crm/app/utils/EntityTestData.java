@@ -16,7 +16,7 @@ public class EntityTestData {
                 .firstName("John")
                 .lastName("Doe")
                 .username("John.Doe")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -27,7 +27,7 @@ public class EntityTestData {
                 .firstName("Jane")
                 .lastName("Smith")
                 .username("Jane.Smith")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -38,7 +38,7 @@ public class EntityTestData {
                 .firstName("Michael")
                 .lastName("Johnson")
                 .username("Michael.Johnson")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -49,7 +49,7 @@ public class EntityTestData {
                 .firstName("Emily")
                 .lastName("Davis")
                 .username("Emily.Davis")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -60,7 +60,7 @@ public class EntityTestData {
                 .firstName("David")
                 .lastName("Brown")
                 .username("David.Brown")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -137,7 +137,7 @@ public class EntityTestData {
                 .firstName("John")
                 .lastName("Doe")
                 .username("John.Doe")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -155,7 +155,7 @@ public class EntityTestData {
                 .firstName("Jane")
                 .lastName("Smith")
                 .username("Jane.Smith")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -165,7 +165,7 @@ public class EntityTestData {
                 .firstName("Michael")
                 .lastName("Johnson")
                 .username("Michael.Johnson")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -175,7 +175,7 @@ public class EntityTestData {
                 .firstName("Emily")
                 .lastName("Davis")
                 .username("Emily.Davis")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -185,7 +185,7 @@ public class EntityTestData {
                 .firstName("David")
                 .lastName("Brown")
                 .username("David.Brown")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }

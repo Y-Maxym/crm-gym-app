@@ -26,6 +26,10 @@ public class UserProfileService {
         return passwordGenerator.hashPassword(password);
     }
 
+    public boolean isPasswordCorrect(String inputPassword, String storedPassword) {
+        return passwordGenerator.isPasswordCorrect(inputPassword, storedPassword);
+    }
+
     public String generateUsername(String firstName, String lastName) {
         String username = USERNAME_TEMPLATE.formatted(firstName, lastName);
 

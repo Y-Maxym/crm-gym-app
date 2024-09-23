@@ -10,7 +10,10 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.gym.crm.app.util.Constants.ERROR_TRAINER_WITH_ID_NOT_FOUND;
+import static com.gym.crm.app.util.Constants.ERROR_TRAINER_WITH_USERNAME_NOT_FOUND;
 
 @Service
 @Setter(onMethod_ = @Autowired)
@@ -25,6 +28,19 @@ public class TrainerServiceImpl implements TrainerService {
 
         return repository.findById(id)
                 .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINER_WITH_ID_NOT_FOUND, id)));
+    }
+
+    @Override
+    public Trainer findByUsername(String username) {
+        return repository.findByUsername(username)
+                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINER_WITH_USERNAME_NOT_FOUND, username)));
+    }
+
+    @Override
+    public List<Trainer> getTrainersNotAssignedByTraineeUsername(String username) {
+        entityValidator.checkEntity(username);
+
+        return repository.getTrainersNotAssignedByTraineeUsername(username);
     }
 
     public void save(Trainer trainer) {

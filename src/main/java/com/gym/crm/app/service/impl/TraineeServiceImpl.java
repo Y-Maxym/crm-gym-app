@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static com.gym.crm.app.util.Constants.ERROR_TRAINEE_WITH_ID_NOT_FOUND;
+import static com.gym.crm.app.util.Constants.ERROR_TRAINEE_WITH_USERNAME_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.WARN_TRAINEE_WITH_ID_NOT_FOUND;
+import static com.gym.crm.app.util.Constants.WARN_TRAINEE_WITH_USERNAME_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -28,6 +30,12 @@ public class TraineeServiceImpl implements TraineeService {
 
         return repository.findById(id)
                 .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINEE_WITH_ID_NOT_FOUND, id)));
+    }
+
+    @Override
+    public Trainee findByUsername(String username) {
+        return repository.findByUsername(username)
+                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINEE_WITH_USERNAME_NOT_FOUND, username)));
     }
 
     public void save(Trainee trainee) {
@@ -51,5 +59,16 @@ public class TraineeServiceImpl implements TraineeService {
         }
 
         repository.deleteById(id);
+    }
+
+    @Override
+    public void deleteByUsername(String username) {
+        entityValidator.checkEntity(username);
+
+        if (repository.findByUsername(username).isEmpty()) {
+            log.warn(messageHelper.getMessage(WARN_TRAINEE_WITH_USERNAME_NOT_FOUND, username));
+        }
+
+        repository.deleteByUsername(username);
     }
 }
