@@ -3,7 +3,7 @@ package com.gym.crm.app.service.impl;
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
-import com.gym.crm.app.repository.EntityDao;
+import com.gym.crm.app.repository.impl.TraineeRepositoryImpl;
 import com.gym.crm.app.service.common.EntityValidator;
 import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +35,7 @@ class TraineeServiceImplTest {
     private EntityValidator entityValidator;
 
     @Mock
-    private EntityDao<Long, Trainee> repository;
+    private TraineeRepositoryImpl repository;
 
     @InjectMocks
     private TraineeServiceImpl service;
@@ -48,7 +48,6 @@ class TraineeServiceImplTest {
         long id = expected.getId();
 
         doNothing().when(entityValidator).checkId(id);
-
         given(repository.findById(id))
                 .willReturn(Optional.of(expected));
 
@@ -68,10 +67,8 @@ class TraineeServiceImplTest {
         String message = "Trainee with id %s not found".formatted(id);
 
         doNothing().when(entityValidator).checkId(id);
-
         given(repository.findById(id))
                 .willReturn(Optional.empty());
-
         given(messageHelper.getMessage(ERROR_TRAINEE_WITH_ID_NOT_FOUND, id))
                 .willReturn(message);
 
@@ -121,7 +118,6 @@ class TraineeServiceImplTest {
 
         doNothing().when(entityValidator).checkId(id);
         doNothing().when(repository).deleteById(id);
-
         given(repository.findById(id))
                 .willReturn(Optional.of(EntityTestData.getPersistedTraineeJohnDoe()));
 
@@ -140,7 +136,6 @@ class TraineeServiceImplTest {
         long id = 1L;
 
         doNothing().when(entityValidator).checkId(id);
-
         given(repository.findById(id))
                 .willReturn(Optional.empty());
 

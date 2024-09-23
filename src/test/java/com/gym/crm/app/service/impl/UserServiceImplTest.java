@@ -3,7 +3,7 @@ package com.gym.crm.app.service.impl;
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
-import com.gym.crm.app.repository.EntityDao;
+import com.gym.crm.app.repository.impl.UserRepositoryImpl;
 import com.gym.crm.app.service.common.EntityValidator;
 import com.gym.crm.app.service.common.UserProfileService;
 import com.gym.crm.app.utils.EntityTestData;
@@ -40,7 +40,7 @@ class UserServiceImplTest {
     private UserProfileService userProfileService;
 
     @Mock
-    private EntityDao<Long, User> repository;
+    private UserRepositoryImpl repository;
 
     @InjectMocks
     private UserServiceImpl service;
@@ -53,7 +53,6 @@ class UserServiceImplTest {
         long id = expected.getId();
 
         doNothing().when(entityValidator).checkId(id);
-
         given(repository.findById(id))
                 .willReturn(Optional.of(expected));
 
@@ -73,10 +72,8 @@ class UserServiceImplTest {
         String message = "User with id %s not found".formatted(id);
 
         doNothing().when(entityValidator).checkId(id);
-
         given(repository.findById(id))
                 .willReturn(Optional.empty());
-
         given(messageHelper.getMessage(ERROR_USER_WITH_ID_NOT_FOUND, id))
                 .willReturn(message);
 
@@ -98,10 +95,8 @@ class UserServiceImplTest {
         user = user.toBuilder().username(username).password(password).build();
 
         doNothing().when(entityValidator).checkEntity(user);
-
         given(userProfileService.generatePassword())
                 .willReturn(password);
-
         given(repository.save(user))
                 .willReturn(user);
 
@@ -117,16 +112,15 @@ class UserServiceImplTest {
     @DisplayName("Test prepare user without username and password functionality")
     public void givenSaveUserWithoutUsernamePassword_whenSave_thenRepositoryIsCalled() {
         // given
-        User user = EntityTestData.getTransientUserJohnDoe();
+        User user = EntityTestData.getTransientUserJohnDoeWithoutData();
 
         String firstName = user.getFirstName();
         String lastName = user.getLastName();
         String username = "%s.%s".formatted(firstName, lastName);
-        String password = "1234567890";
+        String password = "password";
 
         given(userProfileService.hashPassword(password))
                 .willReturn(password);
-
         given(userProfileService.generateUsername(firstName, lastName))
                 .willReturn(username);
 
@@ -184,7 +178,6 @@ class UserServiceImplTest {
 
         doNothing().when(entityValidator).checkId(id);
         doNothing().when(repository).deleteById(id);
-
         given(repository.findById(id))
                 .willReturn(Optional.of(EntityTestData.getPersistedUserJohnDoe()));
 

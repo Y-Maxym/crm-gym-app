@@ -3,7 +3,7 @@ package com.gym.crm.app.service.impl;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
-import com.gym.crm.app.repository.EntityDao;
+import com.gym.crm.app.repository.impl.TrainerRepositoryImpl;
 import com.gym.crm.app.service.common.EntityValidator;
 import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +33,7 @@ class TrainerServiceImplTest {
     private EntityValidator entityValidator;
 
     @Mock
-    private EntityDao<Long, Trainer> repository;
+    private TrainerRepositoryImpl repository;
 
     @InjectMocks
     private TrainerServiceImpl service;
@@ -46,7 +46,6 @@ class TrainerServiceImplTest {
         long id = expected.getId();
 
         doNothing().when(entityValidator).checkId(id);
-
         given(repository.findById(id))
                 .willReturn(Optional.of(expected));
 
@@ -66,10 +65,8 @@ class TrainerServiceImplTest {
         String message = "Trainer with id %s not found".formatted(id);
 
         doNothing().when(entityValidator).checkId(id);
-
         given(repository.findById(id))
                 .willReturn(Optional.empty());
-
         given(messageHelper.getMessage(ERROR_TRAINER_WITH_ID_NOT_FOUND, id))
                 .willReturn(message);
 

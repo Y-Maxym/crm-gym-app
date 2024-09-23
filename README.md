@@ -15,18 +15,34 @@ To run this application, make sure you have the following installed:
 
 1. Clone the project repository:
   ```bash
-   git clone <repository-url>
+   git clone https://github.com/Y-Maxym/gym-crm-app.git
   ```
 
 2. Clone the project repository:
 ```bash
-cd <project-directory>
+cd gym-crm-app
 ```
 
 3. Build the project using Gradle:
 ```bash
 ./gradlew build
 ```
+
+## Setup Instructions
+
+If you have **Docker** installed, run the `docker-compose.yml` file to create a container and start the PostgreSQL database before starting the application. Use the following command:
+
+```bash
+docker-compose up -d
+```
+
+If you do not have Docker, connect to any PostgreSQL database and run the following script to create the database and add a user:
+```sql
+CREATE DATABASE "gym-crm";
+CREATE USER gca WITH PASSWORD 'gca';
+GRANT ALL PRIVILEGES ON DATABASE "gym-crm" TO gca;
+```
+
 ## Run Application
 
 To start the application locally, use the following command:
@@ -34,12 +50,13 @@ To start the application locally, use the following command:
 ./gradlew bootRun
 ```
 
-## Technologies Used
-
 - **Java 17**
 - **Spring Boot 3.3.3**
 - **Gradle** (for project management)
-- **CSV Parsing** (for initial data loading)
+- **PostgreSQL** (database)
+- **Testcontainers** (for integration testing)
+- **Liquibase** (for database migrations)
+- **Docker Compose** (for setting up the database)
 - **AOP (Aspect-Oriented Programming)** for logging
 - **Facade Pattern** for combining service logic
 - **Custom Exceptions** for error handling
@@ -48,7 +65,9 @@ To start the application locally, use the following command:
 
 ## Tests
 
-The application is fully covered with unit tests, using **JUnit** and **Mockito** to ensure the functionality of all components. The current test coverage is:
+The application is fully covered with unit tests, using **JUnit** and **Mockito** to ensure the functionality of all components. Additionally, **Testcontainers** is used for testing repository layers with an isolated PostgreSQL database.
+
+> **Note**: To run repository tests, you need to have **Docker** installed and running, as the tests will use Docker containers to create an isolated environment for the database.
 
 - **Line Coverage**: ![Coverage](.github/badges/jacoco.svg)
 - **Branch Coverage**: ![Branches](.github/badges/branches.svg)

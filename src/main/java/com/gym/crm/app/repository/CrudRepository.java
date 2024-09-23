@@ -3,9 +3,9 @@ package com.gym.crm.app.repository;
 import java.util.List;
 import java.util.Optional;
 
-public interface EntityDao<ID, T> {
+public interface CrudRepository<T> {
 
-    Optional<T> findById(ID id);
+    Optional<T> findById(Long id);
 
     List<T> findAll();
 
@@ -13,5 +13,5 @@ public interface EntityDao<ID, T> {
 
     T update(T entity);
 
-    void deleteById(ID id);
+    void deleteById(Long id);
 }
