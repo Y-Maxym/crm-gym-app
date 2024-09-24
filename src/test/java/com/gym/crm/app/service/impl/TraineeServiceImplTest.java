@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static com.gym.crm.app.util.Constants.ERROR_TRAINEE_WITH_ID_NOT_FOUND;
@@ -118,6 +119,23 @@ class TraineeServiceImplTest {
 
         // then
         assertThat(ex.getMessage()).isEqualTo(message);
+    }
+
+    @Test
+    @DisplayName("Test find trainings by criteria functionality")
+    public void givenCriteria_whenFindByCriteria_thenRepositoryIsCalled() {
+        // given
+        String username = "username";
+        LocalDate from = LocalDate.parse("2020-01-01");
+        LocalDate to = LocalDate.parse("2020-01-01");
+        String trainerName = "trainerName";
+        String trainingType = "trainingType";
+
+        // when
+        service.findTrainingsByCriteria(username, from, to, trainerName, trainingType);
+
+        // then
+        verify(repository).findTrainingsByCriteria(username, from, to, trainerName, trainingType);
     }
 
     @Test

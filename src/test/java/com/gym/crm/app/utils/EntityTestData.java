@@ -252,14 +252,14 @@ public class EntityTestData {
 
     public static TrainingType getTrainingTypeYoga() {
         return TrainingType.builder()
-                .id(3L)
+                .id(2L)
                 .trainingTypeName("Yoga")
                 .build();
     }
 
     public static TrainingType getTrainingTypeFitness() {
         return TrainingType.builder()
-                .id(2L)
+                .id(1L)
                 .trainingTypeName("Fitness")
                 .build();
     }

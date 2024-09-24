@@ -40,9 +40,6 @@ import org.springframework.validation.BindingResult;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
@@ -198,26 +195,24 @@ public class ServiceFacade {
         traineeService.deleteByUsername(user.getUsername());
     }
 
-    public Set<TrainingResponse> getTraineeTrainingsByCriteria(LocalDate from, LocalDate to, String traineeName,
+    public Set<TrainingResponse> getTraineeTrainingsByCriteria(LocalDate from, LocalDate to, String trainerName,
                                                                String trainingType, AuthCredentials credentials) {
         User user = authService.authenticate(credentials);
 
         String username = user.getUsername();
-        Trainee trainee = traineeService.findByUsername(username);
 
-        Set<Training> trainings = filterTrainings(trainee.getTrainings(), from, to, traineeName, trainingType);
+        Set<Training> trainings = traineeService.findTrainingsByCriteria(username, from, to, trainerName, trainingType);
 
         return trainingMapper.mapList(trainings);
     }
 
-    public Set<TrainingResponse> getTrainerTrainingsByCriteria(LocalDate from, LocalDate to, String trainerName,
+    public Set<TrainingResponse> getTrainerTrainingsByCriteria(LocalDate from, LocalDate to, String traineeName,
                                                                String trainingType, AuthCredentials credentials) {
         User user = authService.authenticate(credentials);
 
         String username = user.getUsername();
-        Trainer trainer = trainerService.findByUsername(username);
 
-        Set<Training> trainings = filterTrainings(trainer.getTrainings(), from, to, trainerName, trainingType);
+        Set<Training> trainings = trainerService.findTrainingsByCriteria(username, from, to, traineeName, trainingType);
 
         return trainingMapper.mapList(trainings);
     }
@@ -262,16 +257,6 @@ public class ServiceFacade {
 
         trainee.getTrainers().remove(trainer);
         traineeService.update(trainee);
-    }
-
-    private Set<Training> filterTrainings(Set<Training> trainings, LocalDate from, LocalDate to, String
-            trainerName, String trainingType) {
-        return trainings.stream()
-                .filter(training -> isNull(from) || training.getTrainingDate().isAfter(from))
-                .filter(training -> isNull(to) || training.getTrainingDate().isBefore(to))
-                .filter(training -> isNull(trainerName) || training.getTrainer().getUser().getFirstName().equals(trainerName))
-                .filter(training -> isNull(trainingType) || training.getTrainingType().getTrainingTypeName().equals(trainingType))
-                .collect(Collectors.toSet());
     }
 
     private User updateUserProfile(User updatedUser, User user) {

@@ -1,6 +1,7 @@
 package com.gym.crm.app.repository;
 
 import com.gym.crm.app.entity.Trainee;
+import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.utils.EntityTestData;
 import org.hibernate.PersistentObjectException;
 import org.junit.jupiter.api.DisplayName;
@@ -8,8 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -63,6 +66,64 @@ class TraineeRepositoryImplTest extends AbstractTestRepository<TraineeRepository
         // then
         assertThat(actual.size()).isEqualTo(3);
         assertThat(actual).containsAll(List.of(trainee1, trainee2, trainee3));
+    }
+
+    @Test
+    @DisplayName("Test find trainings by criteria functionality")
+    public void givenValidCriteria_whenFindTrainings_thenReturnTrainings() {
+        // when
+        Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
+        Training training2 = EntityTestData.getTransientTrainingDavidBrown();
+
+        entityManager.persist(training1);
+        entityManager.persist(training2);
+
+        String username = training2.getTrainee().getUser().getUsername();
+        LocalDate from = training2.getTrainingDate();
+        LocalDate to = training2.getTrainingDate();
+        String trainerName = training2.getTrainer().getUser().getFirstName();
+        String trainingType = training2.getTrainingType().getTrainingTypeName();
+
+        // when
+        Set<Training> trainings = repository.findTrainingsByCriteria(username, from, to, trainerName, trainingType);
+
+        // then
+        assertThat(trainings.size()).isEqualTo(1);
+        assertThat(trainings).contains(training2);
+    }
+
+    @Test
+    @DisplayName("Test find trainings by null criteria functionality")
+    public void givenNullCriteria_whenFindTrainings_thenReturnTrainings() {
+        // when
+        Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
+        Training training2 = EntityTestData.getTransientTrainingDavidBrown();
+
+        entityManager.persist(training1);
+        entityManager.persist(training2);
+
+        // when
+        Set<Training> trainings = repository.findTrainingsByCriteria(null, null, null, null, null);
+
+        // then
+        assertThat(trainings.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("Test find trainings by blank criteria functionality")
+    public void givenBlankCriteria_whenFindTrainings_thenReturnTrainings() {
+        // when
+        Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
+        Training training2 = EntityTestData.getTransientTrainingDavidBrown();
+
+        entityManager.persist(training1);
+        entityManager.persist(training2);
+
+        // when
+        Set<Training> trainings = repository.findTrainingsByCriteria("", null, null, "", "");
+
+        // then
+        assertThat(trainings.size()).isEqualTo(2);
     }
 
     @Test
