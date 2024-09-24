@@ -1,7 +1,7 @@
 package com.gym.crm.app.repository;
 
+import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
-import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.utils.EntityTestData;
 import org.hibernate.PersistentObjectException;
 import org.junit.jupiter.api.DisplayName;
@@ -155,11 +155,20 @@ class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository
     @DisplayName("Test get trainers not assigned by trainee username")
     public void givenTrainers_whenGetTrainers_thenTrainersIsReturned() {
         // given
-        Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
-        Training training2 = EntityTestData.getTransientTrainingDavidBrown();
+        Trainer trainer1 = EntityTestData.getTransientTrainerEmilyDavis();
+        Trainer trainer2 = EntityTestData.getTransientTrainerDavidBrown();
 
-        entityManager.persist(training1);
-        entityManager.persist(training2);
+        entityManager.persist(trainer1);
+        entityManager.persist(trainer2);
+
+        Trainee trainee1 = EntityTestData.getTransientTraineeJaneSmith();
+        Trainee trainee2 = EntityTestData.getTransientTraineeJohnDoe();
+
+        trainee1.getTrainers().add(trainer2);
+        trainee2.getTrainers().add(trainer1);
+
+        entityManager.persist(trainee1);
+        entityManager.persist(trainee2);
 
         String username = "John.Doe";
 
@@ -168,6 +177,6 @@ class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository
 
         // then
         assertThat(actual.size()).isEqualTo(1);
-        assertThat(actual.get(0).getUser().getUsername()).isEqualTo("Emily.Davis");
+        assertThat(actual.get(0).getUser().getUsername()).isEqualTo("David.Brown");
     }
 }

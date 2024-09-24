@@ -1,4 +1,4 @@
-package com.gym.crm.app.dto.response.user;
+package com.gym.crm.app.dto.response;
 
 public record UserProfileResponse
         (

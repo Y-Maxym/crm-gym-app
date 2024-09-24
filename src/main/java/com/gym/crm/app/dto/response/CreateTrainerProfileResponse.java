@@ -1,6 +1,4 @@
-package com.gym.crm.app.dto.response.trainer;
-
-import com.gym.crm.app.dto.response.user.CreateUserProfileResponse;
+package com.gym.crm.app.dto.response;
 
 public record CreateTrainerProfileResponse
         (

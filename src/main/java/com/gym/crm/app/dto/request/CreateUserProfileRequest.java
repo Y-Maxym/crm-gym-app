@@ -1,4 +1,4 @@
-package com.gym.crm.app.dto.request.user;
+package com.gym.crm.app.dto.request;
 
 public record CreateUserProfileRequest
         (

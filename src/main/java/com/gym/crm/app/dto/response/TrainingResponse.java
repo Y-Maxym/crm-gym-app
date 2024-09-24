@@ -1,7 +1,4 @@
-package com.gym.crm.app.dto.response.training;
-
-import com.gym.crm.app.dto.response.trainee.TraineeProfileResponse;
-import com.gym.crm.app.dto.response.trainer.TrainerProfileResponse;
+package com.gym.crm.app.dto.response;
 
 import java.time.LocalDate;
 

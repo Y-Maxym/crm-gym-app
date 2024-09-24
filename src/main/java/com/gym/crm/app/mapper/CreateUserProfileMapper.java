@@ -1,7 +1,7 @@
 package com.gym.crm.app.mapper;
 
-import com.gym.crm.app.dto.request.user.CreateUserProfileRequest;
-import com.gym.crm.app.dto.response.user.CreateUserProfileResponse;
+import com.gym.crm.app.dto.request.CreateUserProfileRequest;
+import com.gym.crm.app.dto.response.CreateUserProfileResponse;
 import com.gym.crm.app.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

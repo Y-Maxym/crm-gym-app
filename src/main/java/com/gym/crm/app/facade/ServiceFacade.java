@@ -1,16 +1,16 @@
 package com.gym.crm.app.facade;
 
 import com.gym.crm.app.dto.AuthCredentials;
-import com.gym.crm.app.dto.request.trainee.CreateTraineeProfileRequest;
-import com.gym.crm.app.dto.request.trainee.TraineeProfileRequest;
-import com.gym.crm.app.dto.request.trainer.CreateTrainerProfileRequest;
-import com.gym.crm.app.dto.request.trainer.TrainerProfileRequest;
-import com.gym.crm.app.dto.request.training.TrainingRequest;
-import com.gym.crm.app.dto.response.trainee.CreateTraineeProfileResponse;
-import com.gym.crm.app.dto.response.trainee.TraineeProfileResponse;
-import com.gym.crm.app.dto.response.trainer.CreateTrainerProfileResponse;
-import com.gym.crm.app.dto.response.trainer.TrainerProfileResponse;
-import com.gym.crm.app.dto.response.training.TrainingResponse;
+import com.gym.crm.app.dto.request.CreateTraineeProfileRequest;
+import com.gym.crm.app.dto.request.TraineeProfileRequest;
+import com.gym.crm.app.dto.request.CreateTrainerProfileRequest;
+import com.gym.crm.app.dto.request.TrainerProfileRequest;
+import com.gym.crm.app.dto.request.TrainingRequest;
+import com.gym.crm.app.dto.response.CreateTraineeProfileResponse;
+import com.gym.crm.app.dto.response.TraineeProfileResponse;
+import com.gym.crm.app.dto.response.CreateTrainerProfileResponse;
+import com.gym.crm.app.dto.response.TrainerProfileResponse;
+import com.gym.crm.app.dto.response.TrainingResponse;
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;

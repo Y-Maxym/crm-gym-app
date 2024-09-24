@@ -1,6 +1,4 @@
-package com.gym.crm.app.dto.response.trainee;
-
-import com.gym.crm.app.dto.response.user.CreateUserProfileResponse;
+package com.gym.crm.app.dto.response;
 
 import java.time.LocalDate;
 

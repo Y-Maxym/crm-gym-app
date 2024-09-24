@@ -23,6 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -65,18 +66,20 @@ public final class Trainer {
     )
     private final User user;
 
+    @Builder.Default
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "training",
+            name = "trainee_trainer",
             joinColumns = @JoinColumn(name = "trainer_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "trainee_id", referencedColumnName = "id")
     )
-    private Set<Trainee> trainees;
+    private Set<Trainee> trainees = new HashSet<>();
 
+    @Builder.Default
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private Set<Training> trainings;
+    private Set<Training> trainings = new HashSet<>();
 }
