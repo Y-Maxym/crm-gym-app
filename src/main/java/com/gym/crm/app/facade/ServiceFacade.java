@@ -2,19 +2,24 @@ package com.gym.crm.app.facade;
 
 import com.gym.crm.app.dto.AuthCredentials;
 import com.gym.crm.app.dto.request.CreateTraineeProfileRequest;
-import com.gym.crm.app.dto.request.TraineeProfileRequest;
 import com.gym.crm.app.dto.request.CreateTrainerProfileRequest;
+import com.gym.crm.app.dto.request.TraineeProfileRequest;
 import com.gym.crm.app.dto.request.TrainerProfileRequest;
 import com.gym.crm.app.dto.request.TrainingRequest;
 import com.gym.crm.app.dto.response.CreateTraineeProfileResponse;
-import com.gym.crm.app.dto.response.TraineeProfileResponse;
 import com.gym.crm.app.dto.response.CreateTrainerProfileResponse;
+import com.gym.crm.app.dto.response.TraineeProfileResponse;
 import com.gym.crm.app.dto.response.TrainerProfileResponse;
 import com.gym.crm.app.dto.response.TrainingResponse;
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.entity.User;
+import com.gym.crm.app.exception.CreateTraineeException;
+import com.gym.crm.app.exception.CreateTrainerException;
+import com.gym.crm.app.exception.CreateTrainingException;
+import com.gym.crm.app.exception.UpdateTraineeException;
+import com.gym.crm.app.exception.UpdateTrainerException;
 import com.gym.crm.app.mapper.CreateTraineeProfileMapper;
 import com.gym.crm.app.mapper.CreateTrainerProfileMapper;
 import com.gym.crm.app.mapper.TraineeProfileMapper;
@@ -25,10 +30,12 @@ import com.gym.crm.app.service.TrainerService;
 import com.gym.crm.app.service.TrainingService;
 import com.gym.crm.app.service.UserService;
 import com.gym.crm.app.service.common.AuthService;
+import com.gym.crm.app.service.common.BindingResultsService;
 import com.gym.crm.app.service.common.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -48,6 +55,7 @@ public class ServiceFacade {
     private final UserService userService;
     private final UserProfileService userProfileService;
     private final AuthService authService;
+    private final BindingResultsService bindingResultsService;
 
     private final TraineeProfileMapper traineeProfileMapper;
     private final TrainerProfileMapper trainerProfileMapper;
@@ -56,7 +64,9 @@ public class ServiceFacade {
     private final CreateTrainerProfileMapper createTrainerProfileMapper;
 
     @Transactional
-    public CreateTrainerProfileResponse createTrainerProfile(CreateTrainerProfileRequest request) {
+    public CreateTrainerProfileResponse createTrainerProfile(CreateTrainerProfileRequest request, BindingResult bindingResult) {
+        bindingResultsService.handle(bindingResult, CreateTrainerException::new);
+
         Trainer trainer = createTrainerProfileMapper.map(request);
 
         String password = userProfileService.generatePassword();
@@ -74,7 +84,9 @@ public class ServiceFacade {
     }
 
     @Transactional
-    public CreateTraineeProfileResponse createTraineeProfile(CreateTraineeProfileRequest request) {
+    public CreateTraineeProfileResponse createTraineeProfile(CreateTraineeProfileRequest request, BindingResult bindingResult) {
+        bindingResultsService.handle(bindingResult, CreateTraineeException::new);
+
         Trainee trainee = createTraineeProfileMapper.map(request);
 
         String password = userProfileService.generatePassword();
@@ -120,8 +132,10 @@ public class ServiceFacade {
     }
 
     @Transactional
-    public void updateTrainerProfile(TrainerProfileRequest request, AuthCredentials credentials) {
+    public void updateTrainerProfile(TrainerProfileRequest request, BindingResult bindingResult, AuthCredentials credentials) {
         authService.authenticate(credentials);
+
+        bindingResultsService.handle(bindingResult, UpdateTrainerException::new);
 
         Trainer updatedTrainer = trainerProfileMapper.map(request);
 
@@ -137,8 +151,10 @@ public class ServiceFacade {
     }
 
     @Transactional
-    public void updateTraineeProfile(TraineeProfileRequest request, AuthCredentials credentials) {
+    public void updateTraineeProfile(TraineeProfileRequest request, BindingResult bindingResult, AuthCredentials credentials) {
         Trainee updatedTrainee = traineeProfileMapper.map(request);
+
+        bindingResultsService.handle(bindingResult, UpdateTraineeException::new);
 
         authService.authenticate(credentials);
 
@@ -156,17 +172,23 @@ public class ServiceFacade {
     @Transactional
     public void activateProfile(AuthCredentials credentials) {
         User user = authService.authenticate(credentials);
-        user = user.toBuilder().isActive(true).build();
 
-        userService.update(user);
+        if (!user.isActive()) {
+            user = user.toBuilder().isActive(true).build();
+
+            userService.update(user);
+        }
     }
 
     @Transactional
     public void deactivateProfile(AuthCredentials credentials) {
         User user = authService.authenticate(credentials);
-        user = user.toBuilder().isActive(false).build();
 
-        userService.update(user);
+        if (user.isActive()) {
+            user = user.toBuilder().isActive(false).build();
+
+            userService.update(user);
+        }
     }
 
     @Transactional
@@ -201,8 +223,10 @@ public class ServiceFacade {
     }
 
     @Transactional
-    public void addTraining(TrainingRequest request, AuthCredentials credentials) {
+    public void addTraining(TrainingRequest request, BindingResult bindingResult, AuthCredentials credentials) {
         authService.authenticate(credentials);
+
+        bindingResultsService.handle(bindingResult, CreateTrainingException::new);
 
         Training training = trainingMapper.map(request);
 
@@ -216,6 +240,28 @@ public class ServiceFacade {
         List<Trainer> trainers = trainerService.getTrainersNotAssignedByTraineeUsername(username);
 
         return trainerProfileMapper.mapList(trainers);
+    }
+
+    @Transactional
+    public void addTrainerToTrainee(String trainerUsername, AuthCredentials credentials) {
+        User user = authService.authenticate(credentials);
+
+        Trainee trainee = traineeService.findByUsername(user.getUsername());
+        Trainer trainer = trainerService.findByUsername(trainerUsername);
+
+        trainee.getTrainers().add(trainer);
+        traineeService.update(trainee);
+    }
+
+    @Transactional
+    public void deleteTraineesTrainer(String trainerUsername, AuthCredentials credentials) {
+        User user = authService.authenticate(credentials);
+
+        Trainee trainee = traineeService.findByUsername(user.getUsername());
+        Trainer trainer = trainerService.findByUsername(trainerUsername);
+
+        trainee.getTrainers().remove(trainer);
+        traineeService.update(trainee);
     }
 
     private Set<Training> filterTrainings(Set<Training> trainings, LocalDate from, LocalDate to, String
