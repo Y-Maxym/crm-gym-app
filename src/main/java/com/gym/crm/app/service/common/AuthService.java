@@ -24,12 +24,12 @@ public class AuthService {
         try {
             user = service.findByUsername(username);
         } catch (Exception e) {
-            throw new AuthenticationException(INVALID_USERNAME_OR_PASSWORD);
+            throw new AuthenticationException(INVALID_USERNAME_OR_PASSWORD, e);
         }
 
         String storedPassword = user.getPassword();
 
-        if (profileService.isPasswordCorrect(password, storedPassword)) {
+        if (!profileService.isPasswordCorrect(password, storedPassword)) {
             throw new AuthenticationException(INVALID_USERNAME_OR_PASSWORD);
         }
 

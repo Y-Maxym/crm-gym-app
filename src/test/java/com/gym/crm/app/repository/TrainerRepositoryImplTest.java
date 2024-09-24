@@ -139,7 +139,7 @@ class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository
 
     @Test
     @DisplayName("Test find trainer by incorrect username functionality")
-    public void givenIncorrectUsername_whenFindByUsername_thenTrainerIsFound() {
+    public void givenIncorrectUsername_whenFindByUsername_thenTrainerIsNotFound() {
         // given
         Trainer expected = EntityTestData.getTransientTrainerEmilyDavis();
         entityManager.persist(expected);

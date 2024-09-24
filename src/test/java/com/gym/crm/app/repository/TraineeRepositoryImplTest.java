@@ -146,7 +146,7 @@ class TraineeRepositoryImplTest extends AbstractTestRepository<TraineeRepository
 
     @Test
     @DisplayName("Test find trainee by incorrect username functionality")
-    public void givenIncorrectUsername_whenFindByUsername_thenTraineeIsFound() {
+    public void givenIncorrectUsername_whenFindByUsername_thenTraineeIsNotFound() {
         // given
         Trainee expected = EntityTestData.getTransientTraineeJohnDoe();
         entityManager.persist(expected);

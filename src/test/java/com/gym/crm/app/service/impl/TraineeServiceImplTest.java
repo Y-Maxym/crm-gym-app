@@ -1,6 +1,7 @@
 package com.gym.crm.app.service.impl;
 
 import com.gym.crm.app.entity.Trainee;
+import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.impl.TraineeRepositoryImpl;
@@ -16,7 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static com.gym.crm.app.util.Constants.ERROR_TRAINEE_WITH_ID_NOT_FOUND;
+import static com.gym.crm.app.util.Constants.ERROR_TRAINEE_WITH_USERNAME_NOT_FOUND;
+import static com.gym.crm.app.util.Constants.ERROR_USER_WITH_USERNAME_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.WARN_TRAINEE_WITH_ID_NOT_FOUND;
+import static com.gym.crm.app.util.Constants.WARN_TRAINEE_WITH_USERNAME_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
@@ -74,6 +78,43 @@ class TraineeServiceImplTest {
 
         // when
         EntityValidationException ex = assertThrows(EntityValidationException.class, () -> service.findById(id));
+
+        // then
+        assertThat(ex.getMessage()).isEqualTo(message);
+    }
+
+    @Test
+    @DisplayName("Test find trainee by username functionality")
+    public void givenUsername_whenFindByUsername_thenTraineeIsReturned() {
+        // given
+        Trainee expected = EntityTestData.getPersistedTraineeJohnDoe();
+        String username = expected.getUser().getUsername();
+
+        given(repository.findByUsername(username))
+                .willReturn(Optional.of(expected));
+
+        // when
+        Trainee actual = service.findByUsername(username);
+
+        // then
+        assertThat(actual).isNotNull();
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("Test find trainee by incorrect username functionality")
+    public void givenIncorrectUsername_whenFindByUsername_thenExceptionIsThrown() {
+        // given
+        String username = "username";
+        String message = "Trainee with username %s not found".formatted(username);
+
+        given(repository.findByUsername(username))
+                .willReturn(Optional.empty());
+        given(messageHelper.getMessage(ERROR_TRAINEE_WITH_USERNAME_NOT_FOUND, username))
+                .willReturn(message);
+
+        // when
+        EntityValidationException ex = assertThrows(EntityValidationException.class, () -> service.findByUsername(username));
 
         // then
         assertThat(ex.getMessage()).isEqualTo(message);
@@ -145,5 +186,42 @@ class TraineeServiceImplTest {
         // then
         verify(messageHelper).getMessage(WARN_TRAINEE_WITH_ID_NOT_FOUND, id);
         verify(repository).deleteById(id);
+    }
+
+    @Test
+    @DisplayName("Test delete trainee by username functionality")
+    public void givenUsername_whenDeleteByUsername_thenRepositoryIsCalled() {
+        // given
+        String username = "username";
+
+        doNothing().when(entityValidator).checkEntity(username);
+        doNothing().when(repository).deleteByUsername(username);
+        given(repository.findByUsername(username))
+                .willReturn(Optional.of(EntityTestData.getPersistedTraineeJohnDoe()));
+
+        // when
+        service.deleteByUsername(username);
+
+        // then
+        verify(messageHelper, never()).getMessage(WARN_TRAINEE_WITH_USERNAME_NOT_FOUND, username);
+        verify(repository).deleteByUsername(username);
+    }
+
+    @Test
+    @DisplayName("Test delete trainee by incorrect username functionality")
+    public void givenIncorrectUsername_whenDeleteByUsername_thenLogWarnIsCalled() {
+        // given
+        String username = "username";
+
+        doNothing().when(entityValidator).checkEntity(username);
+        given(repository.findByUsername(username))
+                .willReturn(Optional.empty());
+
+        // when
+        service.deleteByUsername(username);
+
+        // then
+        verify(messageHelper).getMessage(WARN_TRAINEE_WITH_USERNAME_NOT_FOUND, username);
+        verify(repository).deleteByUsername(username);
     }
 }
