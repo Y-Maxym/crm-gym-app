@@ -57,6 +57,14 @@ jacocoTestReport {
         csv.required.set(true)
         html.required.set(true)
     }
+
+    afterEvaluate {
+        classDirectories.setFrom(
+                files(classDirectories.files.collect {
+                    fileTree(dir: it, exclude: ['com/gym/crm/app/mapper/**'])
+                })
+        )
+    }
 }
 
 tasks.named('test') {

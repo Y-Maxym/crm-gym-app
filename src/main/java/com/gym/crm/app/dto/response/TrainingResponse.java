@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 public record TrainingResponse
         (
-                TraineeProfileResponse trainee,
-                TrainerProfileResponse trainer,
+                TraineeProfileResponse traineeUsername,
+                TrainerProfileResponse trainerUsername,
                 String trainingName,
                 String trainingType,
                 LocalDate trainingDate,

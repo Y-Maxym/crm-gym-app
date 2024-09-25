@@ -37,6 +37,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsername(String username) {
+        entityValidator.checkEntity(username);
+
         return repository.findByUsername(username)
                 .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_USER_WITH_USERNAME_NOT_FOUND, username)));
     }

@@ -107,7 +107,6 @@ public class ServiceFacade {
         Trainer trainer = trainerService.findByUsername(username);
 
         return trainerProfileMapper.map(trainer);
-
     }
 
     public TraineeProfileResponse findTraineeProfileByUsername(AuthCredentials credentials) {
@@ -117,13 +116,14 @@ public class ServiceFacade {
         Trainee trainee = traineeService.findByUsername(username);
 
         return traineeProfileMapper.map(trainee);
-
     }
 
     @Transactional
     public void changePassword(String changedPassword, AuthCredentials credentials) {
         User user = authService.authenticate(credentials);
-        user = user.toBuilder().password(changedPassword).build();
+
+        String hashedPassword = userProfileService.hashPassword(changedPassword);
+        user = user.toBuilder().password(hashedPassword).build();
 
         userService.update(user);
     }
@@ -249,7 +249,7 @@ public class ServiceFacade {
     }
 
     @Transactional
-    public void deleteTraineesTrainer(String trainerUsername, AuthCredentials credentials) {
+    public void removeTraineesTrainer(String trainerUsername, AuthCredentials credentials) {
         User user = authService.authenticate(credentials);
 
         Trainee trainee = traineeService.findByUsername(user.getUsername());

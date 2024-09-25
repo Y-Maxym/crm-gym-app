@@ -2,9 +2,9 @@ package com.gym.crm.app.util;
 
 public class Constants {
 
-    public static final String INFO_USER_UTILS_INPUT = "INFO.USER.UTILS.INPUT";
-    public static final String INFO_USER_UTILS_RESULT = "INFO.USER.UTILS.RESULT";
-    public static final String INFO_USER_UTILS_EXCEPTION = "INFO.USER.UTILS.EXCEPTION";
+    public static final String INFO_FACADE_INPUT = "INFO.FACADE.INPUT";
+    public static final String INFO_FACADE_RESULT = "INFO.FACADE.RESULT";
+    public static final String INFO_FACADE_EXCEPTION = "INFO.FACADE.EXCEPTION";
 
     public static final String INFO_SERVICE_INPUT = "INFO.SERVICE.INPUT";
     public static final String INFO_SERVICE_RESULT = "INFO.SERVICE.RESULT";
@@ -14,9 +14,9 @@ public class Constants {
     public static final String INFO_REPOSITORY_RESULT = "INFO.REPOSITORY.RESULT";
     public static final String INFO_REPOSITORY_EXCEPTION = "INFO.REPOSITORY.EXCEPTION";
 
-    public static final String DEBUG_USER_UTILS_INPUT = "DEBUG.USER.UTILS.INPUT";
-    public static final String DEBUG_USER_UTILS_RESULT = "DEBUG.USER.UTILS.RESULT";
-    public static final String DEBUG_USER_UTILS_EXCEPTION = "DEBUG.USER.UTILS.EXCEPTION";
+    public static final String DEBUG_FACADE_INPUT = "DEBUG.FACADE.INPUT";
+    public static final String DEBUG_FACADE_RESULT = "DEBUG.FACADE.RESULT";
+    public static final String DEBUG_FACADE_EXCEPTION = "DEBUG.FACADE.EXCEPTION";
 
     public static final String DEBUG_SERVICE_INPUT = "DEBUG.SERVICE.INPUT";
     public static final String DEBUG_SERVICE_RESULT = "DEBUG.SERVICE.RESULT";

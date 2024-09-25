@@ -8,9 +8,6 @@ public record UserProfileRequest
                 String firstName,
 
                 @NotEmpty(message = "Last name should not be empty")
-                String lastName,
-
-                @NotEmpty(message = "Username should not be empty")
-                String username
+                String lastName
         ) {
 }

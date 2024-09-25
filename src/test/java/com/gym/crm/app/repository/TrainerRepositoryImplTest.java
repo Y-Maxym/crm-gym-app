@@ -70,7 +70,7 @@ class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository
     @Test
     @DisplayName("Test find trainings by criteria functionality")
     public void givenValidCriteria_whenFindTrainings_thenReturnTrainings() {
-        // when
+        // given
         Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
         Training training2 = EntityTestData.getTransientTrainingDavidBrown();
 
@@ -94,7 +94,7 @@ class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository
     @Test
     @DisplayName("Test find trainings by null criteria functionality")
     public void givenNullCriteria_whenFindTrainings_thenReturnTrainings() {
-        // when
+        // given
         Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
         Training training2 = EntityTestData.getTransientTrainingDavidBrown();
 
@@ -111,7 +111,7 @@ class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository
     @Test
     @DisplayName("Test find trainings by blank criteria functionality")
     public void givenBlankCriteria_whenFindTrainings_thenReturnTrainings() {
-        // when
+        // given
         Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
         Training training2 = EntityTestData.getTransientTrainingDavidBrown();
 

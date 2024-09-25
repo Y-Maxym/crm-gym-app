@@ -8,8 +8,11 @@ import java.time.LocalDate;
 
 public record TrainingRequest
         (
-                TraineeProfileRequest trainee,
-                TrainerProfileRequest trainer,
+                @NotEmpty(message = "Trainee username should not be empty")
+                String traineeUsername,
+
+                @NotEmpty(message = "Trainer username should not be empty")
+                String trainerUsername,
 
                 @NotEmpty(message = "Training name should not be empty")
                 String trainingName,
