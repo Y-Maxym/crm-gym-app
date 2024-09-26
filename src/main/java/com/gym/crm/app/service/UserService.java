@@ -6,7 +6,11 @@ public interface UserService {
 
     User findById(Long id);
 
+    User findByUsername(String username);
+
     User save(User user);
+
+    User prepareUserForSave(User user, String password);
 
     void update(User user);
 

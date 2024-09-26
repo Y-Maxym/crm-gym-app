@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static com.gym.crm.app.util.Constants.ERROR_USER_WITH_ID_NOT_FOUND;
+import static com.gym.crm.app.util.Constants.ERROR_USER_WITH_USERNAME_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.WARN_USER_WITH_ID_NOT_FOUND;
 import static java.util.Objects.isNull;
 
@@ -35,6 +36,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findByUsername(String username) {
+        entityValidator.checkEntity(username);
+
+        return repository.findByUsername(username)
+                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_USER_WITH_USERNAME_NOT_FOUND, username)));
+    }
+
+    @Override
     public User save(User user) {
         entityValidator.checkEntity(user);
 
@@ -47,7 +56,8 @@ public class UserServiceImpl implements UserService {
         return user.toBuilder().password(password).build();
     }
 
-    private User prepareUserForSave(User user, String password) {
+    @Override
+    public User prepareUserForSave(User user, String password) {
         if (isNull(user.getUsername())) {
             String username = userProfileService.generateUsername(user.getFirstName(), user.getLastName());
             user = user.toBuilder().username(username).build();

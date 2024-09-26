@@ -1,6 +1,7 @@
 package com.gym.crm.app.repository;
 
 import com.gym.crm.app.entity.Trainee;
+import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.utils.EntityTestData;
 import org.hibernate.PersistentObjectException;
 import org.junit.jupiter.api.DisplayName;
@@ -8,8 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -49,20 +52,61 @@ class TraineeRepositoryImplTest extends AbstractTestRepository<TraineeRepository
     @DisplayName("Test find all trainee functionality")
     public void givenTrainees_whenFindAll_thenTraineesIsReturned() {
         // given
-        Trainee trainee1 = EntityTestData.getTransientTraineeJohnDoe();
-        Trainee trainee2 = EntityTestData.getTransientTraineeJaneSmith();
-        Trainee trainee3 = EntityTestData.getTransientTraineeMichaelJohnson();
-
-        entityManager.persist(trainee1);
-        entityManager.persist(trainee2);
-        entityManager.persist(trainee3);
+        List<Trainee> trainees = addTraineeList();
 
         // when
         List<Trainee> actual = repository.findAll();
 
         // then
         assertThat(actual.size()).isEqualTo(3);
-        assertThat(actual).containsAll(List.of(trainee1, trainee2, trainee3));
+        assertThat(actual).containsAll(trainees);
+    }
+
+    @Test
+    @DisplayName("Test find trainings by criteria functionality")
+    public void givenValidCriteria_whenFindTrainings_thenReturnTrainings() {
+        // given
+        List<Training> trainings = addTrainingList();
+        Training training = trainings.get(1);
+
+        String username = training.getTrainee().getUser().getUsername();
+        LocalDate from = training.getTrainingDate();
+        LocalDate to = training.getTrainingDate();
+        String trainerName = training.getTrainer().getUser().getFirstName();
+        String trainingType = training.getTrainingType().getTrainingTypeName();
+
+        // when
+        Set<Training> actual = repository.findTrainingsByCriteria(username, from, to, trainerName, trainingType);
+
+        // then
+        assertThat(actual.size()).isEqualTo(1);
+        assertThat(actual).contains(training);
+    }
+
+    @Test
+    @DisplayName("Test find trainings by null criteria functionality")
+    public void givenNullCriteria_whenFindTrainings_thenReturnTrainings() {
+        // given
+        addTrainingList();
+
+        // when
+        Set<Training> trainings = repository.findTrainingsByCriteria(null, null, null, null, null);
+
+        // then
+        assertThat(trainings.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("Test find trainings by blank criteria functionality")
+    public void givenBlankCriteria_whenFindTrainings_thenReturnTrainings() {
+        // given
+        addTrainingList();
+
+        // when
+        Set<Training> trainings = repository.findTrainingsByCriteria("", null, null, "", "");
+
+        // then
+        assertThat(trainings.size()).isEqualTo(2);
     }
 
     @Test
@@ -146,7 +190,7 @@ class TraineeRepositoryImplTest extends AbstractTestRepository<TraineeRepository
 
     @Test
     @DisplayName("Test find trainee by incorrect username functionality")
-    public void givenIncorrectUsername_whenFindByUsername_thenTraineeIsFound() {
+    public void givenIncorrectUsername_whenFindByUsername_thenTraineeIsNotFound() {
         // given
         Trainee expected = EntityTestData.getTransientTraineeJohnDoe();
         entityManager.persist(expected);
@@ -174,5 +218,27 @@ class TraineeRepositoryImplTest extends AbstractTestRepository<TraineeRepository
         Trainee actual = entityManager.find(Trainee.class, trainee.getId());
 
         assertThat(actual).isNull();
+    }
+
+    private List<Trainee> addTraineeList() {
+        Trainee trainee1 = EntityTestData.getTransientTraineeJohnDoe();
+        Trainee trainee2 = EntityTestData.getTransientTraineeJaneSmith();
+        Trainee trainee3 = EntityTestData.getTransientTraineeMichaelJohnson();
+
+        entityManager.persist(trainee1);
+        entityManager.persist(trainee2);
+        entityManager.persist(trainee3);
+
+        return List.of(trainee1, trainee2, trainee3);
+    }
+
+    private List<Training> addTrainingList() {
+        Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
+        Training training2 = EntityTestData.getTransientTrainingDavidBrown();
+
+        entityManager.persist(training1);
+        entityManager.persist(training2);
+
+        return List.of(training1, training2);
     }
 }

@@ -1,5 +1,13 @@
 package com.gym.crm.app.utils;
 
+import com.gym.crm.app.dto.AuthCredentials;
+import com.gym.crm.app.dto.request.CreateTraineeProfileRequest;
+import com.gym.crm.app.dto.request.CreateTrainerProfileRequest;
+import com.gym.crm.app.dto.request.CreateUserProfileRequest;
+import com.gym.crm.app.dto.request.TraineeProfileRequest;
+import com.gym.crm.app.dto.request.TrainerProfileRequest;
+import com.gym.crm.app.dto.request.TrainingRequest;
+import com.gym.crm.app.dto.request.UserProfileRequest;
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
@@ -16,7 +24,7 @@ public class EntityTestData {
                 .firstName("John")
                 .lastName("Doe")
                 .username("John.Doe")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -27,7 +35,7 @@ public class EntityTestData {
                 .firstName("Jane")
                 .lastName("Smith")
                 .username("Jane.Smith")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -38,7 +46,7 @@ public class EntityTestData {
                 .firstName("Michael")
                 .lastName("Johnson")
                 .username("Michael.Johnson")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -49,7 +57,7 @@ public class EntityTestData {
                 .firstName("Emily")
                 .lastName("Davis")
                 .username("Emily.Davis")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -60,7 +68,7 @@ public class EntityTestData {
                 .firstName("David")
                 .lastName("Brown")
                 .username("David.Brown")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -137,7 +145,7 @@ public class EntityTestData {
                 .firstName("John")
                 .lastName("Doe")
                 .username("John.Doe")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -155,7 +163,7 @@ public class EntityTestData {
                 .firstName("Jane")
                 .lastName("Smith")
                 .username("Jane.Smith")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -165,7 +173,7 @@ public class EntityTestData {
                 .firstName("Michael")
                 .lastName("Johnson")
                 .username("Michael.Johnson")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -175,7 +183,7 @@ public class EntityTestData {
                 .firstName("Emily")
                 .lastName("Davis")
                 .username("Emily.Davis")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -185,7 +193,7 @@ public class EntityTestData {
                 .firstName("David")
                 .lastName("Brown")
                 .username("David.Brown")
-                .password("password")
+                .password("hWncieyCBA6S/1dVgKFm+A==:/esUykUhSBey4glFRvVkJHQtGm1KPe67Pxa3ddZi7EI=")
                 .isActive(true)
                 .build();
     }
@@ -252,15 +260,103 @@ public class EntityTestData {
 
     public static TrainingType getTrainingTypeYoga() {
         return TrainingType.builder()
-                .id(3L)
+                .id(2L)
                 .trainingTypeName("Yoga")
                 .build();
     }
 
     public static TrainingType getTrainingTypeFitness() {
         return TrainingType.builder()
-                .id(2L)
+                .id(1L)
                 .trainingTypeName("Fitness")
                 .build();
+    }
+
+    public static CreateUserProfileRequest getValidCreateUserProfileRequest() {
+        return new CreateUserProfileRequest("firstName", "lastName");
+    }
+
+    public static CreateUserProfileRequest getInvalidCreateUserProfileRequest() {
+        return new CreateUserProfileRequest(null, null);
+    }
+
+    public static CreateTrainerProfileRequest getValidCreateTrainerProfileRequest() {
+        return new CreateTrainerProfileRequest("Yoga", getValidCreateUserProfileRequest());
+    }
+
+    public static CreateTrainerProfileRequest getInvalidCreateTrainerProfileRequest() {
+        return new CreateTrainerProfileRequest("Yoga", getInvalidCreateUserProfileRequest());
+    }
+
+    public static CreateTraineeProfileRequest getValidCreateTraineeProfileRequest() {
+        return new CreateTraineeProfileRequest(LocalDate.parse("2000-01-01"), "Address", getValidCreateUserProfileRequest());
+    }
+
+    public static CreateTraineeProfileRequest getInvalidCreateTraineeProfileRequest() {
+        return new CreateTraineeProfileRequest(LocalDate.parse("2000-01-01"), "Address", getInvalidCreateUserProfileRequest());
+    }
+
+    public static AuthCredentials getValidJohnDoeAuthCredentials() {
+        return new AuthCredentials("John.Doe", "password");
+    }
+
+    public static AuthCredentials getValidEmilyDavisAuthCredentials() {
+        return new AuthCredentials("Emily.Davis", "password");
+    }
+
+    public static AuthCredentials getInvalidJohnDoeAuthCredentials() {
+        return new AuthCredentials("John.Doe", "incorrect");
+    }
+
+    public static AuthCredentials getInvalidEmilyDavisAuthCredentials() {
+        return new AuthCredentials("Emily.Davis", "incorrect");
+    }
+
+    public static AuthCredentials getNullAuthCredentials() {
+        return new AuthCredentials(null, null);
+    }
+
+    public static UserProfileRequest getValidUserProfileRequest() {
+        return new UserProfileRequest("firstName", "lastName");
+    }
+
+    public static UserProfileRequest getInvalidUserProfileRequest() {
+        return new UserProfileRequest(null, null);
+    }
+
+    public static TrainerProfileRequest getValidTrainerProfileRequest() {
+        return new TrainerProfileRequest("Yoga", getValidUserProfileRequest());
+    }
+
+    public static TrainerProfileRequest getInvalidTrainerProfileRequest() {
+        return new TrainerProfileRequest("Yoga", getInvalidUserProfileRequest());
+    }
+
+    public static TraineeProfileRequest getValidTraineeProfileRequest() {
+        return new TraineeProfileRequest(LocalDate.parse("2000-01-01"), "Address2", getValidUserProfileRequest());
+    }
+
+    public static TraineeProfileRequest getInvalidTraineeProfileRequest() {
+        return new TraineeProfileRequest(LocalDate.parse("2000-01-01"), "Address1", getInvalidUserProfileRequest());
+    }
+
+    public static TrainingRequest getValidTrainingRequest() {
+        return new TrainingRequest(
+                "John.Doe",
+                "David.Brown",
+                "Training name",
+                "Yoga",
+                LocalDate.parse("2021-02-01"),
+                2);
+    }
+
+    public static TrainingRequest getInvalidTrainingRequest() {
+        return new TrainingRequest(
+                null,
+                null,
+                "Training name",
+                "Yoga",
+                LocalDate.parse("2021-02-01"),
+                2);
     }
 }

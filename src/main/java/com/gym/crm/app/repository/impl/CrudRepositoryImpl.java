@@ -16,7 +16,7 @@ public class CrudRepositoryImpl<T> implements CrudRepository<T> {
     private final Class<T> clazz;
 
     @PersistenceContext
-    private EntityManager entityManager;
+    protected EntityManager entityManager;
 
     protected T execute(Function<EntityManager, T> action) {
         return action.apply(entityManager);

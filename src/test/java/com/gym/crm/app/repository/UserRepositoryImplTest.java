@@ -126,4 +126,33 @@ class UserRepositoryImplTest extends AbstractTestRepository<UserRepository> {
 
         assertThat(actual).isNull();
     }
+
+    @Test
+    @DisplayName("Test find user by username functionality")
+    public void givenUsername_whenFindByUsername_thenUserIsFound() {
+        // given
+        User expected = EntityTestData.getTransientUserJohnDoe();
+        entityManager.persist(expected);
+
+        // when
+        Optional<User> actual = repository.findByUsername(expected.getUsername());
+
+        // then
+        assertThat(actual.isPresent()).isTrue();
+        assertThat(actual.get()).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("Test find user by incorrect username functionality")
+    public void givenIncorrectUsername_whenFindByUsername_thenUserIsNotFound() {
+        // given
+        User expected = EntityTestData.getTransientUserJohnDoe();
+        entityManager.persist(expected);
+
+        // when
+        Optional<User> actual = repository.findByUsername("username");
+
+        // then
+        assertThat(actual.isEmpty()).isTrue();
+    }
 }

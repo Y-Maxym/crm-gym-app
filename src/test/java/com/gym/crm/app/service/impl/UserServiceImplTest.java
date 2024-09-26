@@ -1,5 +1,6 @@
 package com.gym.crm.app.service.impl;
 
+import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
@@ -17,7 +18,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
+import static com.gym.crm.app.util.Constants.ERROR_TRAINER_WITH_USERNAME_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.ERROR_USER_WITH_ID_NOT_FOUND;
+import static com.gym.crm.app.util.Constants.ERROR_USER_WITH_USERNAME_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.WARN_USER_WITH_ID_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -79,6 +82,43 @@ class UserServiceImplTest {
 
         // when
         EntityValidationException ex = assertThrows(EntityValidationException.class, () -> service.findById(id));
+
+        // then
+        assertThat(ex.getMessage()).isEqualTo(message);
+    }
+
+    @Test
+    @DisplayName("Test find user by username functionality")
+    public void givenUsername_whenFindByUsername_thenUserIsReturned() {
+        // given
+        User expected = EntityTestData.getPersistedUserJohnDoe();
+        String username = expected.getUsername();
+
+        given(repository.findByUsername(username))
+                .willReturn(Optional.of(expected));
+
+        // when
+        User actual = service.findByUsername(username);
+
+        // then
+        assertThat(actual).isNotNull();
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("Test find user by incorrect username functionality")
+    public void givenIncorrectUsername_whenFindByUsername_thenExceptionIsThrown() {
+        // given
+        String username = "username";
+        String message = "User with username %s not found".formatted(username);
+
+        given(repository.findByUsername(username))
+                .willReturn(Optional.empty());
+        given(messageHelper.getMessage(ERROR_USER_WITH_USERNAME_NOT_FOUND, username))
+                .willReturn(message);
+
+        // when
+        EntityValidationException ex = assertThrows(EntityValidationException.class, () -> service.findByUsername(username));
 
         // then
         assertThat(ex.getMessage()).isEqualTo(message);

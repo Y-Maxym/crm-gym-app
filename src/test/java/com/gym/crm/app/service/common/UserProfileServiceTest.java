@@ -145,4 +145,18 @@ class UserProfileServiceTest {
         // then
         assertThat(isDuplicated).isTrue();
     }
+
+    @Test
+    @DisplayName("Test is password correct functionality")
+    public void givenPasswords_whenIsPasswordCorrect_thenPasswordGeneratorIsCalled() {
+        // given
+        String inputPassword = "inputPassword";
+        String storedPassword = "storedPassword";
+
+        // when
+        service.isPasswordCorrect(inputPassword, storedPassword);
+
+        // then
+        verify(passwordGenerator).isPasswordCorrect(inputPassword, storedPassword);
+    }
 }
