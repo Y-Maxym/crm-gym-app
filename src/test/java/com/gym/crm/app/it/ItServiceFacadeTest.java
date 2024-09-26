@@ -16,12 +16,8 @@ import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.AuthenticationException;
-import com.gym.crm.app.exception.CreateTraineeException;
-import com.gym.crm.app.exception.CreateTrainerException;
-import com.gym.crm.app.exception.CreateTrainingException;
+import com.gym.crm.app.exception.EntityPersistException;
 import com.gym.crm.app.exception.EntityValidationException;
-import com.gym.crm.app.exception.UpdateTraineeException;
-import com.gym.crm.app.exception.UpdateTrainerException;
 import com.gym.crm.app.facade.ServiceFacade;
 import com.gym.crm.app.service.common.UserProfileService;
 import com.gym.crm.app.utils.EntityTestData;
@@ -89,7 +85,7 @@ class ItServiceFacadeTest extends AbstractTestFacade {
         bindingResult.rejectValue("user.lastName", "invalid.lastName");
 
         // when
-        CreateTrainerException ex = assertThrows(CreateTrainerException.class, () -> serviceFacade.createTrainerProfile(request, bindingResult));
+        EntityPersistException ex = assertThrows(EntityPersistException.class, () -> serviceFacade.createTrainerProfile(request, bindingResult));
 
         // then
         assertThat(ex.getMessage()).isEqualTo("Trainer creation error");
@@ -126,7 +122,7 @@ class ItServiceFacadeTest extends AbstractTestFacade {
         bindingResult.rejectValue("user.lastName", "invalid.lastName");
 
         // when
-        CreateTraineeException ex = assertThrows(CreateTraineeException.class, () -> serviceFacade.createTraineeProfile(request, bindingResult));
+        EntityPersistException ex = assertThrows(EntityPersistException.class, () -> serviceFacade.createTraineeProfile(request, bindingResult));
 
         // then
         assertThat(ex.getMessage()).isEqualTo("Trainee creation error");
@@ -296,7 +292,7 @@ class ItServiceFacadeTest extends AbstractTestFacade {
         bindingResult.rejectValue("user.lastName", "invalid.lastName");
 
         // when
-        UpdateTrainerException ex = assertThrows(UpdateTrainerException.class, () -> serviceFacade.updateTrainerProfile(request, bindingResult, credentials));
+        EntityPersistException ex = assertThrows(EntityPersistException.class, () -> serviceFacade.updateTrainerProfile(request, bindingResult, credentials));
 
         // then
         assertThat(ex.getMessage()).isEqualTo("Trainer update error");
@@ -334,7 +330,7 @@ class ItServiceFacadeTest extends AbstractTestFacade {
         bindingResult.rejectValue("user.lastName", "invalid.lastName");
 
         // when
-        UpdateTraineeException ex = assertThrows(UpdateTraineeException.class, () -> serviceFacade.updateTraineeProfile(request, bindingResult, credentials));
+        EntityPersistException ex = assertThrows(EntityPersistException.class, () -> serviceFacade.updateTraineeProfile(request, bindingResult, credentials));
 
         // then
         assertThat(ex.getMessage()).isEqualTo("Trainee update error");
@@ -517,7 +513,7 @@ class ItServiceFacadeTest extends AbstractTestFacade {
         bindingResult.rejectValue("trainerUsername", "trainer.username");
 
         // when
-        CreateTrainingException ex = assertThrows(CreateTrainingException.class, () -> serviceFacade.addTraining(request, bindingResult, credentials));
+        EntityPersistException ex = assertThrows(EntityPersistException.class, () -> serviceFacade.addTraining(request, bindingResult, credentials));
 
         // then
         assertThat(ex.getMessage()).isEqualTo("Training creation error");

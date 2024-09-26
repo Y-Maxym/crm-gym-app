@@ -53,53 +53,42 @@ class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository
     @DisplayName("Test find all trainer functionality")
     public void givenTrainers_whenFindAll_thenTrainersIsReturned() {
         // given
-        Trainer trainer1 = EntityTestData.getTransientTrainerEmilyDavis();
-        Trainer trainer2 = EntityTestData.getTransientTrainerDavidBrown();
-
-        entityManager.persist(trainer1);
-        entityManager.persist(trainer2);
+        List<Trainer> trainers = addTrainerList();
 
         // when
         List<Trainer> actual = repository.findAll();
 
         // then
         assertThat(actual.size()).isEqualTo(2);
-        assertThat(actual).containsAll(List.of(trainer1, trainer2));
+        assertThat(actual).containsAll(trainers);
     }
 
     @Test
     @DisplayName("Test find trainings by criteria functionality")
     public void givenValidCriteria_whenFindTrainings_thenReturnTrainings() {
         // given
-        Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
-        Training training2 = EntityTestData.getTransientTrainingDavidBrown();
+        List<Training> trainings = addTrainingList();
+        Training training = trainings.get(1);
 
-        entityManager.persist(training1);
-        entityManager.persist(training2);
-
-        String username = training2.getTrainer().getUser().getUsername();
-        LocalDate from = training2.getTrainingDate();
-        LocalDate to = training2.getTrainingDate();
-        String traineeName = training2.getTrainee().getUser().getFirstName();
-        String trainingType = training2.getTrainingType().getTrainingTypeName();
+        String username = training.getTrainer().getUser().getUsername();
+        LocalDate from = training.getTrainingDate();
+        LocalDate to = training.getTrainingDate();
+        String traineeName = training.getTrainee().getUser().getFirstName();
+        String trainingType = training.getTrainingType().getTrainingTypeName();
 
         // when
-        Set<Training> trainings = repository.findTrainingsByCriteria(username, from, to, traineeName, trainingType);
+        Set<Training> actual = repository.findTrainingsByCriteria(username, from, to, traineeName, trainingType);
 
         // then
-        assertThat(trainings.size()).isEqualTo(1);
-        assertThat(trainings).contains(training2);
+        assertThat(actual.size()).isEqualTo(1);
+        assertThat(actual).contains(training);
     }
 
     @Test
     @DisplayName("Test find trainings by null criteria functionality")
     public void givenNullCriteria_whenFindTrainings_thenReturnTrainings() {
         // given
-        Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
-        Training training2 = EntityTestData.getTransientTrainingDavidBrown();
-
-        entityManager.persist(training1);
-        entityManager.persist(training2);
+        addTrainingList();
 
         // when
         Set<Training> trainings = repository.findTrainingsByCriteria(null, null, null, null, null);
@@ -112,11 +101,7 @@ class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository
     @DisplayName("Test find trainings by blank criteria functionality")
     public void givenBlankCriteria_whenFindTrainings_thenReturnTrainings() {
         // given
-        Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
-        Training training2 = EntityTestData.getTransientTrainingDavidBrown();
-
-        entityManager.persist(training1);
-        entityManager.persist(training2);
+        addTrainingList();
 
         // when
         Set<Training> trainings = repository.findTrainingsByCriteria("", null, null, "", "");
@@ -216,20 +201,7 @@ class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository
     @DisplayName("Test get trainers not assigned by trainee username")
     public void givenTrainers_whenGetTrainers_thenTrainersIsReturned() {
         // given
-        Trainer trainer1 = EntityTestData.getTransientTrainerEmilyDavis();
-        Trainer trainer2 = EntityTestData.getTransientTrainerDavidBrown();
-
-        entityManager.persist(trainer1);
-        entityManager.persist(trainer2);
-
-        Trainee trainee1 = EntityTestData.getTransientTraineeJaneSmith();
-        Trainee trainee2 = EntityTestData.getTransientTraineeJohnDoe();
-
-        trainee1.getTrainers().add(trainer2);
-        trainee2.getTrainers().add(trainer1);
-
-        entityManager.persist(trainee1);
-        entityManager.persist(trainee2);
+        addTraineesTrainerList();
 
         String username = "John.Doe";
 
@@ -239,5 +211,40 @@ class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository
         // then
         assertThat(actual.size()).isEqualTo(1);
         assertThat(actual.get(0).getUser().getUsername()).isEqualTo("David.Brown");
+    }
+
+    private List<Trainer> addTrainerList() {
+        Trainer trainer1 = EntityTestData.getTransientTrainerEmilyDavis();
+        Trainer trainer2 = EntityTestData.getTransientTrainerDavidBrown();
+
+        entityManager.persist(trainer1);
+        entityManager.persist(trainer2);
+
+        return List.of(trainer1, trainer2);
+    }
+
+    private List<Training> addTrainingList() {
+        Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
+        Training training2 = EntityTestData.getTransientTrainingDavidBrown();
+
+        entityManager.persist(training1);
+        entityManager.persist(training2);
+
+        return List.of(training1, training2);
+    }
+
+    private void addTraineesTrainerList() {
+        List<Trainer> trainers = addTrainerList();
+        Trainer trainer1 = trainers.get(0);
+        Trainer trainer2 = trainers.get(1);
+
+        Trainee trainee1 = EntityTestData.getTransientTraineeJaneSmith();
+        Trainee trainee2 = EntityTestData.getTransientTraineeJohnDoe();
+
+        trainee1.getTrainers().add(trainer2);
+        trainee2.getTrainers().add(trainer1);
+
+        entityManager.persist(trainee1);
+        entityManager.persist(trainee2);
     }
 }

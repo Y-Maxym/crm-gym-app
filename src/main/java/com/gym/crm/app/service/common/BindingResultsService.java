@@ -6,12 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 @Service
 public class BindingResultsService {
 
-    public void handle(BindingResult bindingResult, Function<List<FieldErrorEntity>, ? extends ApplicationException> exception) {
+    public void handle(BindingResult bindingResult, BiFunction<String, List<FieldErrorEntity>, ? extends ApplicationException> exception, String message) {
 
         if (bindingResult.hasErrors()) {
             List<FieldErrorEntity> errors = bindingResult.getFieldErrors()
@@ -19,7 +19,7 @@ public class BindingResultsService {
                     .map(FieldErrorEntity::new)
                     .toList();
 
-            throw exception.apply(errors);
+            throw exception.apply(message, errors);
         }
     }
 }

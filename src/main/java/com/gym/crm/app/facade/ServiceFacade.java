@@ -15,11 +15,7 @@ import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.entity.User;
-import com.gym.crm.app.exception.CreateTraineeException;
-import com.gym.crm.app.exception.CreateTrainerException;
-import com.gym.crm.app.exception.CreateTrainingException;
-import com.gym.crm.app.exception.UpdateTraineeException;
-import com.gym.crm.app.exception.UpdateTrainerException;
+import com.gym.crm.app.exception.EntityPersistException;
 import com.gym.crm.app.mapper.CreateTraineeProfileMapper;
 import com.gym.crm.app.mapper.CreateTrainerProfileMapper;
 import com.gym.crm.app.mapper.TraineeProfileMapper;
@@ -62,7 +58,7 @@ public class ServiceFacade {
 
     @Transactional
     public CreateTrainerProfileResponse createTrainerProfile(CreateTrainerProfileRequest request, BindingResult bindingResult) {
-        bindingResultsService.handle(bindingResult, CreateTrainerException::new);
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer creation error");
 
         Trainer trainer = createTrainerProfileMapper.map(request);
 
@@ -82,7 +78,7 @@ public class ServiceFacade {
 
     @Transactional
     public CreateTraineeProfileResponse createTraineeProfile(CreateTraineeProfileRequest request, BindingResult bindingResult) {
-        bindingResultsService.handle(bindingResult, CreateTraineeException::new);
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainee creation error");
 
         Trainee trainee = createTraineeProfileMapper.map(request);
 
@@ -103,8 +99,7 @@ public class ServiceFacade {
     public TrainerProfileResponse findTrainerProfileByUsername(AuthCredentials credentials) {
         User user = authService.authenticate(credentials);
 
-        String username = user.getUsername();
-        Trainer trainer = trainerService.findByUsername(username);
+        Trainer trainer = trainerService.findByUsername(user.getUsername());
 
         return trainerProfileMapper.map(trainer);
     }
@@ -112,8 +107,7 @@ public class ServiceFacade {
     public TraineeProfileResponse findTraineeProfileByUsername(AuthCredentials credentials) {
         User user = authService.authenticate(credentials);
 
-        String username = user.getUsername();
-        Trainee trainee = traineeService.findByUsername(username);
+        Trainee trainee = traineeService.findByUsername(user.getUsername());
 
         return traineeProfileMapper.map(trainee);
     }
@@ -132,7 +126,7 @@ public class ServiceFacade {
     public void updateTrainerProfile(TrainerProfileRequest request, BindingResult bindingResult, AuthCredentials credentials) {
         authService.authenticate(credentials);
 
-        bindingResultsService.handle(bindingResult, UpdateTrainerException::new);
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer update error");
 
         Trainer updatedTrainer = trainerProfileMapper.map(request);
 
@@ -151,7 +145,7 @@ public class ServiceFacade {
     public void updateTraineeProfile(TraineeProfileRequest request, BindingResult bindingResult, AuthCredentials credentials) {
         Trainee updatedTrainee = traineeProfileMapper.map(request);
 
-        bindingResultsService.handle(bindingResult, UpdateTraineeException::new);
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainee update error");
 
         authService.authenticate(credentials);
 
@@ -199,9 +193,7 @@ public class ServiceFacade {
                                                                String trainingType, AuthCredentials credentials) {
         User user = authService.authenticate(credentials);
 
-        String username = user.getUsername();
-
-        Set<Training> trainings = traineeService.findTrainingsByCriteria(username, from, to, trainerName, trainingType);
+        Set<Training> trainings = traineeService.findTrainingsByCriteria(user.getUsername(), from, to, trainerName, trainingType);
 
         return trainingMapper.mapList(trainings);
     }
@@ -210,9 +202,7 @@ public class ServiceFacade {
                                                                String trainingType, AuthCredentials credentials) {
         User user = authService.authenticate(credentials);
 
-        String username = user.getUsername();
-
-        Set<Training> trainings = trainerService.findTrainingsByCriteria(username, from, to, traineeName, trainingType);
+        Set<Training> trainings = trainerService.findTrainingsByCriteria(user.getUsername(), from, to, traineeName, trainingType);
 
         return trainingMapper.mapList(trainings);
     }
@@ -221,7 +211,7 @@ public class ServiceFacade {
     public void addTraining(TrainingRequest request, BindingResult bindingResult, AuthCredentials credentials) {
         authService.authenticate(credentials);
 
-        bindingResultsService.handle(bindingResult, CreateTrainingException::new);
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Training creation error");
 
         Training training = trainingMapper.map(request);
 
@@ -230,9 +220,8 @@ public class ServiceFacade {
 
     public List<TrainerProfileResponse> getTrainersNotAssignedByTraineeUsername(AuthCredentials credentials) {
         User user = authService.authenticate(credentials);
-        String username = user.getUsername();
 
-        List<Trainer> trainers = trainerService.getTrainersNotAssignedByTraineeUsername(username);
+        List<Trainer> trainers = trainerService.getTrainersNotAssignedByTraineeUsername(user.getUsername());
 
         return trainerProfileMapper.mapList(trainers);
     }
