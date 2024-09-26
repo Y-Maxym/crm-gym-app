@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 @Testcontainers
 @Transactional
-class ItServiceFacadeTest extends AbstractTestFacade {
+class ItServiceFacadeTest extends AbstractItTest {
 
     @PersistenceContext
     private EntityManager entityManager;

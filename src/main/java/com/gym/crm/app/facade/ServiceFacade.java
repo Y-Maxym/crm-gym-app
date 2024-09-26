@@ -189,8 +189,7 @@ public class ServiceFacade {
         traineeService.deleteByUsername(user.getUsername());
     }
 
-    public Set<TrainingResponse> getTraineeTrainingsByCriteria(LocalDate from, LocalDate to, String trainerName,
-                                                               String trainingType, AuthCredentials credentials) {
+    public Set<TrainingResponse> getTraineeTrainingsByCriteria(LocalDate from, LocalDate to, String trainerName, String trainingType, AuthCredentials credentials) {
         User user = authService.authenticate(credentials);
 
         Set<Training> trainings = traineeService.findTrainingsByCriteria(user.getUsername(), from, to, trainerName, trainingType);
@@ -198,8 +197,7 @@ public class ServiceFacade {
         return trainingMapper.mapList(trainings);
     }
 
-    public Set<TrainingResponse> getTrainerTrainingsByCriteria(LocalDate from, LocalDate to, String traineeName,
-                                                               String trainingType, AuthCredentials credentials) {
+    public Set<TrainingResponse> getTrainerTrainingsByCriteria(LocalDate from, LocalDate to, String traineeName, String trainingType, AuthCredentials credentials) {
         User user = authService.authenticate(credentials);
 
         Set<Training> trainings = trainerService.findTrainingsByCriteria(user.getUsername(), from, to, traineeName, trainingType);

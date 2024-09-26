@@ -6,7 +6,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 @ActiveProfiles("test")
-public abstract class AbstractTestFacade {
+public abstract class AbstractItTest {
 
     protected static final PostgreSQLContainer<?> POSTGRE_SQL_CONTAINER;
 

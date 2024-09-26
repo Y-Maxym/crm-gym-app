@@ -15,15 +15,9 @@ import org.springframework.stereotype.Component;
 import static com.gym.crm.app.util.Constants.DEBUG_FACADE_EXCEPTION;
 import static com.gym.crm.app.util.Constants.DEBUG_FACADE_INPUT;
 import static com.gym.crm.app.util.Constants.DEBUG_FACADE_RESULT;
-import static com.gym.crm.app.util.Constants.DEBUG_SERVICE_EXCEPTION;
-import static com.gym.crm.app.util.Constants.DEBUG_SERVICE_INPUT;
-import static com.gym.crm.app.util.Constants.DEBUG_SERVICE_RESULT;
 import static com.gym.crm.app.util.Constants.INFO_FACADE_EXCEPTION;
 import static com.gym.crm.app.util.Constants.INFO_FACADE_INPUT;
 import static com.gym.crm.app.util.Constants.INFO_FACADE_RESULT;
-import static com.gym.crm.app.util.Constants.INFO_SERVICE_EXCEPTION;
-import static com.gym.crm.app.util.Constants.INFO_SERVICE_INPUT;
-import static com.gym.crm.app.util.Constants.INFO_SERVICE_RESULT;
 
 @Slf4j
 @Aspect

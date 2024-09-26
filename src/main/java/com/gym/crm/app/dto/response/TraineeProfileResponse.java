@@ -9,4 +9,3 @@ public record TraineeProfileResponse
                 UserProfileResponse user
         ) {
 }
-
