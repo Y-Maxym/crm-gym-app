@@ -25,6 +25,12 @@ spring:
         show_sql: true
         format_sql: true
 
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
 security:
   password:
     length: 10

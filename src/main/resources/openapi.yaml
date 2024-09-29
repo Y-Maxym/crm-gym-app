@@ -1,0 +1,618 @@
+openapi: 3.0.3
+info:
+  title: Gym CRM App API
+  version: 1.0.0
+  description: API for managing trainees and trainers, including registration, profiles, and trainings.
+paths:
+  /trainees/register:
+    post:
+      summary: Register a new trainee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  description: Required
+                lastName:
+                  type: string
+                  description: Required
+                dateOfBirth:
+                  type: string
+                  format: date
+                  description: Optional
+                address:
+                  type: string
+                  description: Optional
+              required:
+                - firstName
+                - lastName
+      responses:
+        200:
+          description: Successful registration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  password:
+                    type: string
+
+  /trainers/register:
+    post:
+      summary: Register a new trainer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  description: Required
+                lastName:
+                  type: string
+                  description: Required
+                specialization:
+                  type: string
+                  description: Required
+              required:
+                - firstName
+                - lastName
+                - specialization
+      responses:
+        200:
+          description: Successful registration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  password:
+                    type: string
+
+  /login:
+    get:
+      summary: Login
+      parameters:
+        - in: query
+          name: username
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: password
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful login
+
+  /change-login:
+    put:
+      summary: Change login password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Required
+                oldPassword:
+                  type: string
+                  description: Required
+                newPassword:
+                  type: string
+                  description: Required
+              required:
+                - username
+                - oldPassword
+                - newPassword
+      responses:
+        200:
+          description: Successful password change
+
+  /trainees/{username}:
+    get:
+      summary: Get trainee profile
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful retrieval of trainee profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  dateOfBirth:
+                    type: string
+                    format: date
+                  address:
+                    type: string
+                  isActive:
+                    type: boolean
+                  trainersList:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        trainerUsername:
+                          type: string
+                        trainerFirstName:
+                          type: string
+                        trainerLastName:
+                          type: string
+                        trainerSpecialization:
+                          type: string
+
+    put:
+      summary: Update trainee profile
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  description: Required
+                lastName:
+                  type: string
+                  description: Required
+                dateOfBirth:
+                  type: string
+                  format: date
+                  description: Optional
+                address:
+                  type: string
+                  description: Optional
+                isActive:
+                  type: boolean
+                  description: Required
+              required:
+                - firstName
+                - lastName
+                - isActive
+      responses:
+        200:
+          description: Successful update of trainee profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  dateOfBirth:
+                    type: string
+                    format: date
+                  address:
+                    type: string
+                  isActive:
+                    type: boolean
+                  trainersList:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        trainerUsername:
+                          type: string
+                        trainerFirstName:
+                          type: string
+                        trainerLastName:
+                          type: string
+                        trainerSpecialization:
+                          type: string
+    delete:
+      summary: Delete trainee profile
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful deletion of trainee profile
+
+  /trainers/{username}:
+    get:
+      summary: Get trainer profile
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful retrieval of trainer profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  specialization:
+                    type: string
+                  isActive:
+                    type: boolean
+                  traineesList:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        traineeUsername:
+                          type: string
+                        traineeFirstName:
+                          type: string
+                        traineeLastName:
+                          type: string
+    put:
+      summary: Update trainer profile
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  description: Required
+                lastName:
+                  type: string
+                  description: Required
+                specialization:
+                  type: string
+                  description: Read only
+                isActive:
+                  type: boolean
+                  description: Required
+              required:
+                - firstName
+                - lastName
+                - isActive
+      responses:
+        200:
+          description: Successful update of trainer profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  specialization:
+                    type: string
+                  isActive:
+                    type: boolean
+                  traineesList:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        traineeUsername:
+                          type: string
+                        traineeFirstName:
+                          type: string
+                        traineeLastName:
+                          type: string
+
+  /trainers/not-assigned/{username}:
+    get:
+      summary: Get not assigned to trainee active trainers
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful retrieval of active trainers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    trainerUsername:
+                      type: string
+                    trainerFirstName:
+                      type: string
+                    trainerLastName:
+                      type: string
+                    trainerSpecialization:
+                      type: string
+
+  /trainees/{username}/trainers:
+    put:
+      summary: Update trainee's trainer list
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                trainersList:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      trainerUsername:
+                        type: string
+                        description: Required
+              required:
+                - trainersList
+      responses:
+        200:
+          description: Successful update of trainee's trainer list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    trainerUsername:
+                      type: string
+                    trainerFirstName:
+                      type: string
+                    trainerLastName:
+                      type: string
+                    trainerSpecialization:
+                      type: string
+
+
+  /trainees/{username}/trainings:
+    get:
+      summary: Get trainee trainings list
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: periodFrom
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: periodTo
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: trainerName
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful retrieval of trainings list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    trainingDate:
+                      type: string
+                      format: date
+                    trainerUsername:
+                      type: string
+                    trainerFirstName:
+                      type: string
+                    trainerLastName:
+                      type: string
+
+  /trainers/{username}/trainings:
+    get:
+      summary: Get trainer trainings list
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: periodFrom
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: periodTo
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: traineeName
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful retrieval of trainer trainings list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    trainingName:
+                      type: string
+                    trainingDate:
+                      type: string
+                      format: date
+                    trainingType:
+                      type: string
+                    trainingDuration:
+                      type: string
+                    traineeName:
+                      type: string
+
+  /trainings:
+    post:
+      summary: Add training
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                traineeUsername:
+                  type: string
+                  description: Required
+                trainerUsername:
+                  type: string
+                  description: Required
+                trainingName:
+                  type: string
+                  description: Required
+                trainingDate:
+                  type: string
+                  format: date
+                  description: Required
+                trainingDuration:
+                  type: string
+                  description: Required
+              required:
+                - traineeUsername
+                - trainerUsername
+                - trainingName
+                - trainingDate
+                - trainingDuration
+      responses:
+        200:
+          description: Training added successfully
+
+
+  /trainees/{username}/activate:
+    patch:
+      summary: Activate/De-Activate trainee
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isActive:
+                  type: boolean
+                  description: Required
+              required:
+                - isActive
+      responses:
+        200:
+          description: Successful activation/deactivation of trainee
+
+  /trainers/{username}/activate:
+    patch:
+      summary: Activate/De-Activate trainer
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isActive:
+                  type: boolean
+                  description: Required
+              required:
+                - isActive
+      responses:
+        200:
+          description: Successful activation/deactivation of trainer
+
+  /training-types:
+    get:
+      summary: Get training types
+      responses:
+        200:
+          description: Successful retrieval of training types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    trainingTypeId:
+                      type: string
+                    trainingType:
+                      type: string
