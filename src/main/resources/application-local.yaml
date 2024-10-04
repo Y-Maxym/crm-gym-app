@@ -4,3 +4,14 @@ spring:
 
   config:
     import: optional:file:local.env[.properties]
+
+springdoc:
+  api-docs:
+    enabled: true
+    groups:
+      enabled: true
+    path: /v1/api-docs
+  swagger-ui:
+    enabled: true
+    path: swagger-ui.html
+    display-request-duration: true
