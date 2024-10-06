@@ -212,7 +212,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationError"
+                $ref: "#/components/schemas/ErrorMessage"
         401:
           description: Unauthorized access
           content:
@@ -501,7 +501,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetTraineeTrainingsResponse"
+                items:
+                  $ref: "#/components/schemas/GetTraineeTrainingsResponse"
+              example:
+                - trainingName: Training 1
+                  trainingDate: 2021-09-12
+                  trainingType: Yoga
+                  trainingDuration: 2
+                  trainerName: William
+                - trainingName: Training 2
+                  trainingDate: 2021-09-13
+                  trainingType: Yoga
+                  trainingDuration: 2
+                  trainerName: Jane
         400:
           description: Invalid request
           content:
@@ -544,7 +556,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetTrainerTrainingsResponse"
+                items:
+                  $ref: "#/components/schemas/GetTrainerTrainingsResponse"
+              example:
+                - trainingName: Training 1
+                  trainingDate: 2021-09-12
+                  trainingType: Yoga
+                  trainingDuration: 2
+                  traineeName: John
+                - trainingName: Training 2
+                  trainingDate: 2021-09-13
+                  trainingType: Yoga
+                  trainingDuration: 2
+                  traineeName: Dave
         400:
           description: Invalid request
           content:
@@ -753,11 +777,7 @@ components:
         trainersList:
           type: array
           items:
-            allOf:
-              - $ref: "#/components/schemas/TrainerProfile"
-            properties:
-              username:
-                type: string
+            $ref: "#/components/schemas/TrainerProfileWithUsername"
     UpdateTraineeProfileRequest:
       allOf:
         - $ref: "#/components/schemas/TraineeProfile"
@@ -785,11 +805,7 @@ components:
         trainersList:
           type: array
           items:
-            allOf:
-              - $ref: "#/components/schemas/TrainerProfile"
-            properties:
-              username:
-                type: string
+            $ref: "#/components/schemas/TrainerProfileWithUsername"
       example:
         username: Dave.Jones
         firstName: Dave
@@ -807,32 +823,16 @@ components:
             lastName: Turner
             specialization: Fitness
     UpdateTraineesTrainerRequest:
-      type: object
-      properties:
-        username:
-          type: string
-        trainersList:
-          type: array
-          items:
-            properties:
-              username:
-                type: string
-      required:
-        - trainersList
+      type: array
+      items:
+        $ref: "#/components/schemas/TrainerProfileOnlyUsername"
       example:
-        username: John.Doe
-        trainerList:
-          - username: William.Turner
-          - username: Jane.Smith
+        - username: William.Turner
+        - username: Jane.Smith
     UpdateTraineesTrainerResponse:
       type: array
       items:
-        type: object
-        allOf:
-          - $ref: "#/components/schemas/TrainerProfile"
-        properties:
-          username:
-            type: string
+        $ref: "#/components/schemas/TrainerProfileWithUsername"
       example:
         - username: William.Turner
           firstName: William
@@ -853,6 +853,14 @@ components:
           type: string
           format: date
         address:
+          type: string
+    TrainerTraineeProfileResponse:
+      properties:
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
           type: string
     TrainerCreateRequest:
       type: object
@@ -875,13 +883,7 @@ components:
         traineesList:
           type: array
           items:
-            properties:
-              username:
-                type: string
-              firstName:
-                type: string
-              lastName:
-                type: string
+            $ref: "#/components/schemas/TrainerTraineeProfileResponse"
       example:
         firstName: Jane
         lastName: Smith
@@ -925,13 +927,7 @@ components:
         traineesList:
           type: array
           items:
-            properties:
-              username:
-                type: string
-              firstName:
-                type: string
-              lastName:
-                type: string
+            $ref: "#/components/schemas/TrainerTraineeProfileResponse"
       example:
         username: William.Turner
         firstName: William
@@ -948,12 +944,7 @@ components:
     GetNotAssignedTrainersResponse:
       type: array
       items:
-        type: object
-        allOf:
-          - $ref: "#/components/schemas/TrainerProfile"
-        properties:
-          username:
-            type: string
+        $ref: "#/components/schemas/TrainerProfileWithUsername"
       example:
         - username: Jane.Smith
           firstName: Jane
@@ -970,47 +961,32 @@ components:
         lastName:
           type: string
         specialization:
-          $ref: '#/components/schemas/TrainingType'
+          type: string
+    TrainerProfileWithUsername:
+      allOf:
+        - $ref: "#/components/schemas/TrainerProfile"
+      properties:
+        username:
+          type: string
+    TrainerProfileOnlyUsername:
+      type: object
+      properties:
+        username:
+          type: string
     GetTraineeTrainingsResponse:
-      type: array
-      items:
-        type: object
-        allOf:
-          - $ref: "#/components/schemas/TrainingProfile"
-        properties:
-          trainerName:
-            type: string
-      example:
-        - trainingName: Training 1
-          trainingDate: 2021-09-12
-          trainingType: Yoga
-          trainingDuration: 2
-          trainerName: William
-        - trainingName: Training 2
-          trainingDate: 2021-09-13
-          trainingType: Yoga
-          trainingDuration: 2
-          trainerName: Jane
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/TrainingProfile"
+      properties:
+        trainerName:
+          type: string
     GetTrainerTrainingsResponse:
-      type: array
-      items:
-        type: object
-        allOf:
-          - $ref: "#/components/schemas/TrainingProfile"
-        properties:
-          traineeName:
-            type: string
-      example:
-        - trainingName: Training 1
-          trainingDate: 2021-09-12
-          trainingType: Yoga
-          trainingDuration: 2
-          traineeName: John
-        - trainingName: Training 2
-          trainingDate: 2021-09-13
-          trainingType: Yoga
-          trainingDuration: 2
-          traineeName: Dave
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/TrainingProfile"
+      properties:
+        traineeName:
+          type: string
     AddTrainingRequest:
       type: object
       properties:
@@ -1045,7 +1021,7 @@ components:
           type: string
           format: date
         trainingType:
-          $ref: "#/components/schemas/TrainingType"
+          type: string
         trainingDuration:
           type: integer
       example:
@@ -1080,7 +1056,7 @@ components:
           trainingTypeId:
             type: integer
           trainingType:
-            $ref: "#/components/schemas/TrainingType"
+            type: string
       example:
         - trainingTypeId: 1
           trainingType: Fitness
@@ -1114,14 +1090,6 @@ components:
         username: John.Doe
         password: PrS7J1qY6I
         newPassword: newPass
-    TrainingType:
-      type: string
-      enum:
-        - Fitness
-        - Yoga
-        - Zumba
-        - Stretching
-        - Resistance
     ErrorMessage:
       type: object
       properties:
@@ -1196,5 +1164,7 @@ components:
       description: Training type name parameter
       required: false
       schema:
-        $ref: "#/components/schemas/TrainingType"
+        properties:
+          trainingType:
+            type: string
       example: Yoga

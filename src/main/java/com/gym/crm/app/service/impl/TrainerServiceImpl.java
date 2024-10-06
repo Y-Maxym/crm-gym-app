@@ -57,10 +57,10 @@ public class TrainerServiceImpl implements TrainerService {
         repository.save(trainer);
     }
 
-    public void update(Trainer trainer) {
+    public Trainer update(Trainer trainer) {
         entityValidator.checkEntity(trainer);
         entityValidator.checkId(trainer.getId());
 
-        repository.update(trainer);
+        return repository.update(trainer);
     }
 }

@@ -21,8 +21,8 @@ public abstract class TrainingTypeMapper {
         return trainingType == null ? null : trainingType.getTrainingTypeName();
     }
 
-    public TrainingType map(String trainingTypeName) {
-        return repository.findByName(trainingTypeName)
-                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINING_TYPE_WITH_NAME_NOT_FOUND, trainingTypeName)));
+    public TrainingType map(String trainingType) {
+        return repository.findByName(trainingType)
+                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINING_TYPE_WITH_NAME_NOT_FOUND, trainingType)));
     }
 }

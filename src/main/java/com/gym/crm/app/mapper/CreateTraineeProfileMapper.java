@@ -1,8 +1,8 @@
 package com.gym.crm.app.mapper;
 
-import com.gym.crm.app.dto.request.CreateTraineeProfileRequest;
-import com.gym.crm.app.dto.response.CreateTraineeProfileResponse;
 import com.gym.crm.app.entity.Trainee;
+import com.gym.crm.app.rest.model.TraineeCreateRequest;
+import com.gym.crm.app.rest.model.UserCredentials;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -12,7 +12,10 @@ public interface CreateTraineeProfileMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "trainers", ignore = true)
     @Mapping(target = "trainings", ignore = true)
-    Trainee map(CreateTraineeProfileRequest dto);
+    @Mapping(target = "user", source = ".")
+    Trainee map(TraineeCreateRequest dto);
 
-    CreateTraineeProfileResponse map(Trainee entity);
+    @Mapping(target = "username", source = "user.username")
+    @Mapping(target = "password", source = "user.password")
+    UserCredentials map(Trainee entity);
 }

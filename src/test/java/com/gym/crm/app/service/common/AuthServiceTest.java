@@ -1,9 +1,9 @@
 package com.gym.crm.app.service.common;
 
-import com.gym.crm.app.dto.AuthCredentials;
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.AuthenticationException;
 import com.gym.crm.app.exception.EntityValidationException;
+import com.gym.crm.app.rest.model.UserCredentials;
 import com.gym.crm.app.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ class AuthServiceTest {
         String password = "password";
         String storedPassword = "storedPassword";
 
-        AuthCredentials credentials = new AuthCredentials(username, password);
+        UserCredentials credentials = new UserCredentials(username, password);
         User user = User.builder().username(username).password(storedPassword).build();
 
         given(userService.findByUsername(username))
@@ -60,7 +60,7 @@ class AuthServiceTest {
         // given
         String username = "username";
         String password = "password";
-        AuthCredentials credentials = new AuthCredentials(username, password);
+        UserCredentials credentials = new UserCredentials(username, password);
 
         String exceptionMessage = "User with username %s not found".formatted(username);
 
@@ -84,7 +84,7 @@ class AuthServiceTest {
         String password = "password";
         String storedPassword = "storedPassword";
 
-        AuthCredentials credentials = new AuthCredentials(username, password);
+        UserCredentials credentials = new UserCredentials(username, password);
         User user = User.builder().username(username).password(storedPassword).build();
 
         given(userService.findByUsername(username))

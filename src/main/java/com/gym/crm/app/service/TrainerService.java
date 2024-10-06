@@ -20,5 +20,5 @@ public interface TrainerService {
 
     void save(Trainer trainer);
 
-    void update(Trainer trainer);
+    Trainer update(Trainer trainer);
 }

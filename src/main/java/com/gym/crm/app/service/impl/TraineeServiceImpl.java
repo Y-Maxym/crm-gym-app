@@ -53,11 +53,11 @@ public class TraineeServiceImpl implements TraineeService {
         repository.save(trainee);
     }
 
-    public void update(Trainee trainee) {
+    public Trainee update(Trainee trainee) {
         entityValidator.checkEntity(trainee);
         entityValidator.checkId(trainee.getId());
 
-        repository.update(trainee);
+        return repository.update(trainee);
     }
 
     public void deleteById(Long id) {

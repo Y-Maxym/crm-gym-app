@@ -17,7 +17,7 @@ public interface TraineeService {
 
     void save(Trainee trainee);
 
-    void update(Trainee trainee);
+    Trainee update(Trainee trainee);
 
     void deleteById(Long id);
 
