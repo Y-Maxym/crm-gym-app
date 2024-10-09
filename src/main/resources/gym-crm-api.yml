@@ -450,14 +450,30 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateTraineesTrainerRequest"
+              type: array
+              items:
+                $ref: "#/components/schemas/TrainerProfileOnlyUsername"
+              example:
+                - username: William.Turner
+                - username: Jane.Smith
       responses:
         200:
           description: Successful update of trainee's trainer list
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UpdateTraineesTrainerResponse"
+                type: array
+                items:
+                  $ref: "#/components/schemas/TrainerProfileWithUsername"
+                example:
+                  - username: William.Turner
+                    firstName: William
+                    lastName: Turner
+                    specialization: Fitness
+                  - username: Jane.Smith
+                    firstName: Jane
+                    lastName: Smith
+                    specialization: Yoga
         400:
           description: Invalid request
           content:
@@ -822,26 +838,6 @@ components:
             firstName: William
             lastName: Turner
             specialization: Fitness
-    UpdateTraineesTrainerRequest:
-      type: array
-      items:
-        $ref: "#/components/schemas/TrainerProfileOnlyUsername"
-      example:
-        - username: William.Turner
-        - username: Jane.Smith
-    UpdateTraineesTrainerResponse:
-      type: array
-      items:
-        $ref: "#/components/schemas/TrainerProfileWithUsername"
-      example:
-        - username: William.Turner
-          firstName: William
-          lastName: Turner
-          specialization: Fitness
-        - username: Jane.Smith
-          firstName: Jane
-          lastName: Smith
-          specialization: Yoga
     TraineeProfile:
       type: object
       properties:

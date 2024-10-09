@@ -133,14 +133,9 @@ public class ServiceFacade {
     public UpdateTrainerProfileResponse updateTrainerProfile(UpdateTrainerProfileRequest request, BindingResult bindingResult) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer update error");
 
-        Trainer updatedTrainer = updateTrainerProfileMapper.map(request);
-
         Trainer trainer = trainerService.findByUsername(request.getUsername());
-        User user = trainer.getUser();
+        trainer = updateTrainerProfileMapper.updateTraineeProfileFromDto(request, trainer);
 
-        user = updateUserProfile(updatedTrainer.getUser(), user);
-
-        trainer = updatedTrainer.toBuilder().id(trainer.getId()).user(user).build();
         trainer = trainerService.update(trainer);
 
         return updateTrainerProfileMapper.map(trainer);
@@ -148,23 +143,20 @@ public class ServiceFacade {
 
     @Transactional
     public UpdateTraineeProfileResponse updateTraineeProfile(String username, UpdateTraineeProfileRequest request, BindingResult bindingResult) {
-        Trainee updatedTrainee = updateTraineeProfileMapper.map(request);
-
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainee update error");
 
         Trainee trainee = traineeService.findByUsername(username);
-        User user = trainee.getUser();
+        trainee = updateTraineeProfileMapper.updateTraineeProfileFromDto(request, trainee);
 
-        user = updateUserProfile(updatedTrainee.getUser(), user);
-
-        trainee = updatedTrainee.toBuilder().id(trainee.getId()).user(user).build();
         trainee = traineeService.update(trainee);
 
         return updateTraineeProfileMapper.map(trainee);
     }
 
     @Transactional
-    public void activateProfile(User user) {
+    public void activateProfile(String username) {
+        User user = userService.findByUsername(username);
+
         if (!user.isActive()) {
             user = user.toBuilder().isActive(true).build();
 
@@ -173,7 +165,9 @@ public class ServiceFacade {
     }
 
     @Transactional
-    public void deactivateProfile(User user) {
+    public void deactivateProfile(String username) {
+        User user = userService.findByUsername(username);
+
         if (user.isActive()) {
             user = user.toBuilder().isActive(false).build();
 
@@ -220,7 +214,7 @@ public class ServiceFacade {
     }
 
     @Transactional
-    public void updateTraineesTrainerList(String username, List<TrainerProfileOnlyUsername> request) {
+    public List<TrainerProfileWithUsername> updateTraineesTrainerList(String username, List<TrainerProfileOnlyUsername> request) {
         Trainee trainee = traineeService.findByUsername(username);
         List<Trainer> trainerList = request.stream()
                 .map(trainer -> trainerService.findByUsername(trainer.getUsername()))
@@ -229,13 +223,9 @@ public class ServiceFacade {
         trainee.getTrainers().clear();
         trainee.getTrainers().addAll(trainerList);
         traineeService.update(trainee);
-    }
 
-    private User updateUserProfile(User updatedUser, User user) {
-        String firstName = updatedUser.getFirstName();
-        String lastName = updatedUser.getLastName();
-        String updatedUsername = userProfileService.generateUsername(firstName, lastName);
-
-        return user.toBuilder().firstName(firstName).lastName(lastName).username(updatedUsername).build();
+        return trainee.getTrainers().stream()
+                .map(trainerProfileMapper::map)
+                .toList();
     }
 }
