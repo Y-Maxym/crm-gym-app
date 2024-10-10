@@ -5,11 +5,12 @@ import com.gym.crm.app.error.ValidationError;
 import com.gym.crm.app.exception.AuthenticationException;
 import com.gym.crm.app.exception.EntityPersistException;
 import com.gym.crm.app.exception.EntityValidationException;
+import com.gym.crm.app.exception.PasswordOperationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityValidationException.class)
@@ -29,6 +30,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EntityPersistException.class)
     public ResponseEntity<ValidationError> handleException(EntityPersistException e) {
         ValidationError error = new ValidationError(400, e.getMessage(), e.getErrors());
+
+        return ResponseEntity.status(400).body(error);
+    }
+
+    @ExceptionHandler(PasswordOperationException.class)
+    public ResponseEntity<ErrorMessage> handleException(PasswordOperationException e) {
+        ErrorMessage error = new ErrorMessage(400, e.getMessage());
 
         return ResponseEntity.status(400).body(error);
     }

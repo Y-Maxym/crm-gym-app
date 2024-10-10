@@ -5,6 +5,7 @@ import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.entity.TrainingType;
 import com.gym.crm.app.entity.User;
+import com.gym.crm.app.exception.AuthenticationException;
 import com.gym.crm.app.exception.EntityPersistException;
 import com.gym.crm.app.mapper.AddTrainingMapper;
 import com.gym.crm.app.mapper.CreateTraineeProfileMapper;
@@ -18,6 +19,7 @@ import com.gym.crm.app.mapper.TrainingTypeMapper;
 import com.gym.crm.app.mapper.UpdateTraineeProfileMapper;
 import com.gym.crm.app.mapper.UpdateTrainerProfileMapper;
 import com.gym.crm.app.repository.TrainingTypeRepository;
+import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;
 import com.gym.crm.app.rest.model.AddTrainingRequest;
 import com.gym.crm.app.rest.model.ChangePasswordRequest;
 import com.gym.crm.app.rest.model.GetTraineeProfileResponse;
@@ -41,6 +43,8 @@ import com.gym.crm.app.service.UserService;
 import com.gym.crm.app.service.common.AuthService;
 import com.gym.crm.app.service.common.BindingResultsService;
 import com.gym.crm.app.service.common.UserProfileService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -130,8 +134,9 @@ public class ServiceFacade {
     }
 
     @Transactional
-    public UpdateTrainerProfileResponse updateTrainerProfile(String username, UpdateTrainerProfileRequest request, BindingResult bindingResult) {
+    public UpdateTrainerProfileResponse updateTrainerProfile(String username, UpdateTrainerProfileRequest request, BindingResult bindingResult, HttpServletRequest httpServletRequest) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer update error");
+        checkUsername(username, httpServletRequest);
 
         Trainer trainer = trainerService.findByUsername(username);
         trainer = updateTrainerProfileMapper.updateTraineeProfileFromDto(request, trainer);
@@ -142,8 +147,9 @@ public class ServiceFacade {
     }
 
     @Transactional
-    public UpdateTraineeProfileResponse updateTraineeProfile(String username, UpdateTraineeProfileRequest request, BindingResult bindingResult) {
+    public UpdateTraineeProfileResponse updateTraineeProfile(String username, UpdateTraineeProfileRequest request, BindingResult bindingResult, HttpServletRequest httpServletRequest) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainee update error");
+        checkUsername(username, httpServletRequest);
 
         Trainee trainee = traineeService.findByUsername(username);
         trainee = updateTraineeProfileMapper.updateTraineeProfileFromDto(request, trainee);
@@ -154,29 +160,25 @@ public class ServiceFacade {
     }
 
     @Transactional
-    public void activateProfile(String username) {
+    public void activateDeactivateProfile(String username, ActivateDeactivateProfileRequest request, BindingResult bindingResult, HttpServletRequest httpServletRequest) {
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Activate/Deactivate profile error");
+        checkUsername(username, httpServletRequest);
+
         User user = userService.findByUsername(username);
 
-        if (!user.isActive()) {
-            user = user.toBuilder().isActive(true).build();
-
-            userService.update(user);
+        if ((user.isActive() && request.getIsActive())
+                || (!user.isActive() && !request.getIsActive())) {
+            return;
         }
+
+        user = user.toBuilder().isActive(request.getIsActive()).build();
+        userService.update(user);
     }
 
     @Transactional
-    public void deactivateProfile(String username) {
-        User user = userService.findByUsername(username);
+    public void deleteTraineeProfileByUsername(String username, HttpServletRequest httpServletRequest) {
+        checkUsername(username, httpServletRequest);
 
-        if (user.isActive()) {
-            user = user.toBuilder().isActive(false).build();
-
-            userService.update(user);
-        }
-    }
-
-    @Transactional
-    public void deleteTraineeProfileByUsername(String username) {
         traineeService.deleteByUsername(username);
     }
 
@@ -227,7 +229,9 @@ public class ServiceFacade {
     }
 
     @Transactional
-    public List<TrainerProfileWithUsername> updateTraineesTrainerList(String username, List<TrainerProfileOnlyUsername> request) {
+    public List<TrainerProfileWithUsername> updateTraineesTrainerList(String username, List<TrainerProfileOnlyUsername> request, HttpServletRequest httpServletRequest) {
+        checkUsername(username, httpServletRequest);
+
         Trainee trainee = traineeService.findByUsername(username);
         List<Trainer> trainerList = request.stream()
                 .map(trainer -> trainerService.findByUsername(trainer.getUsername()))
@@ -250,7 +254,9 @@ public class ServiceFacade {
                 .toList();
     }
 
-    public User authenticate(UserCredentials credentials) {
+    public User authenticate(UserCredentials credentials, BindingResult bindingResult) {
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Authentication error");
+
         String username = credentials.getUsername();
         String password = credentials.getPassword();
 
@@ -259,10 +265,12 @@ public class ServiceFacade {
 
 
     @Transactional
-    public void changePassword(ChangePasswordRequest request, BindingResult bindingResult) {
+    public void changePassword(ChangePasswordRequest request, BindingResult bindingResult, HttpServletRequest httpRequest) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Password change error");
 
         String username = request.getUsername();
+        String password = request.getPassword();
+        checkUsernamePassword(username, password, httpRequest);
 
         User user = userService.findByUsername(username);
 
@@ -270,5 +278,24 @@ public class ServiceFacade {
         user = user.toBuilder().password(hashedPassword).build();
 
         userService.update(user);
+    }
+
+    private void checkUsernamePassword(String username, String password, HttpServletRequest httpRequest) {
+        HttpSession session = httpRequest.getSession();
+        User sessionUser = (User) session.getAttribute("user");
+
+        if (!sessionUser.getUsername().equals(username)
+                || !userProfileService.isPasswordCorrect(password, sessionUser.getPassword())) {
+            throw new AuthenticationException("Invalid username or password");
+        }
+    }
+
+    private void checkUsername(String username, HttpServletRequest httpRequest) {
+        HttpSession session = httpRequest.getSession();
+        User sessionUser = (User) session.getAttribute("user");
+
+        if (!sessionUser.getUsername().equals(username)) {
+            throw new AuthenticationException("Invalid username");
+        }
     }
 }

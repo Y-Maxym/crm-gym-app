@@ -5,16 +5,13 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 @Service
 @Setter(onMethod_ = @Autowired)
 public class UserProfileService {
 
-    private static final AtomicLong serialNumber = new AtomicLong(1L);
-
     private static final String USERNAME_TEMPLATE = "%s.%s";
 
+    private UserRepository userRepository;
     private PasswordGenerator passwordGenerator;
     private UserRepository repository;
 
@@ -43,6 +40,8 @@ public class UserProfileService {
     }
 
     private String addSerialNumberToUsername(String username) {
-        return username + serialNumber.getAndIncrement();
+        Long serialNumber = userRepository.getNextSerialNumber();
+
+        return username + serialNumber;
     }
 }

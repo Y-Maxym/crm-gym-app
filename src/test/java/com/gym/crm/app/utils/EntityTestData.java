@@ -289,25 +289,25 @@ public class EntityTestData {
 //        return new CreateTraineeProfileRequest(LocalDate.parse("2000-01-01"), "Address", getInvalidCreateUserProfileRequest());
 //    }
 
-    public static UserCredentials getValidJohnDoeAuthCredentials() {
-        return new UserCredentials("John.Doe", "password");
-    }
-
-    public static UserCredentials getValidEmilyDavisAuthCredentials() {
-        return new UserCredentials("Emily.Davis", "password");
-    }
-
-    public static UserCredentials getInvalidJohnDoeAuthCredentials() {
-        return new UserCredentials("John.Doe", "incorrect");
-    }
-
-    public static UserCredentials getInvalidEmilyDavisAuthCredentials() {
-        return new UserCredentials("Emily.Davis", "incorrect");
-    }
-
-    public static UserCredentials getNullAuthCredentials() {
-        return new UserCredentials(null, null);
-    }
+//    public static UserCredentials getValidJohnDoeAuthCredentials() {
+//        return new UserCredentials("John.Doe", "password");
+//    }
+//
+//    public static UserCredentials getValidEmilyDavisAuthCredentials() {
+//        return new UserCredentials("Emily.Davis", "password");
+//    }
+//
+//    public static UserCredentials getInvalidJohnDoeAuthCredentials() {
+//        return new UserCredentials("John.Doe", "incorrect");
+//    }
+//
+//    public static UserCredentials getInvalidEmilyDavisAuthCredentials() {
+//        return new UserCredentials("Emily.Davis", "incorrect");
+//    }
+//
+//    public static UserCredentials getNullAuthCredentials() {
+//        return new UserCredentials(null, null);
+//    }
 
 //    public static UserProfileRequest getValidUserProfileRequest() {
 //        return new UserProfileRequest("firstName", "lastName");

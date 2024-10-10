@@ -2,15 +2,22 @@ package com.gym.crm.app.rest;
 
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.facade.ServiceFacade;
+import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;
 import com.gym.crm.app.rest.model.ChangePasswordRequest;
 import com.gym.crm.app.rest.model.UserCredentials;
 import com.gym.crm.app.validator.ChangePasswordValidator;
+import com.gym.crm.app.validator.UserCredentialsValidator;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,23 +30,53 @@ public class AuthRestControllerV1 {
 
     private final ServiceFacade service;
     private final ChangePasswordValidator changePasswordValidator;
+    private final UserCredentialsValidator userCredentialsValidator;
 
     @InitBinder("changePasswordRequest")
     public void initChangePasswordValidatorBinder(WebDataBinder binder) {
         binder.addValidators(changePasswordValidator);
     }
 
+    @InitBinder("userCredentials")
+    public void initUserCredentialsBinder(WebDataBinder binder) {
+        binder.addValidators(userCredentialsValidator);
+    }
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserCredentials credentials) {
-        User user = service.authenticate(credentials);
+    public ResponseEntity<?> login(@RequestBody @Validated UserCredentials credentials,
+                                   BindingResult bindingResult,
+                                   HttpServletRequest request) {
+        User user = service.authenticate(credentials, bindingResult);
+
+        HttpSession session = request.getSession(true);
+        session.setAttribute("user", user);
+
+        return ResponseEntity.status(200).build();
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        session.invalidate();
 
         return ResponseEntity.status(200).build();
     }
 
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody @Validated ChangePasswordRequest request,
-                                            BindingResult bindingResult) {
-        service.changePassword(request, bindingResult);
+                                            BindingResult bindingResult,
+                                            HttpServletRequest httpServletRequest) {
+        service.changePassword(request, bindingResult, httpServletRequest);
+
+        return ResponseEntity.status(200).build();
+    }
+
+    @PatchMapping("/{username}/activate")
+    public ResponseEntity<?> activateDeactivateProfile(@PathVariable String username,
+                                                       @RequestBody @Validated ActivateDeactivateProfileRequest request,
+                                                       BindingResult bindingResult,
+                                                       HttpServletRequest httpServletRequest) {
+        service.activateDeactivateProfile(username, request, bindingResult, httpServletRequest);
 
         return ResponseEntity.status(200).build();
     }

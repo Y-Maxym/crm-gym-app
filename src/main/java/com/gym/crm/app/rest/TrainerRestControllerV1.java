@@ -1,7 +1,6 @@
 package com.gym.crm.app.rest;
 
 import com.gym.crm.app.facade.ServiceFacade;
-import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;
 import com.gym.crm.app.rest.model.GetTrainerProfileResponse;
 import com.gym.crm.app.rest.model.TrainerCreateRequest;
 import com.gym.crm.app.rest.model.TrainerProfileWithUsername;
@@ -10,6 +9,7 @@ import com.gym.crm.app.rest.model.UpdateTrainerProfileResponse;
 import com.gym.crm.app.rest.model.UserCredentials;
 import com.gym.crm.app.validator.CreateTrainerValidator;
 import com.gym.crm.app.validator.UpdateTrainerValidator;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,7 +17,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -64,8 +63,9 @@ public class TrainerRestControllerV1 {
     @PutMapping("/{username}")
     public ResponseEntity<UpdateTrainerProfileResponse> updateTrainerProfile(@PathVariable String username,
                                                                              @RequestBody @Validated UpdateTrainerProfileRequest request,
-                                                                             BindingResult bindingResult) {
-        UpdateTrainerProfileResponse profile = service.updateTrainerProfile(username, request, bindingResult);
+                                                                             BindingResult bindingResult,
+                                                                             HttpServletRequest httpServletRequest) {
+        UpdateTrainerProfileResponse profile = service.updateTrainerProfile(username, request, bindingResult, httpServletRequest);
 
         return ResponseEntity.status(200).body(profile);
     }
@@ -75,17 +75,5 @@ public class TrainerRestControllerV1 {
         List<TrainerProfileWithUsername> trainers = service.getTrainersNotAssignedByTraineeUsername(username);
 
         return ResponseEntity.status(200).body(trainers);
-    }
-
-    @PatchMapping("/{username}")
-    public ResponseEntity<?> activateTrainerProfile(@PathVariable String username,
-                                                    @RequestBody ActivateDeactivateProfileRequest request) {
-        if (request.getIsActive()) {
-            service.activateProfile(username);
-        } else {
-            service.deactivateProfile(username);
-        }
-
-        return ResponseEntity.status(200).build();
     }
 }

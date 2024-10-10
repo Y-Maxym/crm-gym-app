@@ -1,10 +1,6 @@
 package com.gym.crm.app.validator;
 
-import com.gym.crm.app.entity.Trainee;
-import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.rest.model.AddTrainingRequest;
-import com.gym.crm.app.service.TraineeService;
-import com.gym.crm.app.service.TrainerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -18,9 +14,6 @@ import static java.util.Objects.isNull;
 @Component
 @RequiredArgsConstructor
 public class CreateTrainingValidator implements Validator {
-
-    private final TraineeService traineeService;
-    private final TrainerService trainerService;
 
     @Override
     public boolean supports(@NonNull Class<?> clazz) {

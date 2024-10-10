@@ -28,7 +28,6 @@ import java.util.List;
 public class TrainingRestControllerV1 {
 
     private final ServiceFacade service;
-
     private final CreateTrainingValidator createTrainingValidator;
 
     @InitBinder("addTrainingRequest")

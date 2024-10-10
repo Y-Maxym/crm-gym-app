@@ -794,9 +794,6 @@ components:
     TraineeCreateRequest:
       allOf:
         - $ref: "#/components/schemas/TraineeProfile"
-      required:
-        - firstName
-        - lastName
       example:
         firstName: John
         lastName: Doe
@@ -818,10 +815,6 @@ components:
       properties:
         isActive:
           type: boolean
-      required:
-        - firstName
-        - lastName
-        - isActive
       example:
         firstName: Dave
         lastName: Jones
@@ -880,10 +873,6 @@ components:
       type: object
       allOf:
         - $ref: "#/components/schemas/TrainerProfile"
-      required:
-        - firstName
-        - lastName
-        - specialization
       example:
         firstName: John
         lastName: Doe
@@ -916,12 +905,6 @@ components:
       properties:
         isActive:
           type: boolean
-      required:
-        - username
-        - firstName
-        - lastName
-        - specialization
-        - isActive
       example:
         firstName: William
         lastName: Turner
@@ -999,12 +982,6 @@ components:
           format: date
         trainingDuration:
           type: integer
-      required:
-        - traineeUsername
-        - trainerUsername
-        - trainingName
-        - trainingDate
-        - trainingDuration
       example:
         traineeUsername: John.Doe
         trainerUsername: Jane.Smith
@@ -1042,8 +1019,6 @@ components:
       properties:
         isActive:
           type: boolean
-      required:
-        - isActive
       example:
         isActive: true
     GetTrainingTypeResponse:
@@ -1060,9 +1035,6 @@ components:
           type: string
         password:
           type: string
-      required:
-        - username
-        - password
       example:
         username: John.Doe
         password: PrS7J1qY6I
@@ -1073,10 +1045,6 @@ components:
       properties:
         newPassword:
           type: string
-      required:
-        - username
-        - password
-        - newPassword
       example:
         username: John.Doe
         password: PrS7J1qY6I

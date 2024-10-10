@@ -1,7 +1,6 @@
 package com.gym.crm.app.rest;
 
 import com.gym.crm.app.facade.ServiceFacade;
-import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;
 import com.gym.crm.app.rest.model.GetTraineeProfileResponse;
 import com.gym.crm.app.rest.model.TraineeCreateRequest;
 import com.gym.crm.app.rest.model.TrainerProfileOnlyUsername;
@@ -9,8 +8,10 @@ import com.gym.crm.app.rest.model.TrainerProfileWithUsername;
 import com.gym.crm.app.rest.model.UpdateTraineeProfileRequest;
 import com.gym.crm.app.rest.model.UpdateTraineeProfileResponse;
 import com.gym.crm.app.rest.model.UserCredentials;
+import com.gym.crm.app.validator.ActivateDeactivateProfileValidator;
 import com.gym.crm.app.validator.CreateTraineeValidator;
 import com.gym.crm.app.validator.UpdateTraineeValidator;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,6 +37,7 @@ public class TraineeRestControllerV1 {
     private final ServiceFacade service;
     private final CreateTraineeValidator createValidator;
     private final UpdateTraineeValidator updateValidator;
+    private final ActivateDeactivateProfileValidator activateDeactivateProfileValidator;
 
     @InitBinder("traineeCreateRequest")
     public void initCreateValidatorBinder(WebDataBinder binder) {
@@ -46,6 +47,11 @@ public class TraineeRestControllerV1 {
     @InitBinder("updateTraineeProfileRequest")
     public void initUpdateValidatorBinder(WebDataBinder binder) {
         binder.addValidators(updateValidator);
+    }
+
+    @InitBinder("activateDeactivateProfileRequest")
+    public void initActivateDeactivateValidatorBinder(WebDataBinder binder) {
+        binder.addValidators(activateDeactivateProfileValidator);
     }
 
     @PostMapping("/register")
@@ -66,36 +72,27 @@ public class TraineeRestControllerV1 {
     @PutMapping("/{username}")
     public ResponseEntity<UpdateTraineeProfileResponse> updateTraineeProfile(@PathVariable String username,
                                                                              @RequestBody @Validated UpdateTraineeProfileRequest request,
-                                                                             BindingResult bindingResult) {
-        UpdateTraineeProfileResponse profile = service.updateTraineeProfile(username, request, bindingResult);
+                                                                             BindingResult bindingResult,
+                                                                             HttpServletRequest httpServletRequest) {
+        UpdateTraineeProfileResponse profile = service.updateTraineeProfile(username, request, bindingResult, httpServletRequest);
 
         return ResponseEntity.status(200).body(profile);
     }
 
     @DeleteMapping("/{username}")
-    public ResponseEntity<?> deleteTraineeProfile(@PathVariable String username) {
-        service.deleteTraineeProfileByUsername(username);
+    public ResponseEntity<?> deleteTraineeProfile(@PathVariable String username,
+                                                  HttpServletRequest httpServletRequest) {
+        service.deleteTraineeProfileByUsername(username, httpServletRequest);
 
         return ResponseEntity.status(200).build();
     }
 
     @PutMapping("/{username}/trainers")
     public ResponseEntity<List<TrainerProfileWithUsername>> updateTraineeTrainerList(@PathVariable String username,
-                                                                                     @RequestBody List<TrainerProfileOnlyUsername> request) {
-        List<TrainerProfileWithUsername> trainers = service.updateTraineesTrainerList(username, request);
+                                                                                     @RequestBody List<TrainerProfileOnlyUsername> request,
+                                                                                     HttpServletRequest httpServletRequest) {
+        List<TrainerProfileWithUsername> trainers = service.updateTraineesTrainerList(username, request, httpServletRequest);
 
         return ResponseEntity.status(200).body(trainers);
-    }
-
-    @PatchMapping("/{username}")
-    public ResponseEntity<?> activateTraineeProfile(@PathVariable String username,
-                                                    @RequestBody ActivateDeactivateProfileRequest request) {
-        if (request.getIsActive()) {
-            service.activateProfile(username);
-        } else {
-            service.deactivateProfile(username);
-        }
-
-        return ResponseEntity.status(200).build();
     }
 }

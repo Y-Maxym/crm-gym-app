@@ -28,4 +28,10 @@ public class UserRepositoryImpl extends CrudRepositoryImpl<User> implements User
             return Optional.empty();
         }
     }
+
+    @Override
+    public Long getNextSerialNumber() {
+        return entityManager.createQuery("SELECT nextval('serial_number_seq')", Long.class)
+                .getSingleResult();
+    }
 }

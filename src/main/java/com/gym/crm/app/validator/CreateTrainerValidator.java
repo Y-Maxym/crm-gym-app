@@ -31,7 +31,7 @@ public class CreateTrainerValidator implements Validator {
             errors.rejectValue("lastName", "last.name.empty.error", "Last name is required");
         }
         if (isNull(specialization) || specialization.isBlank()) {
-            errors.rejectValue("specialization", "specialization.null.error", "Specialization is required");
+            errors.rejectValue("specialization", "specialization.empty.error", "Specialization is required");
         }
     }
 }
