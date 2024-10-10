@@ -130,10 +130,10 @@ public class ServiceFacade {
     }
 
     @Transactional
-    public UpdateTrainerProfileResponse updateTrainerProfile(UpdateTrainerProfileRequest request, BindingResult bindingResult) {
+    public UpdateTrainerProfileResponse updateTrainerProfile(String username, UpdateTrainerProfileRequest request, BindingResult bindingResult) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer update error");
 
-        Trainer trainer = trainerService.findByUsername(request.getUsername());
+        Trainer trainer = trainerService.findByUsername(username);
         trainer = updateTrainerProfileMapper.updateTraineeProfileFromDto(request, trainer);
 
         trainer = trainerService.update(trainer);
@@ -206,6 +206,8 @@ public class ServiceFacade {
     }
 
     public List<TrainerProfileWithUsername> getTrainersNotAssignedByTraineeUsername(String username) {
+        traineeService.findByUsername(username);
+
         List<Trainer> trainers = trainerService.getTrainersNotAssignedByTraineeUsername(username);
 
         return trainers.stream()

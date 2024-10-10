@@ -332,7 +332,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationError"
+                $ref: "#/components/schemas/ErrorMessage"
         401:
           description: Unauthorized access
           content:
@@ -896,8 +896,6 @@ components:
       allOf:
         - $ref: "#/components/schemas/TrainerProfile"
       properties:
-        username:
-          type: string
         isActive:
           type: boolean
       required:
@@ -907,7 +905,6 @@ components:
         - specialization
         - isActive
       example:
-        username: William.Turner
         firstName: William
         lastName: Turner
         specialization: Fitness
