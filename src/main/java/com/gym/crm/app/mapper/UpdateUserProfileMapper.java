@@ -11,6 +11,7 @@ public interface UpdateUserProfileMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
+    @Mapping(target = "username", ignore = true)
     User map(UpdateTrainerProfileRequest request);
 
     @Mapping(target = "id", ignore = true)

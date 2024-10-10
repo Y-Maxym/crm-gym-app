@@ -3,6 +3,7 @@ package com.gym.crm.app.facade;
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
+import com.gym.crm.app.entity.TrainingType;
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.EntityPersistException;
 import com.gym.crm.app.mapper.AddTrainingMapper;
@@ -13,13 +14,16 @@ import com.gym.crm.app.mapper.GetTraineeTrainingsMapper;
 import com.gym.crm.app.mapper.GetTrainerProfileMapper;
 import com.gym.crm.app.mapper.GetTrainerTrainingsMapper;
 import com.gym.crm.app.mapper.TrainerProfileMapper;
+import com.gym.crm.app.mapper.TrainingTypeMapper;
 import com.gym.crm.app.mapper.UpdateTraineeProfileMapper;
 import com.gym.crm.app.mapper.UpdateTrainerProfileMapper;
+import com.gym.crm.app.repository.TrainingTypeRepository;
 import com.gym.crm.app.rest.model.AddTrainingRequest;
 import com.gym.crm.app.rest.model.GetTraineeProfileResponse;
 import com.gym.crm.app.rest.model.GetTraineeTrainingsResponse;
 import com.gym.crm.app.rest.model.GetTrainerProfileResponse;
 import com.gym.crm.app.rest.model.GetTrainerTrainingsResponse;
+import com.gym.crm.app.rest.model.GetTrainingTypeResponse;
 import com.gym.crm.app.rest.model.LoginChangeRequest;
 import com.gym.crm.app.rest.model.TraineeCreateRequest;
 import com.gym.crm.app.rest.model.TrainerCreateRequest;
@@ -50,6 +54,8 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ServiceFacade {
 
+    private final TrainingTypeRepository trainingTypeRepository;
+
     private final TraineeService traineeService;
     private final TrainerService trainerService;
     private final TrainingService trainingService;
@@ -67,6 +73,7 @@ public class ServiceFacade {
     private final UpdateTraineeProfileMapper updateTraineeProfileMapper;
     private final GetTrainerTrainingsMapper getTrainerTrainingsMapper;
     private final GetTraineeTrainingsMapper getTraineeTrainingsMapper;
+    private final TrainingTypeMapper trainingTypeMapper;
 
     @Transactional
     public UserCredentials createTrainerProfile(TrainerCreateRequest request, BindingResult bindingResult) {
@@ -238,6 +245,14 @@ public class ServiceFacade {
 
         return trainee.getTrainers().stream()
                 .map(trainerProfileMapper::map)
+                .toList();
+    }
+
+    public List<GetTrainingTypeResponse> getTrainingTypes() {
+        List<TrainingType> trainingTypes = trainingTypeRepository.findAll();
+
+        return trainingTypes.stream()
+                .map(trainingTypeMapper::mapToTrainingTypeResponse)
                 .toList();
     }
 }

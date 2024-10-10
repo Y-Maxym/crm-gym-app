@@ -744,7 +744,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetTrainingTypeResponse"
+                type: array
+                items:
+                  $ref: "#/components/schemas/GetTrainingTypeResponse"
+                example:
+                  - trainingTypeId: 1
+                    trainingType: Fitness
+                  - trainingTypeId: 2
+                    trainingType: Yoga
         400:
           description: Invalid request
           content:
@@ -1042,19 +1049,12 @@ components:
       example:
         isActive: true
     GetTrainingTypeResponse:
-      type: array
-      items:
-        type: object
-        properties:
-          trainingTypeId:
-            type: integer
-          trainingType:
-            type: string
-      example:
-        - trainingTypeId: 1
-          trainingType: Fitness
-        - trainingTypeId: 2
-          trainingType: Yoga
+      type: object
+      properties:
+        trainingTypeId:
+          type: integer
+        trainingType:
+          type: string
     UserCredentials:
       type: object
       properties:

@@ -7,6 +7,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -14,6 +15,12 @@ public class TrainingTypeRepositoryImpl implements TrainingTypeRepository {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Override
+    public List<TrainingType> findAll() {
+        return entityManager.createQuery("from TrainingType", TrainingType.class)
+                .getResultList();
+    }
 
     @Override
     public Optional<TrainingType> findByName(String typeName) {
