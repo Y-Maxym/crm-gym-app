@@ -19,12 +19,12 @@ import com.gym.crm.app.mapper.UpdateTraineeProfileMapper;
 import com.gym.crm.app.mapper.UpdateTrainerProfileMapper;
 import com.gym.crm.app.repository.TrainingTypeRepository;
 import com.gym.crm.app.rest.model.AddTrainingRequest;
+import com.gym.crm.app.rest.model.ChangePasswordRequest;
 import com.gym.crm.app.rest.model.GetTraineeProfileResponse;
 import com.gym.crm.app.rest.model.GetTraineeTrainingsResponse;
 import com.gym.crm.app.rest.model.GetTrainerProfileResponse;
 import com.gym.crm.app.rest.model.GetTrainerTrainingsResponse;
 import com.gym.crm.app.rest.model.GetTrainingTypeResponse;
-import com.gym.crm.app.rest.model.LoginChangeRequest;
 import com.gym.crm.app.rest.model.TraineeCreateRequest;
 import com.gym.crm.app.rest.model.TrainerCreateRequest;
 import com.gym.crm.app.rest.model.TrainerProfileOnlyUsername;
@@ -38,6 +38,7 @@ import com.gym.crm.app.service.TraineeService;
 import com.gym.crm.app.service.TrainerService;
 import com.gym.crm.app.service.TrainingService;
 import com.gym.crm.app.service.UserService;
+import com.gym.crm.app.service.common.AuthService;
 import com.gym.crm.app.service.common.BindingResultsService;
 import com.gym.crm.app.service.common.UserProfileService;
 import lombok.RequiredArgsConstructor;
@@ -74,6 +75,7 @@ public class ServiceFacade {
     private final GetTrainerTrainingsMapper getTrainerTrainingsMapper;
     private final GetTraineeTrainingsMapper getTraineeTrainingsMapper;
     private final TrainingTypeMapper trainingTypeMapper;
+    private final AuthService authService;
 
     @Transactional
     public UserCredentials createTrainerProfile(TrainerCreateRequest request, BindingResult bindingResult) {
@@ -125,14 +127,6 @@ public class ServiceFacade {
         Trainee trainee = traineeService.findByUsername(username);
 
         return getTraineeProfileMapper.map(trainee);
-    }
-
-    @Transactional
-    public void changePassword(LoginChangeRequest request, User user) {
-        String hashedPassword = userProfileService.hashPassword(request.getNewPassword());
-        user = user.toBuilder().password(hashedPassword).build();
-
-        userService.update(user);
     }
 
     @Transactional
@@ -254,5 +248,27 @@ public class ServiceFacade {
         return trainingTypes.stream()
                 .map(trainingTypeMapper::mapToTrainingTypeResponse)
                 .toList();
+    }
+
+    public User authenticate(UserCredentials credentials) {
+        String username = credentials.getUsername();
+        String password = credentials.getPassword();
+
+        return authService.authenticate(username, password);
+    }
+
+
+    @Transactional
+    public void changePassword(ChangePasswordRequest request, BindingResult bindingResult) {
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Password change error");
+
+        String username = request.getUsername();
+
+        User user = userService.findByUsername(username);
+
+        String hashedPassword = userProfileService.hashPassword(request.getNewPassword());
+        user = user.toBuilder().password(hashedPassword).build();
+
+        userService.update(user);
     }
 }

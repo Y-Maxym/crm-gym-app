@@ -151,7 +151,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorMessage"
-  /change-login:
+  /change-password:
     put:
       tags:
         - Auth
@@ -163,7 +163,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginChangeRequest'
+              $ref: '#/components/schemas/ChangePasswordRequest'
       responses:
         200:
           description: Successful password change
@@ -411,7 +411,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetNotAssignedTrainersResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/TrainerProfileWithUsername'
+                example:
+                  - username: Jane.Smith
+                    firstName: Jane
+                    lastName: Smith
+                    specialization: Yoga
+                  - username: David.Rock
+                    firstName: David
+                    lastName: Rock
+                    specialization: Fitness
         400:
           description: Invalid request
           content:
@@ -941,19 +952,6 @@ components:
           - username: Dave.Jones
             firstName: Dave
             lastName: Jones
-    GetNotAssignedTrainersResponse:
-      type: array
-      items:
-        $ref: "#/components/schemas/TrainerProfileWithUsername"
-      example:
-        - username: Jane.Smith
-          firstName: Jane
-          lastName: Smith
-          specialization: Yoga
-        - username: David.Rock
-          firstName: David
-          lastName: Rock
-          specialization: Fitness
     TrainerProfile:
       properties:
         firstName:
@@ -1068,7 +1066,7 @@ components:
       example:
         username: John.Doe
         password: PrS7J1qY6I
-    LoginChangeRequest:
+    ChangePasswordRequest:
       type: object
       allOf:
         - $ref: "#/components/schemas/UserCredentials"

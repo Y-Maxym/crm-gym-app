@@ -3,7 +3,6 @@ package com.gym.crm.app.service.common;
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.AuthenticationException;
 import com.gym.crm.app.exception.EntityValidationException;
-import com.gym.crm.app.rest.model.UserCredentials;
 import com.gym.crm.app.service.UserService;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +17,12 @@ public class AuthService {
     private UserService userService;
     private UserProfileService profileService;
 
-    public User authenticate(UserCredentials credentials) {
-        User foundUser = retrieveUserByUsername(credentials.getUsername());
+    public User authenticate(String username, String password) {
+        User foundUser = retrieveUserByUsername(username);
 
         String storedPassword = foundUser.getPassword();
 
-        if (!profileService.isPasswordCorrect(credentials.getPassword(), storedPassword)) {
+        if (!profileService.isPasswordCorrect(password, storedPassword)) {
             throw new AuthenticationException(INVALID_USERNAME_OR_PASSWORD);
         }
 

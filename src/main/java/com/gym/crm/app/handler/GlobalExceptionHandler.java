@@ -2,6 +2,7 @@ package com.gym.crm.app.handler;
 
 import com.gym.crm.app.error.ErrorMessage;
 import com.gym.crm.app.error.ValidationError;
+import com.gym.crm.app.exception.AuthenticationException;
 import com.gym.crm.app.exception.EntityPersistException;
 import com.gym.crm.app.exception.EntityValidationException;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityValidationException.class)
     public ResponseEntity<ErrorMessage> handleException(EntityValidationException e) {
+        ErrorMessage error = new ErrorMessage(400, e.getMessage());
+
+        return ResponseEntity.status(400).body(error);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorMessage> handleException(AuthenticationException e) {
         ErrorMessage error = new ErrorMessage(400, e.getMessage());
 
         return ResponseEntity.status(400).body(error);
