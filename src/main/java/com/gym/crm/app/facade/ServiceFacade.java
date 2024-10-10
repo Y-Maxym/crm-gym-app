@@ -43,7 +43,6 @@ import org.springframework.validation.BindingResult;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -180,27 +179,38 @@ public class ServiceFacade {
         traineeService.deleteByUsername(username);
     }
 
-    public Set<GetTraineeTrainingsResponse> getTraineeTrainingsByCriteria(String username, LocalDate from, LocalDate to, String trainerName, String trainingType) {
-        Set<Training> trainings = traineeService.findTrainingsByCriteria(username, from, to, trainerName, trainingType);
+    public List<GetTraineeTrainingsResponse> getTraineeTrainingsByCriteria(String username, LocalDate from, LocalDate to, String trainerName, String trainingType) {
+        traineeService.findByUsername(username);
+
+        List<Training> trainings = traineeService.findTrainingsByCriteria(username, from, to, trainerName, trainingType);
 
         return trainings.stream()
                 .map(getTraineeTrainingsMapper::map)
-                .collect(Collectors.toSet());
+                .toList();
     }
 
-    public Set<GetTrainerTrainingsResponse> getTrainerTrainingsByCriteria(String username, LocalDate from, LocalDate to, String traineeName, String trainingType) {
-        Set<Training> trainings = trainerService.findTrainingsByCriteria(username, from, to, traineeName, trainingType);
+    public List<GetTrainerTrainingsResponse> getTrainerTrainingsByCriteria(String username, LocalDate from, LocalDate to, String traineeName, String trainingType) {
+        trainerService.findByUsername(username);
+
+        List<Training> trainings = trainerService.findTrainingsByCriteria(username, from, to, traineeName, trainingType);
 
         return trainings.stream()
                 .map(getTrainerTrainingsMapper::map)
-                .collect(Collectors.toSet());
+                .toList();
     }
 
     @Transactional
     public void addTraining(AddTrainingRequest request, BindingResult bindingResult) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Training creation error");
 
+        Trainee trainee = traineeService.findByUsername(request.getTraineeUsername());
+        Trainer trainer = trainerService.findByUsername(request.getTrainerUsername());
+
+        trainee.getTrainers().add(trainer);
+
         Training training = addTrainingMapper.map(request);
+
+        training = training.toBuilder().trainingType(trainer.getSpecialization()).build();
 
         trainingService.save(training);
     }

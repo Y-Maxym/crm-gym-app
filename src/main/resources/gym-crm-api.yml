@@ -498,7 +498,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorMessage"
-  /trainees/{username}/trainings:
+  /trainings/trainees/{username}:
     get:
       tags:
         - Trainings
@@ -554,7 +554,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorMessage"
-  /trainers/{username}/trainings:
+  /trainings/trainers/{username}:
     get:
       tags:
         - Trainings
@@ -993,7 +993,7 @@ components:
           type: string
           format: date
         trainingDuration:
-          type: string
+          type: integer
       required:
         - traineeUsername
         - trainerUsername
@@ -1144,7 +1144,7 @@ components:
         format: date
       example: 2000-01-01
     NameParam:
-      name: trainerName
+      name: profileName
       in: query
       description: Profile name parameter
       required: false

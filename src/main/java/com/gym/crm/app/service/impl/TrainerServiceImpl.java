@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 import static com.gym.crm.app.util.Constants.ERROR_TRAINER_WITH_ID_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.ERROR_TRAINER_WITH_USERNAME_NOT_FOUND;
@@ -40,7 +39,7 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public Set<Training> findTrainingsByCriteria(String username, LocalDate from, LocalDate to, String traineeName, String trainingType) {
+    public List<Training> findTrainingsByCriteria(String username, LocalDate from, LocalDate to, String traineeName, String trainingType) {
         return repository.findTrainingsByCriteria(username, from, to, traineeName, trainingType);
     }
 

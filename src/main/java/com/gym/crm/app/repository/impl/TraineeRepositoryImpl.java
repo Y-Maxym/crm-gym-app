@@ -14,7 +14,9 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -42,8 +44,8 @@ public class TraineeRepositoryImpl extends CrudRepositoryImpl<Trainee> implement
     }
 
     @Override
-    public Set<Training> findTrainingsByCriteria(String username, LocalDate from, LocalDate to,
-                                                 String trainerName, String trainingType) {
+    public List<Training> findTrainingsByCriteria(String username, LocalDate from, LocalDate to,
+                                                  String trainerName, String trainingType) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Training> query = builder.createQuery(Training.class);
         Root<Training> root = query.from(Training.class);
@@ -77,7 +79,7 @@ public class TraineeRepositoryImpl extends CrudRepositoryImpl<Trainee> implement
 
         query.select(root).where(predicates.toArray(new Predicate[0]));
 
-        return new HashSet<>(entityManager.createQuery(query).getResultList());
+        return Collections.unmodifiableList(entityManager.createQuery(query).getResultList());
     }
 
     public void deleteByUsername(String username) {

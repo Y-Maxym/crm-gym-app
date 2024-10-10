@@ -4,7 +4,7 @@ import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Training;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 public interface TraineeService {
 
@@ -12,8 +12,8 @@ public interface TraineeService {
 
     Trainee findByUsername(String username);
 
-    Set<Training> findTrainingsByCriteria(String username, LocalDate from, LocalDate to,
-                                          String trainerName, String trainingType);
+    List<Training> findTrainingsByCriteria(String username, LocalDate from, LocalDate to,
+                                           String trainerName, String trainingType);
 
     void save(Trainee trainee);
 
