@@ -6,6 +6,7 @@ import com.gym.crm.app.rest.model.GetTraineeTrainingsResponse;
 import com.gym.crm.app.rest.model.GetTrainerTrainingsResponse;
 import com.gym.crm.app.validator.CreateTrainingValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -23,9 +24,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/trainings")
+@RequestMapping("${api.base-path}/trainings")
 @RequiredArgsConstructor
-public class TrainingRestControllerV1 {
+public class TrainingControllerV1 {
 
     private final ServiceFacade service;
     private final CreateTrainingValidator createTrainingValidator;
@@ -43,7 +44,7 @@ public class TrainingRestControllerV1 {
                                                                                  @RequestParam(name = "trainingType", required = false) String trainingType) {
         List<GetTraineeTrainingsResponse> trainings = service.getTraineeTrainingsByCriteria(username, periodFrom, periodTo, trainerName, trainingType);
 
-        return ResponseEntity.status(200).body(trainings);
+        return ResponseEntity.status(HttpStatus.OK).body(trainings);
     }
 
     @GetMapping("/trainers/{username}")
@@ -54,7 +55,7 @@ public class TrainingRestControllerV1 {
                                                                                  @RequestParam(name = "trainingType", required = false) String trainingType) {
         List<GetTrainerTrainingsResponse> trainings = service.getTrainerTrainingsByCriteria(username, periodFrom, periodTo, trainerName, trainingType);
 
-        return ResponseEntity.status(200).body(trainings);
+        return ResponseEntity.status(HttpStatus.OK).body(trainings);
     }
 
     @PostMapping
@@ -62,6 +63,6 @@ public class TrainingRestControllerV1 {
                                             BindingResult bindingResult) {
         service.addTraining(trainingRequest, bindingResult);
 
-        return ResponseEntity.status(200).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

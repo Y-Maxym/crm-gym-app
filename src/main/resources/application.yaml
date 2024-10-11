@@ -5,6 +5,8 @@ spring:
   profiles:
     active: local
 
+
+
   datasource:
     url: ${DATASOURCE_URL}
     username: ${DATASOURCE_USERNAME}
@@ -30,6 +32,9 @@ springdoc:
     enabled: false
   swagger-ui:
     enabled: false
+
+api:
+  base-path: /api/v1
 
 security:
   password:

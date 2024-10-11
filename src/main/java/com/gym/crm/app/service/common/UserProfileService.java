@@ -11,7 +11,6 @@ public class UserProfileService {
 
     private static final String USERNAME_TEMPLATE = "%s.%s";
 
-    private UserRepository userRepository;
     private PasswordGenerator passwordGenerator;
     private UserRepository repository;
 
@@ -40,7 +39,7 @@ public class UserProfileService {
     }
 
     private String addSerialNumberToUsername(String username) {
-        Long serialNumber = userRepository.getNextSerialNumber();
+        Long serialNumber = repository.getNextSerialNumber();
 
         return username + serialNumber;
     }

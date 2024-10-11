@@ -10,6 +10,7 @@ import com.gym.crm.app.validator.UserCredentialsValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -24,9 +25,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("${api.base-path}")
 @RequiredArgsConstructor
-public class AuthRestControllerV1 {
+public class AuthControllerV1 {
 
     private final ServiceFacade service;
     private final ChangePasswordValidator changePasswordValidator;
@@ -51,7 +52,7 @@ public class AuthRestControllerV1 {
         HttpSession session = request.getSession(true);
         session.setAttribute("user", user);
 
-        return ResponseEntity.status(200).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/logout")
@@ -59,7 +60,7 @@ public class AuthRestControllerV1 {
         HttpSession session = request.getSession(false);
         session.invalidate();
 
-        return ResponseEntity.status(200).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/change-password")
@@ -68,7 +69,7 @@ public class AuthRestControllerV1 {
                                             HttpServletRequest httpServletRequest) {
         service.changePassword(request, bindingResult, httpServletRequest);
 
-        return ResponseEntity.status(200).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PatchMapping("/{username}/activate")
@@ -78,6 +79,6 @@ public class AuthRestControllerV1 {
                                                        HttpServletRequest httpServletRequest) {
         service.activateDeactivateProfile(username, request, bindingResult, httpServletRequest);
 
-        return ResponseEntity.status(200).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

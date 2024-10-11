@@ -1,6 +1,6 @@
 package com.gym.crm.app.exception;
 
-import com.gym.crm.app.error.FieldErrorEntity;
+import com.gym.crm.app.rest.exception.FieldErrorEntity;
 import lombok.Getter;
 
 import java.util.List;

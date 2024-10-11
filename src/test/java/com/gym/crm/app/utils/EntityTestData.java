@@ -5,6 +5,9 @@ import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.entity.TrainingType;
 import com.gym.crm.app.entity.User;
+import com.gym.crm.app.rest.model.ChangePasswordRequest;
+import com.gym.crm.app.rest.model.TraineeCreateRequest;
+import com.gym.crm.app.rest.model.TrainerCreateRequest;
 import com.gym.crm.app.rest.model.UserCredentials;
 
 import java.time.LocalDate;
@@ -273,41 +276,72 @@ public class EntityTestData {
 //        return new CreateUserProfileRequest(null, null);
 //    }
 
-//    public static CreateTrainerProfileRequest getValidCreateTrainerProfileRequest() {
-//        return new CreateTrainerProfileRequest("Yoga", getValidCreateUserProfileRequest());
-//    }
-//
-//    public static CreateTrainerProfileRequest getInvalidCreateTrainerProfileRequest() {
-//        return new CreateTrainerProfileRequest("Yoga", getInvalidCreateUserProfileRequest());
-//    }
+    public static TrainerCreateRequest getValidCreateTrainerProfileRequest() {
+        return new TrainerCreateRequest()
+                .firstName("firstName")
+                .lastName("lastName")
+                .specialization("Yoga");
+    }
 
-//    public static CreateTraineeProfileRequest getValidCreateTraineeProfileRequest() {
-//        return new CreateTraineeProfileRequest(LocalDate.parse("2000-01-01"), "Address", getValidCreateUserProfileRequest());
-//    }
-//
-//    public static CreateTraineeProfileRequest getInvalidCreateTraineeProfileRequest() {
-//        return new CreateTraineeProfileRequest(LocalDate.parse("2000-01-01"), "Address", getInvalidCreateUserProfileRequest());
-//    }
+    public static TrainerCreateRequest getInvalidCreateTrainerProfileRequest() {
+        return new TrainerCreateRequest()
+                .firstName(null)
+                .lastName(null)
+                .specialization(null);
+    }
 
-//    public static UserCredentials getValidJohnDoeAuthCredentials() {
-//        return new UserCredentials("John.Doe", "password");
-//    }
-//
-//    public static UserCredentials getValidEmilyDavisAuthCredentials() {
-//        return new UserCredentials("Emily.Davis", "password");
-//    }
-//
-//    public static UserCredentials getInvalidJohnDoeAuthCredentials() {
-//        return new UserCredentials("John.Doe", "incorrect");
-//    }
-//
-//    public static UserCredentials getInvalidEmilyDavisAuthCredentials() {
-//        return new UserCredentials("Emily.Davis", "incorrect");
-//    }
-//
-//    public static UserCredentials getNullAuthCredentials() {
-//        return new UserCredentials(null, null);
-//    }
+    public static TraineeCreateRequest getValidCreateTraineeProfileRequest() {
+        return new TraineeCreateRequest()
+                .firstName("firstName")
+                .lastName("lastName")
+                .dateOfBirth(LocalDate.parse("2000-01-01"))
+                .address("Address");
+    }
+
+    public static TraineeCreateRequest getInvalidCreateTraineeProfileRequest() {
+        return new TraineeCreateRequest()
+                .firstName(null)
+                .lastName(null)
+                .dateOfBirth(null)
+                .address(null);
+    }
+
+    public static UserCredentials getValidJohnDoeAuthCredentials() {
+        return new UserCredentials()
+                .username("John.Doe")
+                .password("password");
+    }
+
+    public static UserCredentials getValidEmilyDavisAuthCredentials() {
+        return new UserCredentials()
+                .username("Emily.Davis")
+                .password("password");
+    }
+
+    public static UserCredentials getInvalidJohnDoeAuthCredentials() {
+        return new UserCredentials()
+                .username("John.Doe")
+                .password("incorrect");
+    }
+
+    public static UserCredentials getInvalidEmilyDavisAuthCredentials() {
+        return new UserCredentials()
+                .username("Emily.Davis")
+                .password("incorrect");
+    }
+
+    public static UserCredentials getNullAuthCredentials() {
+        return new UserCredentials()
+                .username(null)
+                .password(null);
+    }
+
+    public static ChangePasswordRequest getValidChangePasswordRequest() {
+        return new ChangePasswordRequest()
+                .username("Emily.Davis")
+                .password("password")
+                .newPassword("newPassword");
+    }
 
 //    public static UserProfileRequest getValidUserProfileRequest() {
 //        return new UserProfileRequest("firstName", "lastName");
@@ -317,8 +351,8 @@ public class EntityTestData {
 //        return new UserProfileRequest(null, null);
 //    }
 //
-//    public static TrainerProfileRequest getValidTrainerProfileRequest() {
-//        return new TrainerProfileRequest("Yoga", getValidUserProfileRequest());
+//    public static UpdateTrainerProfileRequest getValidUpdateTrainerProfileRequest() {
+//        return new UpdateTrainerProfileRequest("Yoga", getValidUserProfileRequest());
 //    }
 //
 //    public static TrainerProfileRequest getInvalidTrainerProfileRequest() {

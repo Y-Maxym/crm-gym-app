@@ -1,4 +1,4 @@
-package com.gym.crm.app.error;
+package com.gym.crm.app.rest.exception;
 
 import org.springframework.validation.FieldError;
 

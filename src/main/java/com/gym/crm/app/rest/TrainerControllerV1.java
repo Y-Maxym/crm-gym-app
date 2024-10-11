@@ -11,6 +11,7 @@ import com.gym.crm.app.validator.CreateTrainerValidator;
 import com.gym.crm.app.validator.UpdateTrainerValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -27,9 +28,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/trainers")
+@RequestMapping("${api.base-path}/trainers")
 @RequiredArgsConstructor
-public class TrainerRestControllerV1 {
+public class TrainerControllerV1 {
 
     private final ServiceFacade service;
     private final CreateTrainerValidator createTrainerValidator;
@@ -50,14 +51,14 @@ public class TrainerRestControllerV1 {
                                                            BindingResult bindingResult) {
         UserCredentials profile = service.createTrainerProfile(request, bindingResult);
 
-        return ResponseEntity.status(200).body(profile);
+        return ResponseEntity.status(HttpStatus.OK).body(profile);
     }
 
     @GetMapping("/{username}")
     public ResponseEntity<GetTrainerProfileResponse> getTrainerProfile(@PathVariable String username) {
         GetTrainerProfileResponse trainer = service.findTrainerProfileByUsername(username);
 
-        return ResponseEntity.status(200).body(trainer);
+        return ResponseEntity.status(HttpStatus.OK).body(trainer);
     }
 
     @PutMapping("/{username}")
@@ -67,13 +68,13 @@ public class TrainerRestControllerV1 {
                                                                              HttpServletRequest httpServletRequest) {
         UpdateTrainerProfileResponse profile = service.updateTrainerProfile(username, request, bindingResult, httpServletRequest);
 
-        return ResponseEntity.status(200).body(profile);
+        return ResponseEntity.status(HttpStatus.OK).body(profile);
     }
 
     @GetMapping("/not-assigned/{username}")
     public ResponseEntity<List<TrainerProfileWithUsername>> getTrainersNotAssigned(@PathVariable String username) {
         List<TrainerProfileWithUsername> trainers = service.getTrainersNotAssignedByTraineeUsername(username);
 
-        return ResponseEntity.status(200).body(trainers);
+        return ResponseEntity.status(HttpStatus.OK).body(trainers);
     }
 }

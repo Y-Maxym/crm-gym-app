@@ -1,6 +1,6 @@
 package com.gym.crm.app.service.common;
 
-import com.gym.crm.app.error.FieldErrorEntity;
+import com.gym.crm.app.rest.exception.FieldErrorEntity;
 import com.gym.crm.app.exception.ApplicationException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;

@@ -13,6 +13,7 @@ import com.gym.crm.app.validator.CreateTraineeValidator;
 import com.gym.crm.app.validator.UpdateTraineeValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -30,9 +31,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/trainees")
+@RequestMapping("${api.base-path}/trainees")
 @RequiredArgsConstructor
-public class TraineeRestControllerV1 {
+public class TraineeControllerV1 {
 
     private final ServiceFacade service;
     private final CreateTraineeValidator createValidator;
@@ -59,14 +60,14 @@ public class TraineeRestControllerV1 {
                                                            BindingResult bindingResult) {
         UserCredentials profile = service.createTraineeProfile(request, bindingResult);
 
-        return ResponseEntity.status(200).body(profile);
+        return ResponseEntity.status(HttpStatus.OK).body(profile);
     }
 
     @GetMapping("/{username}")
     public ResponseEntity<GetTraineeProfileResponse> getTraineeProfile(@PathVariable String username) {
         GetTraineeProfileResponse trainee = service.findTraineeProfileByUsername(username);
 
-        return ResponseEntity.status(200).body(trainee);
+        return ResponseEntity.status(HttpStatus.OK).body(trainee);
     }
 
     @PutMapping("/{username}")
@@ -76,7 +77,7 @@ public class TraineeRestControllerV1 {
                                                                              HttpServletRequest httpServletRequest) {
         UpdateTraineeProfileResponse profile = service.updateTraineeProfile(username, request, bindingResult, httpServletRequest);
 
-        return ResponseEntity.status(200).body(profile);
+        return ResponseEntity.status(HttpStatus.OK).body(profile);
     }
 
     @DeleteMapping("/{username}")
@@ -84,7 +85,7 @@ public class TraineeRestControllerV1 {
                                                   HttpServletRequest httpServletRequest) {
         service.deleteTraineeProfileByUsername(username, httpServletRequest);
 
-        return ResponseEntity.status(200).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PutMapping("/{username}/trainers")
@@ -93,6 +94,6 @@ public class TraineeRestControllerV1 {
                                                                                      HttpServletRequest httpServletRequest) {
         List<TrainerProfileWithUsername> trainers = service.updateTraineesTrainerList(username, request, httpServletRequest);
 
-        return ResponseEntity.status(200).body(trainers);
+        return ResponseEntity.status(HttpStatus.OK).body(trainers);
     }
 }

@@ -26,10 +26,6 @@ public abstract class UpdateTrainerProfileMapper {
     public abstract UpdateTrainerProfileResponse map(Trainer entity);
 
     public Trainer updateTraineeProfileFromDto(UpdateTrainerProfileRequest dto, Trainer entity) {
-        if (dto == null) {
-            return entity;
-        }
-
         return entity.toBuilder()
                 .specialization(trainingTypeMapper.map(dto.getSpecialization()))
                 .user(updateUserFromTrainerDto(dto, entity.getUser()))
@@ -37,10 +33,6 @@ public abstract class UpdateTrainerProfileMapper {
     }
 
     private User updateUserFromTrainerDto(UpdateTrainerProfileRequest dto, User entity) {
-        if (dto == null) {
-            return entity;
-        }
-
         String firstName = entity.getFirstName();
         String lastName = entity.getLastName();
         String username = entity.getUsername();

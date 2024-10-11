@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static java.util.Objects.isNull;
+import static java.util.Optional.ofNullable;
 
 @Mapper(componentModel = "spring", uses = {UpdateUserProfileMapper.class, TrainingTypeMapper.class, TrainerProfileMapper.class})
 public abstract class UpdateTraineeProfileMapper {
@@ -25,22 +25,15 @@ public abstract class UpdateTraineeProfileMapper {
     public abstract UpdateTraineeProfileResponse map(Trainee entity);
 
     public Trainee updateTraineeProfileFromDto(UpdateTraineeProfileRequest dto, Trainee entity) {
-        if (dto == null) {
-            return entity;
-        }
+        Trainee.TraineeBuilder builder = entity.toBuilder();
+        ofNullable(dto.getDateOfBirth()).ifPresent(builder::dateOfBirth);
+        ofNullable(dto.getAddress()).ifPresent(builder::address);
+        builder.user(updateUserFromTraineeDto(dto, entity.getUser()));
 
-        return entity.toBuilder()
-                .dateOfBirth(isNull(dto.getDateOfBirth()) ? entity.getDateOfBirth() : dto.getDateOfBirth())
-                .address(isNull(dto.getAddress()) ? entity.getAddress() : dto.getAddress())
-                .user(updateUserFromTraineeDto(dto, entity.getUser()))
-                .build();
+        return builder.build();
     }
 
     private User updateUserFromTraineeDto(UpdateTraineeProfileRequest dto, User entity) {
-        if (dto == null) {
-            return entity;
-        }
-
         String firstName = entity.getFirstName();
         String lastName = entity.getLastName();
         String username = entity.getUsername();
