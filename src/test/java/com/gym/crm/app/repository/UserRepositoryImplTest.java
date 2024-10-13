@@ -155,4 +155,14 @@ class UserRepositoryImplTest extends AbstractTestRepository<UserRepository> {
         // then
         assertThat(actual.isEmpty()).isTrue();
     }
+
+    @Test
+    @DisplayName("Test get next serial number")
+    void whenGetNextSerialNumber_thenUserIsReturned() {
+        // when
+        Long actual = repository.getNextSerialNumber();
+
+        // then
+        assertThat(actual).isNotNull();
+    }
 }

@@ -5,12 +5,19 @@ import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.entity.TrainingType;
 import com.gym.crm.app.entity.User;
+import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;
+import com.gym.crm.app.rest.model.AddTrainingRequest;
 import com.gym.crm.app.rest.model.ChangePasswordRequest;
 import com.gym.crm.app.rest.model.TraineeCreateRequest;
 import com.gym.crm.app.rest.model.TrainerCreateRequest;
+import com.gym.crm.app.rest.model.TrainerProfileOnlyUsername;
+import com.gym.crm.app.rest.model.UpdateTraineeProfileRequest;
+import com.gym.crm.app.rest.model.UpdateTrainerProfileRequest;
 import com.gym.crm.app.rest.model.UserCredentials;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EntityTestData {
 
@@ -268,14 +275,6 @@ public class EntityTestData {
                 .build();
     }
 
-//    public static CreateUserProfileRequest getValidCreateUserProfileRequest() {
-//        return new CreateUserProfileRequest("firstName", "lastName");
-//    }
-//
-//    public static CreateUserProfileRequest getInvalidCreateUserProfileRequest() {
-//        return new CreateUserProfileRequest(null, null);
-//    }
-
     public static TrainerCreateRequest getValidCreateTrainerProfileRequest() {
         return new TrainerCreateRequest()
                 .firstName("firstName")
@@ -343,47 +342,79 @@ public class EntityTestData {
                 .newPassword("newPassword");
     }
 
-//    public static UserProfileRequest getValidUserProfileRequest() {
-//        return new UserProfileRequest("firstName", "lastName");
-//    }
-//
-//    public static UserProfileRequest getInvalidUserProfileRequest() {
-//        return new UserProfileRequest(null, null);
-//    }
-//
-//    public static UpdateTrainerProfileRequest getValidUpdateTrainerProfileRequest() {
-//        return new UpdateTrainerProfileRequest("Yoga", getValidUserProfileRequest());
-//    }
-//
-//    public static TrainerProfileRequest getInvalidTrainerProfileRequest() {
-//        return new TrainerProfileRequest("Yoga", getInvalidUserProfileRequest());
-//    }
-//
-//    public static TraineeProfileRequest getValidTraineeProfileRequest() {
-//        return new TraineeProfileRequest(LocalDate.parse("2000-01-01"), "Address2", getValidUserProfileRequest());
-//    }
-//
-//    public static TraineeProfileRequest getInvalidTraineeProfileRequest() {
-//        return new TraineeProfileRequest(LocalDate.parse("2000-01-01"), "Address1", getInvalidUserProfileRequest());
-//    }
-//
-//    public static TrainingRequest getValidTrainingRequest() {
-//        return new TrainingRequest(
-//                "John.Doe",
-//                "David.Brown",
-//                "Training name",
-//                "Yoga",
-//                LocalDate.parse("2021-02-01"),
-//                2);
-//    }
-//
-//    public static TrainingRequest getInvalidTrainingRequest() {
-//        return new TrainingRequest(
-//                null,
-//                null,
-//                "Training name",
-//                "Yoga",
-//                LocalDate.parse("2021-02-01"),
-//                2);
-//    }
+    public static ChangePasswordRequest getInvalidChangePasswordRequest() {
+        return new ChangePasswordRequest()
+                .username("Emily.Davis")
+                .password("invalid")
+                .newPassword("newPassword");
+    }
+
+    public static UpdateTrainerProfileRequest getValidUpdateTrainerProfileRequest() {
+        return new UpdateTrainerProfileRequest()
+                .firstName("Emily")
+                .lastName("Davis")
+                .specialization("Yoga")
+                .isActive(true);
+    }
+
+    public static UpdateTrainerProfileRequest getInvalidTrainerProfileRequest() {
+        return new UpdateTrainerProfileRequest()
+                .firstName("invalid")
+                .lastName("invalid")
+                .specialization("invalid")
+                .isActive(true);
+    }
+
+    public static UpdateTraineeProfileRequest getValidTraineeProfileRequest() {
+        return new UpdateTraineeProfileRequest()
+                .firstName("John")
+                .lastName("Doe")
+                .dateOfBirth(LocalDate.parse("2000-01-01"))
+                .address("Address")
+                .isActive(true);
+    }
+
+    public static UpdateTraineeProfileRequest getInvalidTraineeProfileRequest() {
+        return new UpdateTraineeProfileRequest()
+                .firstName("invalid")
+                .lastName("invalid")
+                .dateOfBirth(LocalDate.parse("2000-01-01"))
+                .address("invalid")
+                .isActive(true);
+    }
+
+    public static ActivateDeactivateProfileRequest getActivateProfileRequest() {
+        return new ActivateDeactivateProfileRequest()
+                .isActive(true);
+    }
+
+    public static ActivateDeactivateProfileRequest getDeactivateProfileRequest() {
+        return new ActivateDeactivateProfileRequest()
+                .isActive(false);
+    }
+
+    public static AddTrainingRequest getValidTrainingRequest() {
+        return new AddTrainingRequest()
+                .traineeUsername("John.Doe")
+                .trainerUsername("Emily.Davis")
+                .trainingName("Training name")
+                .trainingDate(LocalDate.parse("2021-02-01"))
+                .trainingDuration(2);
+    }
+
+    public static AddTrainingRequest getInvalidTrainingRequest() {
+        return new AddTrainingRequest()
+                .traineeUsername(null)
+                .trainerUsername(null)
+                .trainingName(null)
+                .trainingDate(null)
+                .trainingDuration(0);
+    }
+
+    public static List<TrainerProfileOnlyUsername> getValidListTrainerProfileOnlyUsernames() {
+        return new ArrayList<>() {{
+            add(new TrainerProfileOnlyUsername().username("David.Brown"));
+            add(new TrainerProfileOnlyUsername().username("Emily.Davis"));
+        }};
+    }
 }
