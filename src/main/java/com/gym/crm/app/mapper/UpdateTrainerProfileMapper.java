@@ -23,11 +23,11 @@ public abstract class UpdateTrainerProfileMapper {
     @Mapping(target = "lastName", source = "user.lastName")
     @Mapping(target = "isActive", source = "user.active")
     @Mapping(target = "traineesList", source = "trainees")
-    public abstract UpdateTrainerProfileResponse map(Trainer entity);
+    public abstract UpdateTrainerProfileResponse mapToUpdateTrainerProfileResponse(Trainer entity);
 
     public Trainer updateTraineeProfileFromDto(UpdateTrainerProfileRequest dto, Trainer entity) {
         return entity.toBuilder()
-                .specialization(trainingTypeMapper.map(dto.getSpecialization()))
+                .specialization(trainingTypeMapper.mapToTrainingType(dto.getSpecialization()))
                 .user(updateUserFromTrainerDto(dto, entity.getUser()))
                 .build();
     }

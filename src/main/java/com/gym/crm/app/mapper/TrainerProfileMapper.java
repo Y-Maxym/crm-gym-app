@@ -11,5 +11,5 @@ public interface TrainerProfileMapper {
     @Mapping(target = "username", source = "user.username")
     @Mapping(target = "firstName", source = "user.firstName")
     @Mapping(target = "lastName", source = "user.lastName")
-    TrainerProfileWithUsername map(Trainer entity);
+    TrainerProfileWithUsername mapToTrainerProfileWithUsername(Trainer entity);
 }

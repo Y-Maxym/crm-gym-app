@@ -9,5 +9,5 @@ import org.mapstruct.Mapping;
 public interface GetTrainerTrainingsMapper {
 
     @Mapping(target = "traineeName", source = "trainee.user.firstName")
-    GetTrainerTrainingsResponse map(Training entity);
+    GetTrainerTrainingsResponse mapToGetTrainerTrainingsResponse(Training entity);
 }

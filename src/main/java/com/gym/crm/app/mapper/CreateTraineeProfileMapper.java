@@ -13,9 +13,9 @@ public interface CreateTraineeProfileMapper {
     @Mapping(target = "trainers", ignore = true)
     @Mapping(target = "trainings", ignore = true)
     @Mapping(target = "user", source = ".")
-    Trainee map(TraineeCreateRequest dto);
+    Trainee mapToTrainee(TraineeCreateRequest dto);
 
     @Mapping(target = "username", source = "user.username")
     @Mapping(target = "password", source = "user.password")
-    UserCredentials map(Trainee entity);
+    UserCredentials mapToUserCredentials(Trainee entity);
 }

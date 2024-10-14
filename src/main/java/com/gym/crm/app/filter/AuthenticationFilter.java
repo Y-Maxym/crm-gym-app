@@ -20,6 +20,7 @@ import static java.util.Objects.isNull;
 @Component
 public class AuthenticationFilter extends OncePerRequestFilter {
 
+    private static final String UNAUTHORIZED_MESSAGE = "Unauthorized";
     private static final List<String> EXCLUDED_URLS = List.of("/api/v1/login", "/api/v1/trainees/register", "/api/v1/trainers/register",
             "/swagger-ui/index.html", "/swagger-ui.html", "/v1/api-docs");
 
@@ -51,7 +52,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private void writeUnauthorizedResponse(HttpServletResponse response) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        ErrorResponse error = new ErrorResponse(UNAUTHORIZED_ERROR.getCode(), "Unauthorized");
+        ErrorResponse error = new ErrorResponse(UNAUTHORIZED_ERROR.getCode(), UNAUTHORIZED_MESSAGE);
 
         String json = objectMapper.writeValueAsString(error);
 

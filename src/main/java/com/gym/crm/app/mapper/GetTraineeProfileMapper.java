@@ -13,11 +13,11 @@ public interface GetTraineeProfileMapper {
     @Mapping(target = "trainers", ignore = true)
     @Mapping(target = "trainings", ignore = true)
     @Mapping(target = "user", source = ".")
-    Trainee map(TraineeCreateRequest dto);
+    Trainee mapToTrainee(TraineeCreateRequest dto);
 
     @Mapping(target = "isActive", source = "user.active")
     @Mapping(target = "trainersList", source = "trainers")
     @Mapping(target = "firstName", source = "user.firstName")
     @Mapping(target = "lastName", source = "user.lastName")
-    GetTraineeProfileResponse map(Trainee entity);
+    GetTraineeProfileResponse mapToGetTraineeProfileResponse(Trainee entity);
 }

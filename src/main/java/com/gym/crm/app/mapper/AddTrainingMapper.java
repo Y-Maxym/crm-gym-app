@@ -22,7 +22,7 @@ public abstract class AddTrainingMapper {
     @Mapping(target = "trainer", expression = "java(mapTrainer(dto.getTrainerUsername()))")
     @Mapping(target = "trainee", expression = "java(mapTrainee(dto.getTraineeUsername()))")
     @Mapping(target = "trainingType", ignore = true)
-    public abstract Training map(AddTrainingRequest dto);
+    public abstract Training mapToTraining(AddTrainingRequest dto);
 
     protected Trainer mapTrainer(String trainerUsername) {
         return trainerService.findByUsername(trainerUsername);

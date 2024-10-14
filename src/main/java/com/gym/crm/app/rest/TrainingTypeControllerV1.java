@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.base-path}/training-types")
 @RequiredArgsConstructor
-public class TrainingTypeRestControllerV1 {
+public class TrainingTypeControllerV1 {
 
     private final ServiceFacade service;
 

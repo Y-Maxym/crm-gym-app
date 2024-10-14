@@ -28,17 +28,14 @@ import com.gym.crm.app.service.common.UserProfileService;
 import com.gym.crm.app.utils.EntityTestData;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
@@ -52,6 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 @Testcontainers
 @Transactional
+@Rollback
 class ItServiceFacadeTest extends AbstractItTest {
 
     @PersistenceContext
@@ -194,13 +192,8 @@ class ItServiceFacadeTest extends AbstractItTest {
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "changePasswordRequest");
         User user = EntityTestData.getPersistedUserEmilyDavis();
 
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-        HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("user", user);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
-
         // when
-        serviceFacade.changePassword(request, bindingResult, httpServletRequest);
+        serviceFacade.changePassword(request, bindingResult, user);
 
         // then
         User actual = entityManager.createQuery("FROM User u WHERE u.username = :username", User.class)
@@ -218,13 +211,8 @@ class ItServiceFacadeTest extends AbstractItTest {
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "changePasswordRequest");
         User user = EntityTestData.getPersistedUserJohnDoe();
 
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-        HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("user", user);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
-
         // when
-        AuthenticationException ex = assertThrows(AuthenticationException.class, () -> serviceFacade.changePassword(request, bindingResult, httpServletRequest));
+        AuthenticationException ex = assertThrows(AuthenticationException.class, () -> serviceFacade.changePassword(request, bindingResult, user));
 
         // then
         assertThat(ex.getMessage()).isEqualTo("Invalid username or password");
@@ -238,13 +226,8 @@ class ItServiceFacadeTest extends AbstractItTest {
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "changePasswordRequest");
         User user = EntityTestData.getTransientUserEmilyDavis();
 
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-        HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("user", user);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
-
         // when
-        AuthenticationException ex = assertThrows(AuthenticationException.class, () -> serviceFacade.changePassword(request, bindingResult, httpServletRequest));
+        AuthenticationException ex = assertThrows(AuthenticationException.class, () -> serviceFacade.changePassword(request, bindingResult, user));
 
         // then
         assertThat(ex.getMessage()).isEqualTo("Invalid username or password");
@@ -259,13 +242,8 @@ class ItServiceFacadeTest extends AbstractItTest {
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "updateTrainerProfile");
         User user = EntityTestData.getPersistedUserEmilyDavis();
 
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-        HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("user", user);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
-
         // when
-        serviceFacade.updateTrainerProfile(username, request, bindingResult, httpServletRequest);
+        serviceFacade.updateTrainerProfile(username, request, bindingResult, user);
 
         // then
         User actual = entityManager.createQuery("FROM User u WHERE u.firstName = :firstName", User.class)
@@ -288,13 +266,8 @@ class ItServiceFacadeTest extends AbstractItTest {
 
         User user = EntityTestData.getPersistedUserEmilyDavis();
 
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-        HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("user", user);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
-
         // when
-        EntityPersistException ex = assertThrows(EntityPersistException.class, () -> serviceFacade.updateTrainerProfile(username, request, bindingResult, httpServletRequest));
+        EntityPersistException ex = assertThrows(EntityPersistException.class, () -> serviceFacade.updateTrainerProfile(username, request, bindingResult, user));
 
         // then
         assertThat(ex.getMessage()).isEqualTo("Trainer update error");
@@ -309,13 +282,8 @@ class ItServiceFacadeTest extends AbstractItTest {
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "updateTraineeProfile");
         User user = EntityTestData.getPersistedUserJohnDoe();
 
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-        HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("user", user);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
-
         // when
-        serviceFacade.updateTraineeProfile(username, request, bindingResult, httpServletRequest);
+        serviceFacade.updateTraineeProfile(username, request, bindingResult, user);
 
         // then
         User actual = entityManager.createQuery("FROM User u WHERE u.firstName = :firstName", User.class)
@@ -338,13 +306,8 @@ class ItServiceFacadeTest extends AbstractItTest {
 
         User user = EntityTestData.getPersistedUserEmilyDavis();
 
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-        HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("user", user);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
-
         // when
-        EntityPersistException ex = assertThrows(EntityPersistException.class, () -> serviceFacade.updateTraineeProfile(username, request, bindingResult, httpServletRequest));
+        EntityPersistException ex = assertThrows(EntityPersistException.class, () -> serviceFacade.updateTraineeProfile(username, request, bindingResult, user));
 
         // then
         assertThat(ex.getMessage()).isEqualTo("Trainee update error");
@@ -359,13 +322,8 @@ class ItServiceFacadeTest extends AbstractItTest {
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "activateDeactivateProfileRequest");
         User user = EntityTestData.getPersistedUserJohnDoe();
 
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-        HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("user", user);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
-
         // when
-        serviceFacade.activateDeactivateProfile(username, request, bindingResult, httpServletRequest);
+        serviceFacade.activateDeactivateProfile(username, request, bindingResult, user);
 
         // then
         User actual = entityManager.createQuery("FROM User u WHERE u.username = :username", User.class)
@@ -384,11 +342,6 @@ class ItServiceFacadeTest extends AbstractItTest {
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "activateDeactivateProfileRequest");
         User user = EntityTestData.getPersistedUserJohnDoe();
 
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-        HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("user", user);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
-
         entityManager.createQuery("UPDATE User u SET u.isActive = false WHERE u.username = :username")
                 .setParameter("username", username)
                 .executeUpdate();
@@ -399,7 +352,7 @@ class ItServiceFacadeTest extends AbstractItTest {
                 .isActive();
 
         // when
-        serviceFacade.activateDeactivateProfile(username, request, bindingResult, httpServletRequest);
+        serviceFacade.activateDeactivateProfile(username, request, bindingResult, user);
 
         // then
         User actual = entityManager.createQuery("FROM User u WHERE u.username = :username", User.class)
@@ -419,11 +372,6 @@ class ItServiceFacadeTest extends AbstractItTest {
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "activateDeactivateProfileRequest");
         User user = EntityTestData.getPersistedUserJohnDoe();
 
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-        HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("user", user);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
-
         entityManager.createQuery("UPDATE User u SET u.isActive = false WHERE u.username = :username")
                 .setParameter("username", username)
                 .executeUpdate();
@@ -434,7 +382,7 @@ class ItServiceFacadeTest extends AbstractItTest {
                 .isActive();
 
         // when
-        serviceFacade.activateDeactivateProfile(username, request, bindingResult, httpServletRequest);
+        serviceFacade.activateDeactivateProfile(username, request, bindingResult, user);
 
         // then
         User actual = entityManager.createQuery("FROM User u WHERE u.username = :username", User.class)
@@ -454,13 +402,8 @@ class ItServiceFacadeTest extends AbstractItTest {
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "activateDeactivateProfileRequest");
         User user = EntityTestData.getPersistedUserJohnDoe();
 
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-        HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("user", user);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
-
         // when
-        serviceFacade.activateDeactivateProfile(username, request, bindingResult, httpServletRequest);
+        serviceFacade.activateDeactivateProfile(username, request, bindingResult, user);
 
         // then
         User actual = entityManager.createQuery("FROM User u WHERE u.username = :username", User.class)
@@ -477,17 +420,12 @@ class ItServiceFacadeTest extends AbstractItTest {
         String username = "John.Doe";
         User user = EntityTestData.getPersistedUserJohnDoe();
 
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-        HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("user", user);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
-
         // when
         List<Trainee> beforeDelete = entityManager.createQuery("FROM Trainee t WHERE t.user.username = :username", Trainee.class)
                 .setParameter("username", username)
                 .getResultList();
 
-        serviceFacade.deleteTraineeProfileByUsername(username, httpServletRequest);
+        serviceFacade.deleteTraineeProfileByUsername(username, user);
 
         // then
         List<Trainee> actual = entityManager.createQuery("FROM Trainee t WHERE t.user.username = :username", Trainee.class)
@@ -505,17 +443,12 @@ class ItServiceFacadeTest extends AbstractItTest {
         String username = "John.Doe";
         User user = EntityTestData.getPersistedUserDavidBrown();
 
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-        HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("user", user);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
-
         // when
         List<Trainee> beforeDelete = entityManager.createQuery("FROM Trainee t WHERE t.user.username = :username", Trainee.class)
                 .setParameter("username", username)
                 .getResultList();
 
-        AuthenticationException ex = assertThrows(AuthenticationException.class, () -> serviceFacade.deleteTraineeProfileByUsername(username, httpServletRequest));
+        AuthenticationException ex = assertThrows(AuthenticationException.class, () -> serviceFacade.deleteTraineeProfileByUsername(username, user));
 
         // then
         assertThat(beforeDelete).isNotEmpty();
@@ -612,17 +545,12 @@ class ItServiceFacadeTest extends AbstractItTest {
         List<TrainerProfileOnlyUsername> request = EntityTestData.getValidListTrainerProfileOnlyUsernames();
         User user = EntityTestData.getPersistedUserJohnDoe();
 
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-        HttpSession session = httpServletRequest.getSession();
-        session.setAttribute("user", user);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
-
         List<Trainer> beforeAdd = entityManager.createQuery("SELECT t.trainers FROM Trainee t WHERE t.user.username = :username", Trainer.class)
                 .setParameter("username", username)
                 .getResultList();
 
         // when
-        serviceFacade.updateTraineesTrainerList(username, request, httpServletRequest);
+        serviceFacade.updateTraineesTrainerList(username, request, user);
 
         // then
         List<Trainer> actual = entityManager.createQuery("SELECT t.trainers FROM Trainee t WHERE t.user.username = :username", Trainer.class)

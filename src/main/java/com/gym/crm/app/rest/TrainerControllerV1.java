@@ -1,5 +1,6 @@
 package com.gym.crm.app.rest;
 
+import com.gym.crm.app.entity.User;
 import com.gym.crm.app.facade.ServiceFacade;
 import com.gym.crm.app.rest.model.GetTrainerProfileResponse;
 import com.gym.crm.app.rest.model.TrainerCreateRequest;
@@ -26,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
+import static com.gym.crm.app.rest.SessionUtil.getSessionUser;
 
 @RestController
 @RequestMapping("${api.base-path}/trainers")
@@ -66,7 +69,8 @@ public class TrainerControllerV1 {
                                                                              @RequestBody @Validated UpdateTrainerProfileRequest request,
                                                                              BindingResult bindingResult,
                                                                              HttpServletRequest httpServletRequest) {
-        UpdateTrainerProfileResponse profile = service.updateTrainerProfile(username, request, bindingResult, httpServletRequest);
+        User sessionUser = getSessionUser(httpServletRequest);
+        UpdateTrainerProfileResponse profile = service.updateTrainerProfile(username, request, bindingResult, sessionUser);
 
         return ResponseEntity.status(HttpStatus.OK).body(profile);
     }

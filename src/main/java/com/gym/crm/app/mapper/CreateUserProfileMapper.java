@@ -13,11 +13,11 @@ public interface CreateUserProfileMapper {
     @Mapping(target = "username", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "isActive", ignore = true)
-    User map(TrainerCreateRequest request);
+    User mapToUser(TrainerCreateRequest request);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "username", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "isActive", ignore = true)
-    User map(TraineeCreateRequest request);
+    User mapToUser(TraineeCreateRequest request);
 }

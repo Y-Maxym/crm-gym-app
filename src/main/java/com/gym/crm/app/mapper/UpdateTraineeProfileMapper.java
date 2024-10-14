@@ -22,7 +22,7 @@ public abstract class UpdateTraineeProfileMapper {
     @Mapping(target = "lastName", source = "user.lastName")
     @Mapping(target = "isActive", source = "user.active")
     @Mapping(target = "trainersList", source = "trainers")
-    public abstract UpdateTraineeProfileResponse map(Trainee entity);
+    public abstract UpdateTraineeProfileResponse mapToUpdateTraineeProfileResponse(Trainee entity);
 
     public Trainee updateTraineeProfileFromDto(UpdateTraineeProfileRequest dto, Trainee entity) {
         Trainee.TraineeBuilder builder = entity.toBuilder();

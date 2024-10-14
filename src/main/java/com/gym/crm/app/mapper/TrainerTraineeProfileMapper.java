@@ -11,5 +11,5 @@ public interface TrainerTraineeProfileMapper {
     @Mapping(target = "username", source = "user.username")
     @Mapping(target = "firstName", source = "user.firstName")
     @Mapping(target = "lastName", source = "user.lastName")
-    TrainerTraineeProfileResponse map(Trainee entity);
+    TrainerTraineeProfileResponse mapToTrainerTraineeProfileResponse(Trainee entity);
 }

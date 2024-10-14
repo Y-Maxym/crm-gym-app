@@ -36,8 +36,6 @@ import com.gym.crm.app.service.common.AuthService;
 import com.gym.crm.app.service.common.BindingResultsService;
 import com.gym.crm.app.service.common.UserProfileService;
 import com.gym.crm.app.utils.EntityTestData;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -65,7 +63,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -150,7 +147,7 @@ class ServiceFacadeTest {
 
         doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), eq(errorMessage), eq(TRAINER_CREATE_ERROR.getCode()));
 
-        given(createTrainerProfileMapper.map(request))
+        given(createTrainerProfileMapper.mapToTrainer(request))
                 .willReturn(trainer);
         given(userProfileService.generatePassword())
                 .willReturn(password);
@@ -162,7 +159,7 @@ class ServiceFacadeTest {
 
         // then
         verify(trainerService).save(any(Trainer.class));
-        verify(createTrainerProfileMapper).map(any(Trainer.class));
+        verify(createTrainerProfileMapper).mapToUserCredentials(any(Trainer.class));
     }
 
     @Test
@@ -192,7 +189,7 @@ class ServiceFacadeTest {
 
         doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), eq(errorMessage), eq(TRAINEE_CREATE_ERROR.getCode()));
 
-        given(createTraineeProfileMapper.map(request))
+        given(createTraineeProfileMapper.mapToTrainee(request))
                 .willReturn(trainee);
         given(userProfileService.generatePassword())
                 .willReturn(password);
@@ -204,7 +201,7 @@ class ServiceFacadeTest {
 
         // then
         verify(traineeService).save(any(Trainee.class));
-        verify(createTraineeProfileMapper).map(any(Trainee.class));
+        verify(createTraineeProfileMapper).mapToUserCredentials(any(Trainee.class));
     }
 
     @Test
@@ -236,7 +233,7 @@ class ServiceFacadeTest {
 
         // then
         verify(trainerService).findByUsername(user.getUsername());
-        verify(getTrainerProfileMapper).map(trainer);
+        verify(getTrainerProfileMapper).mapToGetTrainerProfileResponse(trainer);
     }
 
     @Test
@@ -255,7 +252,7 @@ class ServiceFacadeTest {
 
         // then
         verify(traineeService).findByUsername(user.getUsername());
-        verify(getTraineeProfileMapper).map(trainee);
+        verify(getTraineeProfileMapper).mapToGetTraineeProfileResponse(trainee);
     }
 
     @Test
@@ -270,15 +267,8 @@ class ServiceFacadeTest {
 
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "changePassword");
 
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
-
         doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), eq(errorMessage), eq(PASSWORD_CHANGE_ERROR.getCode()));
 
-        given(httpServletRequest.getSession())
-                .willReturn(session);
-        given(session.getAttribute("user"))
-                .willReturn(user);
         given(userService.findByUsername(request.getUsername()))
                 .willReturn(user);
         given(userProfileService.hashPassword(newPassword))
@@ -287,7 +277,7 @@ class ServiceFacadeTest {
                 .willReturn(true);
 
         // when
-        serviceFacade.changePassword(request, bindingResult, httpServletRequest);
+        serviceFacade.changePassword(request, bindingResult, user);
 
         // then
         verify(userService).update(userCaptor.capture());
@@ -295,9 +285,6 @@ class ServiceFacadeTest {
         User capturedUser = userCaptor.getValue();
         assertThat(capturedUser.getUsername()).isEqualTo(user.getUsername());
         assertThat(capturedUser.getPassword()).isEqualTo(hashedPassword);
-
-        verify(httpServletRequest).getSession();
-        verify(session).getAttribute("user");
     }
 
     @Test
@@ -310,26 +297,19 @@ class ServiceFacadeTest {
         Trainer trainer = EntityTestData.getPersistedTrainerEmilyDavis();
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "updateTrainerProfile");
 
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
-
         doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any(), any());
 
-        given(httpServletRequest.getSession())
-                .willReturn(session);
-        given(session.getAttribute("user"))
-                .willReturn(user);
         given(trainerService.findByUsername(any()))
                 .willReturn(trainer);
         given(updateTrainerProfileMapper.updateTraineeProfileFromDto(request, trainer))
                 .willReturn(trainer);
 
         // when
-        serviceFacade.updateTrainerProfile(username, request, bindingResult, httpServletRequest);
+        serviceFacade.updateTrainerProfile(username, request, bindingResult, user);
 
         // then
         verify(trainerService).update(any(Trainer.class));
-        verify(updateTrainerProfileMapper).map(any());
+        verify(updateTrainerProfileMapper).mapToUpdateTrainerProfileResponse(any());
     }
 
     @Test
@@ -340,12 +320,12 @@ class ServiceFacadeTest {
         String username = "invalidUsername";
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "updateTrainerProfile");
 
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        User user = EntityTestData.getPersistedUserEmilyDavis();
 
         doThrow(EntityPersistException.class).when(bindingResultsService).handle(any(), any(), any(), any());
 
         // when & then
-        assertThrows(EntityPersistException.class, () -> serviceFacade.updateTrainerProfile(username, request, bindingResult, httpServletRequest));
+        assertThrows(EntityPersistException.class, () -> serviceFacade.updateTrainerProfile(username, request, bindingResult, user));
     }
 
     @Test
@@ -358,26 +338,20 @@ class ServiceFacadeTest {
         Trainee trainee = EntityTestData.getPersistedTraineeJohnDoe();
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "updateTraineeProfile");
 
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
 
         doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any(), any());
 
-        given(httpServletRequest.getSession())
-                .willReturn(session);
-        given(session.getAttribute("user"))
-                .willReturn(user);
         given(updateTraineeProfileMapper.updateTraineeProfileFromDto(request, trainee))
                 .willReturn(trainee);
         given(traineeService.findByUsername(any()))
                 .willReturn(trainee);
 
         // when
-        serviceFacade.updateTraineeProfile(username, request, bindingResult, httpServletRequest);
+        serviceFacade.updateTraineeProfile(username, request, bindingResult, user);
 
         // then
         verify(traineeService).update(any(Trainee.class));
-        verify(updateTraineeProfileMapper).map(any());
+        verify(updateTraineeProfileMapper).mapToUpdateTraineeProfileResponse(any());
     }
 
     @Test
@@ -387,12 +361,12 @@ class ServiceFacadeTest {
         String username = "invalidUsername";
         UpdateTraineeProfileRequest request = EntityTestData.getInvalidTraineeProfileRequest();
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "updateTraineeProfile");
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        User user = EntityTestData.getPersistedUserJohnDoe();
 
         doThrow(EntityPersistException.class).when(bindingResultsService).handle(any(), any(), any(), any());
 
         // when & then
-        assertThrows(EntityPersistException.class, () -> serviceFacade.updateTraineeProfile(username, request, bindingResult, httpServletRequest));
+        assertThrows(EntityPersistException.class, () -> serviceFacade.updateTraineeProfile(username, request, bindingResult, user));
     }
 
     @Test
@@ -402,20 +376,14 @@ class ServiceFacadeTest {
         String username = "John.Doe";
         ActivateDeactivateProfileRequest request = EntityTestData.getActivateProfileRequest();
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "activateDeactivateProfileRequest");
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
         User user = EntityTestData.getPersistedUserJohnDoe().toBuilder().isActive(true).build();
 
         doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any(), any());
-        given(httpServletRequest.getSession())
-                .willReturn(session);
-        given(session.getAttribute("user"))
-                .willReturn(user);
         given(userService.findByUsername(username))
                 .willReturn(user);
 
         // when
-        serviceFacade.activateDeactivateProfile(username, request, bindingResult, httpServletRequest);
+        serviceFacade.activateDeactivateProfile(username, request, bindingResult, user);
 
         // then
         verify(userService, never()).update(user);
@@ -428,20 +396,14 @@ class ServiceFacadeTest {
         String username = "John.Doe";
         ActivateDeactivateProfileRequest request = EntityTestData.getActivateProfileRequest();
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "activateDeactivateProfileRequest");
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
         User user = EntityTestData.getPersistedUserJohnDoe().toBuilder().isActive(false).build();
 
         doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any(), any());
-        given(httpServletRequest.getSession())
-                .willReturn(session);
-        given(session.getAttribute("user"))
-                .willReturn(user);
         given(userService.findByUsername(username))
                 .willReturn(user);
 
         // when
-        serviceFacade.activateDeactivateProfile(username, request, bindingResult, httpServletRequest);
+        serviceFacade.activateDeactivateProfile(username, request, bindingResult, user);
 
         // then
         verify(userService).update(any(User.class));
@@ -454,20 +416,14 @@ class ServiceFacadeTest {
         String username = "John.Doe";
         ActivateDeactivateProfileRequest request = EntityTestData.getDeactivateProfileRequest();
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "activateDeactivateProfileRequest");
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
         User user = EntityTestData.getPersistedUserJohnDoe().toBuilder().isActive(false).build();
 
         doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any(), any());
-        given(httpServletRequest.getSession())
-                .willReturn(session);
-        given(session.getAttribute("user"))
-                .willReturn(user);
         given(userService.findByUsername(username))
                 .willReturn(user);
 
         // when
-        serviceFacade.activateDeactivateProfile(username, request, bindingResult, httpServletRequest);
+        serviceFacade.activateDeactivateProfile(username, request, bindingResult, user);
 
         // then
         verify(userService, never()).update(any(User.class));
@@ -480,20 +436,14 @@ class ServiceFacadeTest {
         String username = "John.Doe";
         ActivateDeactivateProfileRequest request = EntityTestData.getDeactivateProfileRequest();
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "activateDeactivateProfileRequest");
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
         User user = EntityTestData.getPersistedUserJohnDoe().toBuilder().isActive(true).build();
 
         doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any(), any());
-        given(httpServletRequest.getSession())
-                .willReturn(session);
-        given(session.getAttribute("user"))
-                .willReturn(user);
         given(userService.findByUsername(username))
                 .willReturn(user);
 
         // when
-        serviceFacade.activateDeactivateProfile(username, request, bindingResult, httpServletRequest);
+        serviceFacade.activateDeactivateProfile(username, request, bindingResult, user);
 
         // then
         verify(userService).update(any(User.class));
@@ -504,17 +454,10 @@ class ServiceFacadeTest {
     void whenDeleteTraineeByUsername_thenDeleteTraineeByUsername() {
         // given
         String username = "John.Doe";
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
         User user = EntityTestData.getPersistedUserJohnDoe();
 
-        given(httpServletRequest.getSession())
-                .willReturn(session);
-        given(session.getAttribute("user"))
-                .willReturn(user);
-
         // when
-        serviceFacade.deleteTraineeProfileByUsername(username, httpServletRequest);
+        serviceFacade.deleteTraineeProfileByUsername(username, user);
 
         // then
         verify(traineeService).deleteByUsername(user.getUsername());
@@ -577,7 +520,7 @@ class ServiceFacadeTest {
                 .willReturn(trainee);
         given(trainerService.findByUsername(request.getTrainerUsername()))
                 .willReturn(trainer);
-        given(addTrainingMapper.map(request))
+        given(addTrainingMapper.mapToTraining(request))
                 .willReturn(training);
 
         // when
@@ -585,7 +528,7 @@ class ServiceFacadeTest {
 
         // then
         verify(trainingService).save(any());
-        verify(addTrainingMapper).map(request);
+        verify(addTrainingMapper).mapToTraining(request);
     }
 
     @Test
@@ -621,21 +564,15 @@ class ServiceFacadeTest {
         String username = "John.Doe";
         User user = EntityTestData.getPersistedUserJohnDoe();
         Trainee trainee = EntityTestData.getPersistedTraineeJohnDoe();
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
         String trainerUsername = "David.Brown";
 
         List<TrainerProfileOnlyUsername> trainers = EntityTestData.getValidListTrainerProfileOnlyUsernames();
 
         given(traineeService.findByUsername(username))
                 .willReturn(trainee);
-        given(httpServletRequest.getSession())
-                .willReturn(session);
-        given(session.getAttribute("user"))
-                .willReturn(user);
 
         // when
-        serviceFacade.updateTraineesTrainerList(username, trainers, httpServletRequest);
+        serviceFacade.updateTraineesTrainerList(username, trainers, user);
 
         // then
         verify(trainerService, atLeastOnce()).findByUsername(trainerUsername);
@@ -656,7 +593,7 @@ class ServiceFacadeTest {
 
         // then
         verify(trainingTypeRepository).findAll();
-        verify(trainingTypeMapper, times(trainingTypes.size())).mapToTrainingTypeResponse(any(TrainingType.class));
+        verify(trainingTypeMapper, times(trainingTypes.size())).mapToGetTrainingTypeResponse(any(TrainingType.class));
     }
 
     @Test
@@ -678,66 +615,44 @@ class ServiceFacadeTest {
 
     @Test
     @DisplayName("Test check valid username password functionality")
-    void givenUsernamePassword_whenCheckUsernamePassword_thenExceptionIsNotThrown() {
+    void givenUsernamePassword_whenCheckCredentials_thenExceptionIsNotThrown() {
         // given
         String username = "John.Doe";
         String password = "password";
         User user = EntityTestData.getPersistedUserJohnDoe();
 
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
-
-        given(httpServletRequest.getSession())
-                .willReturn(session);
-        given(session.getAttribute("user"))
-                .willReturn(user);
         given(userProfileService.isPasswordCorrect(password, user.getPassword()))
                 .willReturn(true);
 
         // when && then
-        assertDoesNotThrow(() -> ReflectionTestUtils.invokeMethod(serviceFacade, "checkUsernamePassword", username, password, httpServletRequest));
+        assertDoesNotThrow(() -> ReflectionTestUtils.invokeMethod(serviceFacade, "checkCredentials", username, password, user));
     }
 
     @Test
     @DisplayName("Test check invalid username functionality")
-    void givenInvalidUsername_whenCheckUsernamePassword_thenExceptionIsThrown() {
+    void givenInvalidUsername_whenCheckCredentials_thenExceptionIsThrown() {
         // given
         String username = "Emily.Davis";
         String password = "password";
         User user = EntityTestData.getPersistedUserJohnDoe();
 
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
-
-        given(httpServletRequest.getSession())
-                .willReturn(session);
-        given(session.getAttribute("user"))
-                .willReturn(user);
-
         // when && then
-        assertThrows(AuthenticationException.class, () -> ReflectionTestUtils.invokeMethod(serviceFacade, "checkUsernamePassword", username, password, httpServletRequest));
+        assertThrows(AuthenticationException.class, () -> ReflectionTestUtils.invokeMethod(serviceFacade, "checkCredentials", username, password, user));
     }
 
     @Test
     @DisplayName("Test check invalid password functionality")
-    void givenInvalidPassword_whenCheckUsernamePassword_thenExceptionIsThrown() {
+    void givenInvalidPassword_whenCheckCredentials_thenExceptionIsThrown() {
         // given
         String username = "John.Doe";
         String password = "password";
         User user = EntityTestData.getPersistedUserJohnDoe();
 
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
-
-        given(httpServletRequest.getSession())
-                .willReturn(session);
-        given(session.getAttribute("user"))
-                .willReturn(user);
         given(userProfileService.isPasswordCorrect(password, user.getPassword()))
                 .willReturn(false);
 
         // when && then
-        assertThrows(AuthenticationException.class, () -> ReflectionTestUtils.invokeMethod(serviceFacade, "checkUsernamePassword", username, password, httpServletRequest));
+        assertThrows(AuthenticationException.class, () -> ReflectionTestUtils.invokeMethod(serviceFacade, "checkCredentials", username, password, user));
     }
 
     @Test
@@ -747,16 +662,8 @@ class ServiceFacadeTest {
         String username = "John.Doe";
         User user = EntityTestData.getPersistedUserJohnDoe();
 
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
-
-        given(httpServletRequest.getSession())
-                .willReturn(session);
-        given(session.getAttribute("user"))
-                .willReturn(user);
-
         // when && then
-        assertDoesNotThrow(() -> ReflectionTestUtils.invokeMethod(serviceFacade, "checkUsername", username, httpServletRequest));
+        assertDoesNotThrow(() -> ReflectionTestUtils.invokeMethod(serviceFacade, "checkUsername", username, user));
     }
 
     @Test
@@ -766,15 +673,7 @@ class ServiceFacadeTest {
         String username = "Emily.Davis";
         User user = EntityTestData.getPersistedUserJohnDoe();
 
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        HttpSession session = mock(HttpSession.class);
-
-        given(httpServletRequest.getSession())
-                .willReturn(session);
-        given(session.getAttribute("user"))
-                .willReturn(user);
-
         // when && then
-        assertThrows(AuthenticationException.class, () -> ReflectionTestUtils.invokeMethod(serviceFacade, "checkUsername", username, httpServletRequest));
+        assertThrows(AuthenticationException.class, () -> ReflectionTestUtils.invokeMethod(serviceFacade, "checkUsername", username, user));
     }
 }

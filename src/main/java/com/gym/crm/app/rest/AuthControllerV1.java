@@ -5,6 +5,7 @@ import com.gym.crm.app.facade.ServiceFacade;
 import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;
 import com.gym.crm.app.rest.model.ChangePasswordRequest;
 import com.gym.crm.app.rest.model.UserCredentials;
+import com.gym.crm.app.validator.ActivateDeactivateProfileValidator;
 import com.gym.crm.app.validator.ChangePasswordValidator;
 import com.gym.crm.app.validator.UserCredentialsValidator;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.gym.crm.app.rest.SessionUtil.getSessionUser;
+
 @RestController
 @RequestMapping("${api.base-path}")
 @RequiredArgsConstructor
@@ -32,6 +35,7 @@ public class AuthControllerV1 {
     private final ServiceFacade service;
     private final ChangePasswordValidator changePasswordValidator;
     private final UserCredentialsValidator userCredentialsValidator;
+    private final ActivateDeactivateProfileValidator activateDeactivateProfileValidator;
 
     @InitBinder("changePasswordRequest")
     public void initChangePasswordValidatorBinder(WebDataBinder binder) {
@@ -41,6 +45,11 @@ public class AuthControllerV1 {
     @InitBinder("userCredentials")
     public void initUserCredentialsBinder(WebDataBinder binder) {
         binder.addValidators(userCredentialsValidator);
+    }
+
+    @InitBinder("activateDeactivateProfileRequest")
+    public void initActivateDeactivateValidatorBinder(WebDataBinder binder) {
+        binder.addValidators(activateDeactivateProfileValidator);
     }
 
     @PostMapping("/login")
@@ -67,7 +76,8 @@ public class AuthControllerV1 {
     public ResponseEntity<?> changePassword(@RequestBody @Validated ChangePasswordRequest request,
                                             BindingResult bindingResult,
                                             HttpServletRequest httpServletRequest) {
-        service.changePassword(request, bindingResult, httpServletRequest);
+        User sessionUser = getSessionUser(httpServletRequest);
+        service.changePassword(request, bindingResult, sessionUser);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -77,7 +87,8 @@ public class AuthControllerV1 {
                                                        @RequestBody @Validated ActivateDeactivateProfileRequest request,
                                                        BindingResult bindingResult,
                                                        HttpServletRequest httpServletRequest) {
-        service.activateDeactivateProfile(username, request, bindingResult, httpServletRequest);
+        User sessionUser = getSessionUser(httpServletRequest);
+        service.activateDeactivateProfile(username, request, bindingResult, sessionUser);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }

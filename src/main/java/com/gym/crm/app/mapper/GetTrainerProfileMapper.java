@@ -12,6 +12,6 @@ public interface GetTrainerProfileMapper {
     @Mapping(target = "lastName", source = "user.lastName")
     @Mapping(target = "traineesList", source = "trainees")
     @Mapping(target = "isActive", source = "user.active")
-    GetTrainerProfileResponse map(Trainer entity);
+    GetTrainerProfileResponse mapToGetTrainerProfileResponse(Trainer entity);
 
 }

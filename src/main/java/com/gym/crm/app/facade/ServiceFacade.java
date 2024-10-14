@@ -43,8 +43,6 @@ import com.gym.crm.app.service.UserService;
 import com.gym.crm.app.service.common.AuthService;
 import com.gym.crm.app.service.common.BindingResultsService;
 import com.gym.crm.app.service.common.UserProfileService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,8 +68,6 @@ import static com.gym.crm.app.rest.exception.ErrorCode.TRAINING_CREATE_ERROR;
 @Transactional(readOnly = true)
 public class ServiceFacade {
 
-    private final TrainingTypeRepository trainingTypeRepository;
-
     private final TraineeService traineeService;
     private final TrainerService trainerService;
     private final TrainingService trainingService;
@@ -92,11 +88,13 @@ public class ServiceFacade {
     private final TrainingTypeMapper trainingTypeMapper;
     private final AuthService authService;
 
+    private final TrainingTypeRepository trainingTypeRepository;
+
     @Transactional
     public UserCredentials createTrainerProfile(TrainerCreateRequest request, BindingResult bindingResult) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer creation error", TRAINER_CREATE_ERROR.getCode());
 
-        Trainer trainer = createTrainerProfileMapper.map(request);
+        Trainer trainer = createTrainerProfileMapper.mapToTrainer(request);
 
         String password = userProfileService.generatePassword();
 
@@ -109,14 +107,14 @@ public class ServiceFacade {
         user = user.toBuilder().password(password).build();
         trainer = trainer.toBuilder().user(user).build();
 
-        return createTrainerProfileMapper.map(trainer);
+        return createTrainerProfileMapper.mapToUserCredentials(trainer);
     }
 
     @Transactional
     public UserCredentials createTraineeProfile(TraineeCreateRequest request, BindingResult bindingResult) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainee creation error", TRAINEE_CREATE_ERROR.getCode());
 
-        Trainee trainee = createTraineeProfileMapper.map(request);
+        Trainee trainee = createTraineeProfileMapper.mapToTrainee(request);
 
         String password = userProfileService.generatePassword();
 
@@ -129,56 +127,55 @@ public class ServiceFacade {
         user = user.toBuilder().password(password).build();
         trainee = trainee.toBuilder().user(user).build();
 
-        return createTraineeProfileMapper.map(trainee);
+        return createTraineeProfileMapper.mapToUserCredentials(trainee);
     }
 
     public GetTrainerProfileResponse findTrainerProfileByUsername(String username) {
         Trainer trainer = trainerService.findByUsername(username);
 
-        return getTrainerProfileMapper.map(trainer);
+        return getTrainerProfileMapper.mapToGetTrainerProfileResponse(trainer);
     }
 
     public GetTraineeProfileResponse findTraineeProfileByUsername(String username) {
         Trainee trainee = traineeService.findByUsername(username);
 
-        return getTraineeProfileMapper.map(trainee);
+        return getTraineeProfileMapper.mapToGetTraineeProfileResponse(trainee);
     }
 
     @Transactional
-    public UpdateTrainerProfileResponse updateTrainerProfile(String username, UpdateTrainerProfileRequest request, BindingResult bindingResult, HttpServletRequest httpServletRequest) {
+    public UpdateTrainerProfileResponse updateTrainerProfile(String username, UpdateTrainerProfileRequest request, BindingResult bindingResult, User sessionUser) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer update error", TRAINER_UPDATE_ERROR.getCode());
-        checkUsername(username, httpServletRequest);
+        checkUsername(username, sessionUser);
 
         Trainer trainer = trainerService.findByUsername(username);
         trainer = updateTrainerProfileMapper.updateTraineeProfileFromDto(request, trainer);
 
         trainer = trainerService.update(trainer);
 
-        return updateTrainerProfileMapper.map(trainer);
+        return updateTrainerProfileMapper.mapToUpdateTrainerProfileResponse(trainer);
     }
 
     @Transactional
-    public UpdateTraineeProfileResponse updateTraineeProfile(String username, UpdateTraineeProfileRequest request, BindingResult bindingResult, HttpServletRequest httpServletRequest) {
+    public UpdateTraineeProfileResponse updateTraineeProfile(String username, UpdateTraineeProfileRequest request, BindingResult bindingResult, User sessionUser) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainee update error", TRAINEE_UPDATE_ERROR.getCode());
-        checkUsername(username, httpServletRequest);
+        checkUsername(username, sessionUser);
 
         Trainee trainee = traineeService.findByUsername(username);
         trainee = updateTraineeProfileMapper.updateTraineeProfileFromDto(request, trainee);
 
         trainee = traineeService.update(trainee);
 
-        return updateTraineeProfileMapper.map(trainee);
+        return updateTraineeProfileMapper.mapToUpdateTraineeProfileResponse(trainee);
     }
 
     @Transactional
-    public void activateDeactivateProfile(String username, ActivateDeactivateProfileRequest request, BindingResult bindingResult, HttpServletRequest httpServletRequest) {
+    public void activateDeactivateProfile(String username, ActivateDeactivateProfileRequest request, BindingResult bindingResult, User sessionUser) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Activate/Deactivate profile error", ACTIVATE_DEACTIVATE_PROFILE_ERROR.getCode());
-        checkUsername(username, httpServletRequest);
+        checkUsername(username, sessionUser);
 
         User user = userService.findByUsername(username);
 
-        if ((user.isActive() && request.getIsActive())
-                || (!user.isActive() && !request.getIsActive())) {
+        if (user.isActive() == request.getIsActive()) {
             return;
         }
 
@@ -187,8 +184,8 @@ public class ServiceFacade {
     }
 
     @Transactional
-    public void deleteTraineeProfileByUsername(String username, HttpServletRequest httpServletRequest) {
-        checkUsername(username, httpServletRequest);
+    public void deleteTraineeProfileByUsername(String username, User sessionUser) {
+        checkUsername(username, sessionUser);
 
         traineeService.deleteByUsername(username);
     }
@@ -199,7 +196,7 @@ public class ServiceFacade {
         List<Training> trainings = traineeService.findTrainingsByCriteria(username, from, to, trainerName, trainingType);
 
         return trainings.stream()
-                .map(getTraineeTrainingsMapper::map)
+                .map(getTraineeTrainingsMapper::mapToGetTraineeTrainingsResponse)
                 .toList();
     }
 
@@ -209,7 +206,7 @@ public class ServiceFacade {
         List<Training> trainings = trainerService.findTrainingsByCriteria(username, from, to, traineeName, trainingType);
 
         return trainings.stream()
-                .map(getTrainerTrainingsMapper::map)
+                .map(getTrainerTrainingsMapper::mapToGetTrainerTrainingsResponse)
                 .toList();
     }
 
@@ -222,7 +219,7 @@ public class ServiceFacade {
 
         trainee.getTrainers().add(trainer);
 
-        Training training = addTrainingMapper.map(request);
+        Training training = addTrainingMapper.mapToTraining(request);
 
         training = training.toBuilder().trainingType(trainer.getSpecialization()).build();
 
@@ -235,13 +232,13 @@ public class ServiceFacade {
         List<Trainer> trainers = trainerService.getTrainersNotAssignedByTraineeUsername(username);
 
         return trainers.stream()
-                .map(trainerProfileMapper::map)
+                .map(trainerProfileMapper::mapToTrainerProfileWithUsername)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public List<TrainerProfileWithUsername> updateTraineesTrainerList(String username, List<TrainerProfileOnlyUsername> request, HttpServletRequest httpServletRequest) {
-        checkUsername(username, httpServletRequest);
+    public List<TrainerProfileWithUsername> updateTraineesTrainerList(String username, List<TrainerProfileOnlyUsername> request, User sessionUser) {
+        checkUsername(username, sessionUser);
 
         Trainee trainee = traineeService.findByUsername(username);
         List<Trainer> trainerList = request.stream()
@@ -253,7 +250,7 @@ public class ServiceFacade {
         traineeService.update(trainee);
 
         return trainee.getTrainers().stream()
-                .map(trainerProfileMapper::map)
+                .map(trainerProfileMapper::mapToTrainerProfileWithUsername)
                 .toList();
     }
 
@@ -261,7 +258,7 @@ public class ServiceFacade {
         List<TrainingType> trainingTypes = trainingTypeRepository.findAll();
 
         return trainingTypes.stream()
-                .map(trainingTypeMapper::mapToTrainingTypeResponse)
+                .map(trainingTypeMapper::mapToGetTrainingTypeResponse)
                 .toList();
     }
 
@@ -276,12 +273,12 @@ public class ServiceFacade {
 
 
     @Transactional
-    public void changePassword(ChangePasswordRequest request, BindingResult bindingResult, HttpServletRequest httpRequest) {
+    public void changePassword(ChangePasswordRequest request, BindingResult bindingResult, User sessionUser) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Password change error", PASSWORD_CHANGE_ERROR.getCode());
 
         String username = request.getUsername();
         String password = request.getPassword();
-        checkUsernamePassword(username, password, httpRequest);
+        checkCredentials(username, password, sessionUser);
 
         User user = userService.findByUsername(username);
 
@@ -291,22 +288,20 @@ public class ServiceFacade {
         userService.update(user);
     }
 
-    private void checkUsernamePassword(String username, String password, HttpServletRequest httpRequest) {
-        HttpSession session = httpRequest.getSession();
-        User sessionUser = (User) session.getAttribute("user");
-
-        if (!sessionUser.getUsername().equals(username)
-                || !userProfileService.isPasswordCorrect(password, sessionUser.getPassword())) {
+    private void checkCredentials(String username, String password, User sessionUser) {
+        if (!hasValidCredentials(username, password, sessionUser)) {
             throw new AuthenticationException("Invalid username or password", INVALID_USERNAME_OR_PASSWORD.getCode());
         }
     }
 
-    private void checkUsername(String username, HttpServletRequest httpRequest) {
-        HttpSession session = httpRequest.getSession();
-        User sessionUser = (User) session.getAttribute("user");
-
+    private void checkUsername(String username, User sessionUser) {
         if (!sessionUser.getUsername().equals(username)) {
             throw new AuthenticationException("Invalid username", INVALID_USERNAME.getCode());
         }
+    }
+
+    private boolean hasValidCredentials(String username, String password, User sessionUser) {
+        return sessionUser.getUsername().equals(username)
+                && userProfileService.isPasswordCorrect(password, sessionUser.getPassword());
     }
 }

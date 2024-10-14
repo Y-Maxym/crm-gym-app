@@ -348,6 +348,13 @@ public class EntityTestData {
                 .newPassword("newPassword");
     }
 
+    public static ChangePasswordRequest getNullChangePasswordRequest() {
+        return new ChangePasswordRequest()
+                .username(null)
+                .password(null)
+                .newPassword(null);
+    }
+
     public static UpdateTrainerProfileRequest getValidUpdateTrainerProfileRequest() {
         return new UpdateTrainerProfileRequest()
                 .firstName("Emily")
@@ -358,10 +365,10 @@ public class EntityTestData {
 
     public static UpdateTrainerProfileRequest getInvalidTrainerProfileRequest() {
         return new UpdateTrainerProfileRequest()
-                .firstName("invalid")
-                .lastName("invalid")
-                .specialization("invalid")
-                .isActive(true);
+                .firstName(null)
+                .lastName(null)
+                .specialization(null)
+                .isActive(null);
     }
 
     public static UpdateTraineeProfileRequest getValidTraineeProfileRequest() {
@@ -375,11 +382,11 @@ public class EntityTestData {
 
     public static UpdateTraineeProfileRequest getInvalidTraineeProfileRequest() {
         return new UpdateTraineeProfileRequest()
-                .firstName("invalid")
-                .lastName("invalid")
-                .dateOfBirth(LocalDate.parse("2000-01-01"))
-                .address("invalid")
-                .isActive(true);
+                .firstName(null)
+                .lastName(null)
+                .dateOfBirth(null)
+                .address(null)
+                .isActive(null);
     }
 
     public static ActivateDeactivateProfileRequest getActivateProfileRequest() {
@@ -407,11 +414,16 @@ public class EntityTestData {
                 .trainerUsername(null)
                 .trainingName(null)
                 .trainingDate(null)
-                .trainingDuration(0);
+                .trainingDuration(null);
     }
 
     public static List<TrainerProfileOnlyUsername> getValidListTrainerProfileOnlyUsernames() {
         return List.of(new TrainerProfileOnlyUsername().username("Emily.Davis"),
                 new TrainerProfileOnlyUsername().username("David.Brown"));
+    }
+
+    public static List<TrainerProfileOnlyUsername> getInvalidListTrainerProfileOnlyUsernames() {
+        return List.of(new TrainerProfileOnlyUsername().username("invalid"),
+                new TrainerProfileOnlyUsername().username("invalid"));
     }
 }
