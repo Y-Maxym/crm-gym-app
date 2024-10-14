@@ -6,7 +6,7 @@ public record ValidationError
         (
                 int code,
                 String message,
-                List<FieldErrorEntity> fields
+                List<FieldError> fields
         ) {
 
 }

@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static com.gym.crm.app.rest.exception.ErrorCode.USER_WITH_ID_NOT_FOUND;
+import static com.gym.crm.app.rest.exception.ErrorCode.USER_WITH_USERNAME_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.ERROR_USER_WITH_ID_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.ERROR_USER_WITH_USERNAME_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.WARN_USER_WITH_ID_NOT_FOUND;
@@ -32,7 +34,7 @@ public class UserServiceImpl implements UserService {
         entityValidator.checkId(id);
 
         return repository.findById(id)
-                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_USER_WITH_ID_NOT_FOUND, id)));
+                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_USER_WITH_ID_NOT_FOUND, id), USER_WITH_ID_NOT_FOUND.getCode()));
     }
 
     @Override
@@ -40,7 +42,7 @@ public class UserServiceImpl implements UserService {
         entityValidator.checkEntity(username);
 
         return repository.findByUsername(username)
-                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_USER_WITH_USERNAME_NOT_FOUND, username)));
+                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_USER_WITH_USERNAME_NOT_FOUND, username), USER_WITH_USERNAME_NOT_FOUND.getCode()));
     }
 
     @Override

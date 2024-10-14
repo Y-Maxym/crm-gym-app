@@ -52,19 +52,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainers/register:
     post:
       tags:
@@ -97,19 +97,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /login:
     post:
       tags:
@@ -138,19 +138,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /change-password:
     put:
       tags:
@@ -178,19 +178,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainees/{username}:
     get:
       tags:
@@ -212,25 +212,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         401:
           description: Unauthorized access
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
     put:
       tags:
         - Trainees
@@ -263,19 +263,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
     delete:
       tags:
         - Trainees
@@ -298,19 +298,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainers/{username}:
     get:
       tags:
@@ -332,25 +332,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         401:
           description: Unauthorized access
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
     put:
       tags:
         - Trainers
@@ -383,19 +383,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainers/not-assigned/{username}:
     get:
       tags:
@@ -434,19 +434,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainees/{username}/trainers:
     put:
       tags:
@@ -496,19 +496,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainings/trainees/{username}:
     get:
       tags:
@@ -552,19 +552,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainings/trainers/{username}:
     get:
       tags:
@@ -607,19 +607,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainings:
     post:
       tags:
@@ -647,19 +647,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainees/{username}/activate:
     patch:
       tags:
@@ -689,19 +689,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainers/{username}/activate:
     patch:
       tags:
@@ -731,19 +731,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /training-types:
     get:
       tags:
@@ -774,19 +774,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
 
 # Components list
 components:
@@ -1049,7 +1049,7 @@ components:
         username: John.Doe
         password: PrS7J1qY6I
         newPassword: newPass
-    ErrorMessage:
+    ErrorResponse:
       type: object
       properties:
         code:

@@ -10,6 +10,8 @@ import javax.crypto.spec.PBEKeySpec;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+import static com.gym.crm.app.rest.exception.ErrorCode.HASHED_ERROR;
+
 @Component
 public class PasswordGenerator {
 
@@ -71,7 +73,7 @@ public class PasswordGenerator {
 
             return Base64.getEncoder().encodeToString(hashedPasswordBytes);
         } catch (Exception e) {
-            throw new PasswordOperationException(HASHED_EXCEPTION, e);
+            throw new PasswordOperationException(HASHED_EXCEPTION, HASHED_ERROR.getCode(), e);
         }
     }
 }

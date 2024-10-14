@@ -3,6 +3,7 @@ package com.gym.crm.app.service.common;
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.AuthenticationException;
 import com.gym.crm.app.exception.EntityValidationException;
+import com.gym.crm.app.rest.exception.ErrorCode;
 import com.gym.crm.app.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,7 +63,7 @@ class AuthServiceTest {
         String exceptionMessage = "User with username %s not found".formatted(username);
 
         given(userService.findByUsername(username))
-                .willThrow(new EntityValidationException(exceptionMessage));
+                .willThrow(new EntityValidationException(exceptionMessage, ErrorCode.INVALID_USERNAME_OR_PASSWORD.getCode()));
 
         // when
         AuthenticationException exception = assertThrows(AuthenticationException.class,

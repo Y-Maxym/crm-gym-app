@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINEE_WITH_ID_NOT_FOUND;
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINEE_WITH_USERNAME_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.ERROR_TRAINEE_WITH_ID_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.ERROR_TRAINEE_WITH_USERNAME_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.WARN_TRAINEE_WITH_ID_NOT_FOUND;
@@ -33,13 +35,13 @@ public class TraineeServiceImpl implements TraineeService {
         entityValidator.checkId(id);
 
         return repository.findById(id)
-                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINEE_WITH_ID_NOT_FOUND, id)));
+                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINEE_WITH_ID_NOT_FOUND, id), TRAINEE_WITH_ID_NOT_FOUND.getCode()));
     }
 
     @Override
     public Trainee findByUsername(String username) {
         return repository.findByUsername(username)
-                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINEE_WITH_USERNAME_NOT_FOUND, username)));
+                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINEE_WITH_USERNAME_NOT_FOUND, username), TRAINEE_WITH_USERNAME_NOT_FOUND.getCode()));
     }
 
     @Override

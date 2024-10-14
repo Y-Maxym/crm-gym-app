@@ -10,6 +10,7 @@ import org.springframework.validation.Validator;
 import java.time.LocalDate;
 
 import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
 @RequiredArgsConstructor
@@ -30,13 +31,13 @@ public class CreateTrainingValidator implements Validator {
         LocalDate trainingDate = request.getTrainingDate();
         Integer trainingDuration = request.getTrainingDuration();
 
-        if (isNull(traineeUsername)) {
+        if (isBlank(traineeUsername)) {
             errors.rejectValue("traineeUsername", "trainee.username.empty.error", "Trainee username is required");
         }
-        if (isNull(trainerUsername)) {
+        if (isBlank(trainerUsername)) {
             errors.rejectValue("trainerUsername", "trainer.username.empty.error", "Trainer username is required");
         }
-        if (isNull(trainingName)) {
+        if (isBlank(trainingName)) {
             errors.rejectValue("trainingName", "training.name.empty.error", "Training name is required");
         }
         if (isNull(trainingDate)) {
@@ -44,6 +45,15 @@ public class CreateTrainingValidator implements Validator {
         }
         if (isNull(trainingDuration)) {
             errors.rejectValue("trainingDuration", "training.duration.empty.error", "Training duration is required");
+        }
+        if (!isNull(traineeUsername) && traineeUsername.length() > 100) {
+            errors.rejectValue("traineeUsername", "trainee.username.length.error", "Trainee username is longer than 100 characters");
+        }
+        if (!isNull(trainerUsername) && trainerUsername.length() > 100) {
+            errors.rejectValue("trainerUsername", "trainer.username.length.error", "Trainer username is longer than 100 characters");
+        }
+        if (!isNull(trainingName) && trainingName.length() > 100) {
+            errors.rejectValue("trainingName", "training.name.length.error", "Training name is longer than 100 characters");
         }
     }
 }

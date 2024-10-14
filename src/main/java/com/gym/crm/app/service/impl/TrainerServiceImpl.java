@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINER_WITH_ID_NOT_FOUND;
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINER_WITH_USERNAME_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.ERROR_TRAINER_WITH_ID_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.ERROR_TRAINER_WITH_USERNAME_NOT_FOUND;
 
@@ -29,13 +31,13 @@ public class TrainerServiceImpl implements TrainerService {
         entityValidator.checkId(id);
 
         return repository.findById(id)
-                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINER_WITH_ID_NOT_FOUND, id)));
+                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINER_WITH_ID_NOT_FOUND, id), TRAINER_WITH_ID_NOT_FOUND.getCode()));
     }
 
     @Override
     public Trainer findByUsername(String username) {
         return repository.findByUsername(username)
-                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINER_WITH_USERNAME_NOT_FOUND, username)));
+                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINER_WITH_USERNAME_NOT_FOUND, username), TRAINER_WITH_USERNAME_NOT_FOUND.getCode()));
     }
 
     @Override

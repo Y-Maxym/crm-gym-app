@@ -7,6 +7,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
 public class ChangePasswordValidator implements Validator {
@@ -24,14 +25,23 @@ public class ChangePasswordValidator implements Validator {
         String password = request.getPassword();
         String newPassword = request.getNewPassword();
 
-        if (isNull(username) || username.isBlank()) {
+        if (isBlank(username)) {
             errors.rejectValue("username", "username.empty.error", "Username is required");
         }
-        if (isNull(password) || password.isBlank()) {
+        if (isBlank(password)) {
             errors.rejectValue("password", "password.empty.error", "Password is required");
         }
-        if (isNull(newPassword) || newPassword.isBlank()) {
+        if (isBlank(newPassword)) {
             errors.rejectValue("newPassword", "new.password.empty.error", "New password is required");
+        }
+        if (!isNull(username) && username.length() > 100) {
+            errors.rejectValue("username", "username.length.error", "Username is longer than 100 characters");
+        }
+        if (!isNull(password) && password.length() > 100) {
+            errors.rejectValue("password", "password.length.error", "Password is longer than 100 characters");
+        }
+        if (!isNull(newPassword) && newPassword.length() > 100) {
+            errors.rejectValue("newPassword", "new.password.length.error", "New password is longer than 100 characters");
         }
     }
 }

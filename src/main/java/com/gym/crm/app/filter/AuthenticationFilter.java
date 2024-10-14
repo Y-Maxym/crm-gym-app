@@ -1,7 +1,7 @@
 package com.gym.crm.app.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gym.crm.app.rest.exception.ErrorMessage;
+import com.gym.crm.app.rest.exception.ErrorResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
+import static com.gym.crm.app.rest.exception.ErrorCode.UNAUTHORIZED_ERROR;
 import static java.util.Objects.isNull;
 
 @Component
@@ -50,7 +51,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private void writeUnauthorizedResponse(HttpServletResponse response) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        ErrorMessage error = new ErrorMessage(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+        ErrorResponse error = new ErrorResponse(UNAUTHORIZED_ERROR.getCode(), "Unauthorized");
 
         String json = objectMapper.writeValueAsString(error);
 

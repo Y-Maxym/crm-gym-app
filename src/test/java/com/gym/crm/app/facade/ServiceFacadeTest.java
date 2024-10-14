@@ -53,6 +53,9 @@ import org.springframework.validation.BindingResult;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.gym.crm.app.rest.exception.ErrorCode.PASSWORD_CHANGE_ERROR;
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINEE_CREATE_ERROR;
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINER_CREATE_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -145,7 +148,7 @@ class ServiceFacadeTest {
         String errorMessage = "Trainer creation error";
         String password = "password";
 
-        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), eq(errorMessage));
+        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), eq(errorMessage), eq(TRAINER_CREATE_ERROR.getCode()));
 
         given(createTrainerProfileMapper.map(request))
                 .willReturn(trainer);
@@ -169,7 +172,7 @@ class ServiceFacadeTest {
         TrainerCreateRequest request = EntityTestData.getInvalidCreateTrainerProfileRequest();
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "createTrainerProfile");
 
-        doThrow(EntityPersistException.class).when(bindingResultsService).handle(any(), any(), any());
+        doThrow(EntityPersistException.class).when(bindingResultsService).handle(any(), any(), any(), any());
 
         // when & then
         assertThrows(EntityPersistException.class, () -> serviceFacade.createTrainerProfile(request, bindingResult));
@@ -187,7 +190,7 @@ class ServiceFacadeTest {
         String errorMessage = "Trainee creation error";
         String password = "password";
 
-        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), eq(errorMessage));
+        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), eq(errorMessage), eq(TRAINEE_CREATE_ERROR.getCode()));
 
         given(createTraineeProfileMapper.map(request))
                 .willReturn(trainee);
@@ -211,7 +214,7 @@ class ServiceFacadeTest {
         TraineeCreateRequest request = EntityTestData.getInvalidCreateTraineeProfileRequest();
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "createTraineeProfile");
 
-        doThrow(EntityPersistException.class).when(bindingResultsService).handle(any(), any(), any());
+        doThrow(EntityPersistException.class).when(bindingResultsService).handle(any(), any(), any(), any());
 
         // when & then
         assertThrows(EntityPersistException.class, () -> serviceFacade.createTraineeProfile(request, bindingResult));
@@ -270,7 +273,7 @@ class ServiceFacadeTest {
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpSession session = mock(HttpSession.class);
 
-        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), eq(errorMessage));
+        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), eq(errorMessage), eq(PASSWORD_CHANGE_ERROR.getCode()));
 
         given(httpServletRequest.getSession())
                 .willReturn(session);
@@ -310,7 +313,7 @@ class ServiceFacadeTest {
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpSession session = mock(HttpSession.class);
 
-        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any());
+        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any(), any());
 
         given(httpServletRequest.getSession())
                 .willReturn(session);
@@ -339,7 +342,7 @@ class ServiceFacadeTest {
 
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
 
-        doThrow(EntityPersistException.class).when(bindingResultsService).handle(any(), any(), any());
+        doThrow(EntityPersistException.class).when(bindingResultsService).handle(any(), any(), any(), any());
 
         // when & then
         assertThrows(EntityPersistException.class, () -> serviceFacade.updateTrainerProfile(username, request, bindingResult, httpServletRequest));
@@ -358,7 +361,7 @@ class ServiceFacadeTest {
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
         HttpSession session = mock(HttpSession.class);
 
-        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any());
+        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any(), any());
 
         given(httpServletRequest.getSession())
                 .willReturn(session);
@@ -386,7 +389,7 @@ class ServiceFacadeTest {
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "updateTraineeProfile");
         HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
 
-        doThrow(EntityPersistException.class).when(bindingResultsService).handle(any(), any(), any());
+        doThrow(EntityPersistException.class).when(bindingResultsService).handle(any(), any(), any(), any());
 
         // when & then
         assertThrows(EntityPersistException.class, () -> serviceFacade.updateTraineeProfile(username, request, bindingResult, httpServletRequest));
@@ -403,7 +406,7 @@ class ServiceFacadeTest {
         HttpSession session = mock(HttpSession.class);
         User user = EntityTestData.getPersistedUserJohnDoe().toBuilder().isActive(true).build();
 
-        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any());
+        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any(), any());
         given(httpServletRequest.getSession())
                 .willReturn(session);
         given(session.getAttribute("user"))
@@ -429,7 +432,7 @@ class ServiceFacadeTest {
         HttpSession session = mock(HttpSession.class);
         User user = EntityTestData.getPersistedUserJohnDoe().toBuilder().isActive(false).build();
 
-        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any());
+        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any(), any());
         given(httpServletRequest.getSession())
                 .willReturn(session);
         given(session.getAttribute("user"))
@@ -455,7 +458,7 @@ class ServiceFacadeTest {
         HttpSession session = mock(HttpSession.class);
         User user = EntityTestData.getPersistedUserJohnDoe().toBuilder().isActive(false).build();
 
-        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any());
+        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any(), any());
         given(httpServletRequest.getSession())
                 .willReturn(session);
         given(session.getAttribute("user"))
@@ -481,7 +484,7 @@ class ServiceFacadeTest {
         HttpSession session = mock(HttpSession.class);
         User user = EntityTestData.getPersistedUserJohnDoe().toBuilder().isActive(true).build();
 
-        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any());
+        doNothing().when(bindingResultsService).handle(eq(bindingResult), any(), any(), any());
         given(httpServletRequest.getSession())
                 .willReturn(session);
         given(session.getAttribute("user"))
@@ -568,7 +571,7 @@ class ServiceFacadeTest {
         Trainer trainer = EntityTestData.getPersistedTrainerDavidBrown();
         Training training = EntityTestData.getPersistedTrainingDavidBrown();
 
-        doNothing().when(bindingResultsService).handle(any(), any(), any());
+        doNothing().when(bindingResultsService).handle(any(), any(), any(), any());
 
         given(traineeService.findByUsername(request.getTraineeUsername()))
                 .willReturn(trainee);
@@ -592,7 +595,7 @@ class ServiceFacadeTest {
         AddTrainingRequest request = EntityTestData.getInvalidTrainingRequest();
         BindingResult bindingResult = new BeanPropertyBindingResult(request, "addTraining");
 
-        doThrow(EntityPersistException.class).when(bindingResultsService).handle(any(), any(), any());
+        doThrow(EntityPersistException.class).when(bindingResultsService).handle(any(), any(), any(), any());
 
         // when & then
         assertThrows(EntityPersistException.class, () -> serviceFacade.addTraining(request, bindingResult));
@@ -663,13 +666,13 @@ class ServiceFacadeTest {
         UserCredentials credentials = EntityTestData.getValidEmilyDavisAuthCredentials();
         BindingResult bindingResult = new BeanPropertyBindingResult(credentials, "userCredentials");
 
-        doNothing().when(bindingResultsService).handle(any(), any(), any());
+        doNothing().when(bindingResultsService).handle(any(), any(), any(), any());
 
         // when
         serviceFacade.authenticate(credentials, bindingResult);
 
         // then
-        verify(bindingResultsService).handle(any(), any(), any());
+        verify(bindingResultsService).handle(any(), any(), any(), any());
         verify(authService).authenticate(credentials.getUsername(), credentials.getPassword());
     }
 

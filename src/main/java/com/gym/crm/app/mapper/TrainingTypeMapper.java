@@ -10,6 +10,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINING_TYPE_NAME_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.ERROR_TRAINING_TYPE_WITH_NAME_NOT_FOUND;
 
 @Mapper(componentModel = "spring")
@@ -29,6 +30,6 @@ public abstract class TrainingTypeMapper {
 
     public TrainingType map(String trainingType) {
         return repository.findByName(trainingType)
-                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINING_TYPE_WITH_NAME_NOT_FOUND, trainingType)));
+                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINING_TYPE_WITH_NAME_NOT_FOUND, trainingType), TRAINING_TYPE_NAME_NOT_FOUND.getCode()));
     }
 }

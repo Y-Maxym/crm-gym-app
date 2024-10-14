@@ -8,11 +8,13 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static com.gym.crm.app.rest.exception.ErrorCode.INVALID_USERNAME_OR_PASSWORD;
+
 @Service
 @Setter(onMethod_ = @Autowired)
 public class AuthService {
 
-    private static final String INVALID_USERNAME_OR_PASSWORD = "Invalid username or password";
+    private static final String INVALID_USERNAME_OR_PASSWORD1 = "Invalid username or password";
 
     private UserService userService;
     private UserProfileService profileService;
@@ -23,7 +25,7 @@ public class AuthService {
         String storedPassword = foundUser.getPassword();
 
         if (!profileService.isPasswordCorrect(password, storedPassword)) {
-            throw new AuthenticationException(INVALID_USERNAME_OR_PASSWORD);
+            throw new AuthenticationException(INVALID_USERNAME_OR_PASSWORD1, INVALID_USERNAME_OR_PASSWORD.getCode());
         }
 
         return foundUser;
@@ -33,7 +35,7 @@ public class AuthService {
         try {
             return userService.findByUsername(username);
         } catch (EntityValidationException e) {
-            throw new AuthenticationException(INVALID_USERNAME_OR_PASSWORD, e);
+            throw new AuthenticationException(INVALID_USERNAME_OR_PASSWORD1, INVALID_USERNAME_OR_PASSWORD.getCode(), e);
         }
     }
 }

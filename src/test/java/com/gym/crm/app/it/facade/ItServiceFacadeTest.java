@@ -1,4 +1,4 @@
-package com.gym.crm.app.it;
+package com.gym.crm.app.it.facade;
 
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
@@ -8,6 +8,7 @@ import com.gym.crm.app.exception.AuthenticationException;
 import com.gym.crm.app.exception.EntityPersistException;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.facade.ServiceFacade;
+import com.gym.crm.app.it.AbstractItTest;
 import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;
 import com.gym.crm.app.rest.model.AddTrainingRequest;
 import com.gym.crm.app.rest.model.ChangePasswordRequest;

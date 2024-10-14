@@ -16,7 +16,6 @@ import com.gym.crm.app.rest.model.UpdateTrainerProfileRequest;
 import com.gym.crm.app.rest.model.UserCredentials;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public class EntityTestData {
@@ -412,9 +411,7 @@ public class EntityTestData {
     }
 
     public static List<TrainerProfileOnlyUsername> getValidListTrainerProfileOnlyUsernames() {
-        return new ArrayList<>() {{
-            add(new TrainerProfileOnlyUsername().username("David.Brown"));
-            add(new TrainerProfileOnlyUsername().username("Emily.Davis"));
-        }};
+        return List.of(new TrainerProfileOnlyUsername().username("Emily.Davis"),
+                new TrainerProfileOnlyUsername().username("David.Brown"));
     }
 }

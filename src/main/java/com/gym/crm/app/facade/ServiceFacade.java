@@ -54,6 +54,17 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.gym.crm.app.rest.exception.ErrorCode.ACTIVATE_DEACTIVATE_PROFILE_ERROR;
+import static com.gym.crm.app.rest.exception.ErrorCode.AUTHENTICATION_ERROR;
+import static com.gym.crm.app.rest.exception.ErrorCode.INVALID_USERNAME;
+import static com.gym.crm.app.rest.exception.ErrorCode.INVALID_USERNAME_OR_PASSWORD;
+import static com.gym.crm.app.rest.exception.ErrorCode.PASSWORD_CHANGE_ERROR;
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINEE_CREATE_ERROR;
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINEE_UPDATE_ERROR;
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINER_CREATE_ERROR;
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINER_UPDATE_ERROR;
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINING_CREATE_ERROR;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -83,7 +94,7 @@ public class ServiceFacade {
 
     @Transactional
     public UserCredentials createTrainerProfile(TrainerCreateRequest request, BindingResult bindingResult) {
-        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer creation error");
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer creation error", TRAINER_CREATE_ERROR.getCode());
 
         Trainer trainer = createTrainerProfileMapper.map(request);
 
@@ -103,7 +114,7 @@ public class ServiceFacade {
 
     @Transactional
     public UserCredentials createTraineeProfile(TraineeCreateRequest request, BindingResult bindingResult) {
-        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainee creation error");
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainee creation error", TRAINEE_CREATE_ERROR.getCode());
 
         Trainee trainee = createTraineeProfileMapper.map(request);
 
@@ -135,7 +146,7 @@ public class ServiceFacade {
 
     @Transactional
     public UpdateTrainerProfileResponse updateTrainerProfile(String username, UpdateTrainerProfileRequest request, BindingResult bindingResult, HttpServletRequest httpServletRequest) {
-        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer update error");
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer update error", TRAINER_UPDATE_ERROR.getCode());
         checkUsername(username, httpServletRequest);
 
         Trainer trainer = trainerService.findByUsername(username);
@@ -148,7 +159,7 @@ public class ServiceFacade {
 
     @Transactional
     public UpdateTraineeProfileResponse updateTraineeProfile(String username, UpdateTraineeProfileRequest request, BindingResult bindingResult, HttpServletRequest httpServletRequest) {
-        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainee update error");
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainee update error", TRAINEE_UPDATE_ERROR.getCode());
         checkUsername(username, httpServletRequest);
 
         Trainee trainee = traineeService.findByUsername(username);
@@ -161,7 +172,7 @@ public class ServiceFacade {
 
     @Transactional
     public void activateDeactivateProfile(String username, ActivateDeactivateProfileRequest request, BindingResult bindingResult, HttpServletRequest httpServletRequest) {
-        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Activate/Deactivate profile error");
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Activate/Deactivate profile error", ACTIVATE_DEACTIVATE_PROFILE_ERROR.getCode());
         checkUsername(username, httpServletRequest);
 
         User user = userService.findByUsername(username);
@@ -204,7 +215,7 @@ public class ServiceFacade {
 
     @Transactional
     public void addTraining(AddTrainingRequest request, BindingResult bindingResult) {
-        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Training creation error");
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Training creation error", TRAINING_CREATE_ERROR.getCode());
 
         Trainee trainee = traineeService.findByUsername(request.getTraineeUsername());
         Trainer trainer = trainerService.findByUsername(request.getTrainerUsername());
@@ -255,7 +266,7 @@ public class ServiceFacade {
     }
 
     public User authenticate(UserCredentials credentials, BindingResult bindingResult) {
-        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Authentication error");
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Authentication error", AUTHENTICATION_ERROR.getCode());
 
         String username = credentials.getUsername();
         String password = credentials.getPassword();
@@ -266,7 +277,7 @@ public class ServiceFacade {
 
     @Transactional
     public void changePassword(ChangePasswordRequest request, BindingResult bindingResult, HttpServletRequest httpRequest) {
-        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Password change error");
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Password change error", PASSWORD_CHANGE_ERROR.getCode());
 
         String username = request.getUsername();
         String password = request.getPassword();
@@ -286,7 +297,7 @@ public class ServiceFacade {
 
         if (!sessionUser.getUsername().equals(username)
                 || !userProfileService.isPasswordCorrect(password, sessionUser.getPassword())) {
-            throw new AuthenticationException("Invalid username or password");
+            throw new AuthenticationException("Invalid username or password", INVALID_USERNAME_OR_PASSWORD.getCode());
         }
     }
 
@@ -295,7 +306,7 @@ public class ServiceFacade {
         User sessionUser = (User) session.getAttribute("user");
 
         if (!sessionUser.getUsername().equals(username)) {
-            throw new AuthenticationException("Invalid username");
+            throw new AuthenticationException("Invalid username", INVALID_USERNAME.getCode());
         }
     }
 }
