@@ -1,0 +1,79 @@
+package com.gym.crm.app.filter;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gym.crm.app.logging.MessageHelper;
+import com.gym.crm.app.util.CustomContentCachingRequestWrapper;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
+import org.springframework.core.annotation.Order;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingResponseWrapper;
+
+import java.io.IOException;
+
+import static com.gym.crm.app.util.Constants.INFO_REST_LOGGING_FILTER_REQUEST;
+import static com.gym.crm.app.util.Constants.INFO_REST_LOGGING_FILTER_RESPONSE;
+
+@Component
+@Slf4j
+@Order(2)
+@RequiredArgsConstructor
+public class RestLoggingFilter extends OncePerRequestFilter {
+
+    private final ObjectMapper objectMapper;
+    private final MessageHelper messageHelper;
+
+    @Override
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
+        String transactionId = MDC.get("transactionId");
+        CustomContentCachingRequestWrapper requestWrapper = new CustomContentCachingRequestWrapper(request);
+        ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
+
+        logRequestDetails(requestWrapper, transactionId);
+
+        filterChain.doFilter(requestWrapper, responseWrapper);
+
+        logResponseDetails(responseWrapper, transactionId);
+        responseWrapper.copyBodyToResponse();
+    }
+
+    private void logRequestDetails(CustomContentCachingRequestWrapper request, String transactionId) throws IOException {
+        byte[] cachedBody = request.getCachedBody();
+        String requestBody = "";
+
+        if (cachedBody.length > 0) {
+            Object json = objectMapper.readValue(cachedBody, Object.class);
+            requestBody = objectMapper.writeValueAsString(json);
+        }
+
+        log.info(messageHelper.getMessage(INFO_REST_LOGGING_FILTER_REQUEST,
+                request.getMethod(),
+                request.getRequestURI(),
+                requestBody,
+                transactionId));
+    }
+
+    private void logResponseDetails(ContentCachingResponseWrapper response, String transactionId) throws IOException {
+        byte[] cachedBody = response.getContentAsByteArray();
+        String responseBody = "";
+
+        if (cachedBody.length > 0) {
+            Object json = objectMapper.readValue(cachedBody, Object.class);
+            responseBody = objectMapper.writeValueAsString(json);
+        }
+
+        log.info(messageHelper.getMessage(INFO_REST_LOGGING_FILTER_RESPONSE,
+                response.getStatus(),
+                responseBody,
+                transactionId));
+    }
+}

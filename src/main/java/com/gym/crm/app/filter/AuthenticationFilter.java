@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.core.annotation.Order;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -18,6 +19,7 @@ import static com.gym.crm.app.rest.exception.ErrorCode.UNAUTHORIZED_ERROR;
 import static java.util.Objects.isNull;
 
 @Component
+@Order(3)
 public class AuthenticationFilter extends OncePerRequestFilter {
 
     private static final String UNAUTHORIZED_MESSAGE = "Unauthorized";

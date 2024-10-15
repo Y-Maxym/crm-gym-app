@@ -14,6 +14,13 @@ public class Constants {
     public static final String INFO_REPOSITORY_RESULT = "INFO.REPOSITORY.RESULT";
     public static final String INFO_REPOSITORY_EXCEPTION = "INFO.REPOSITORY.EXCEPTION";
 
+    public static final String INFO_TRANSACTION_FILTER_START = "INFO.TRANSACTION.FILTER.START";
+    public static final String INFO_TRANSACTION_FILTER_END = "INFO.TRANSACTION.FILTER.END";
+    public static final String INFO_TRANSACTION_FILTER_ERROR = "INFO.TRANSACTION.FILTER.ERROR";
+
+    public static final String INFO_REST_LOGGING_FILTER_REQUEST = "INFO.REST.LOGGING.FILTER.REQUEST";
+    public static final String INFO_REST_LOGGING_FILTER_RESPONSE = "INFO.REST.LOGGING.FILTER.RESPONSE";
+
     public static final String DEBUG_FACADE_INPUT = "DEBUG.FACADE.INPUT";
     public static final String DEBUG_FACADE_RESULT = "DEBUG.FACADE.RESULT";
     public static final String DEBUG_FACADE_EXCEPTION = "DEBUG.FACADE.EXCEPTION";
