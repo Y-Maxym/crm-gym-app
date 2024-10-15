@@ -12,7 +12,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -76,7 +75,7 @@ class TraineeRepositoryImplTest extends AbstractTestRepository<TraineeRepository
         String trainingType = training.getTrainingType().getTrainingTypeName();
 
         // when
-        Set<Training> actual = repository.findTrainingsByCriteria(username, from, to, trainerName, trainingType);
+        List<Training> actual = repository.findTrainingsByCriteria(username, from, to, trainerName, trainingType);
 
         // then
         assertThat(actual.size()).isEqualTo(1);
@@ -90,7 +89,7 @@ class TraineeRepositoryImplTest extends AbstractTestRepository<TraineeRepository
         addTrainingList();
 
         // when
-        Set<Training> trainings = repository.findTrainingsByCriteria(null, null, null, null, null);
+        List<Training> trainings = repository.findTrainingsByCriteria(null, null, null, null, null);
 
         // then
         assertThat(trainings.size()).isEqualTo(2);
@@ -103,7 +102,7 @@ class TraineeRepositoryImplTest extends AbstractTestRepository<TraineeRepository
         addTrainingList();
 
         // when
-        Set<Training> trainings = repository.findTrainingsByCriteria("", null, null, "", "");
+        List<Training> trainings = repository.findTrainingsByCriteria("", null, null, "", "");
 
         // then
         assertThat(trainings.size()).isEqualTo(2);

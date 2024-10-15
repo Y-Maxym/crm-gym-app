@@ -1,9 +1,9 @@
 package com.gym.crm.app.service.common;
 
-import com.gym.crm.app.dto.AuthCredentials;
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.AuthenticationException;
 import com.gym.crm.app.exception.EntityValidationException;
+import com.gym.crm.app.rest.exception.ErrorCode;
 import com.gym.crm.app.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,6 @@ class AuthServiceTest {
         String password = "password";
         String storedPassword = "storedPassword";
 
-        AuthCredentials credentials = new AuthCredentials(username, password);
         User user = User.builder().username(username).password(storedPassword).build();
 
         given(userService.findByUsername(username))
@@ -48,7 +47,7 @@ class AuthServiceTest {
                 .willReturn(true);
 
         // when
-        User result = authService.authenticate(credentials);
+        User result = authService.authenticate(username, password);
 
         // then
         assertEquals(user, result);
@@ -60,16 +59,15 @@ class AuthServiceTest {
         // given
         String username = "username";
         String password = "password";
-        AuthCredentials credentials = new AuthCredentials(username, password);
 
         String exceptionMessage = "User with username %s not found".formatted(username);
 
         given(userService.findByUsername(username))
-                .willThrow(new EntityValidationException(exceptionMessage));
+                .willThrow(new EntityValidationException(exceptionMessage, ErrorCode.INVALID_USERNAME_OR_PASSWORD.getCode()));
 
         // when
         AuthenticationException exception = assertThrows(AuthenticationException.class,
-                () -> authService.authenticate(credentials));
+                () -> authService.authenticate(username, password));
 
         // then
         assertThat(INVALID_USERNAME_OR_PASSWORD).isEqualTo(exception.getMessage());
@@ -84,7 +82,6 @@ class AuthServiceTest {
         String password = "password";
         String storedPassword = "storedPassword";
 
-        AuthCredentials credentials = new AuthCredentials(username, password);
         User user = User.builder().username(username).password(storedPassword).build();
 
         given(userService.findByUsername(username))
@@ -94,7 +91,7 @@ class AuthServiceTest {
 
         // when
         AuthenticationException exception = assertThrows(AuthenticationException.class,
-                () -> authService.authenticate(credentials));
+                () -> authService.authenticate(username, password));
 
         // then
         assertThat(INVALID_USERNAME_OR_PASSWORD).isEqualTo(exception.getMessage());

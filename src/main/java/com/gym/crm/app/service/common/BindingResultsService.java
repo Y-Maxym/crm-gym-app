@@ -1,25 +1,25 @@
 package com.gym.crm.app.service.common;
 
-import com.gym.crm.app.error.FieldErrorEntity;
 import com.gym.crm.app.exception.ApplicationException;
+import com.gym.crm.app.rest.exception.FieldError;
+import com.gym.crm.app.util.function.TriFunction;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
-import java.util.function.BiFunction;
 
 @Service
 public class BindingResultsService {
 
-    public void handle(BindingResult bindingResult, BiFunction<String, List<FieldErrorEntity>, ? extends ApplicationException> exception, String message) {
+    public void handle(BindingResult bindingResult, TriFunction<String, Integer, List<FieldError>, ? extends ApplicationException> exception, String message, Integer code) {
 
         if (bindingResult.hasErrors()) {
-            List<FieldErrorEntity> errors = bindingResult.getFieldErrors()
+            List<FieldError> errors = bindingResult.getFieldErrors()
                     .stream()
-                    .map(FieldErrorEntity::new)
+                    .map(FieldError::new)
                     .toList();
 
-            throw exception.apply(message, errors);
+            throw exception.apply(message, code, errors);
         }
     }
 }

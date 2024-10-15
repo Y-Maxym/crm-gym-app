@@ -7,14 +7,13 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public interface TrainerRepository extends CrudRepository<Trainer> {
 
     Optional<Trainer> findByUsername(String username);
 
-    Set<Training> findTrainingsByCriteria(@NotNull String username, LocalDate from, LocalDate to, String traineeName,
-                                          String trainingType);
+    List<Training> findTrainingsByCriteria(@NotNull String username, LocalDate from, LocalDate to, String traineeName,
+                                           String trainingType);
 
     List<Trainer> getTrainersNotAssignedByTraineeUsername(String username);
 }

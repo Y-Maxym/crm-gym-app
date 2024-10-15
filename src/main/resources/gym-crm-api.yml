@@ -52,19 +52,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainers/register:
     post:
       tags:
@@ -97,19 +97,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /login:
     post:
       tags:
@@ -138,20 +138,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
-  /change-login:
+                $ref: "#/components/schemas/ErrorResponse"
+  /change-password:
     put:
       tags:
         - Auth
@@ -163,7 +163,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginChangeRequest'
+              $ref: '#/components/schemas/ChangePasswordRequest'
       responses:
         200:
           description: Successful password change
@@ -178,19 +178,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainees/{username}:
     get:
       tags:
@@ -212,25 +212,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationError"
+                $ref: "#/components/schemas/ErrorResponse"
         401:
           description: Unauthorized access
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
     put:
       tags:
         - Trainees
@@ -263,19 +263,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
     delete:
       tags:
         - Trainees
@@ -298,19 +298,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainers/{username}:
     get:
       tags:
@@ -332,25 +332,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationError"
+                $ref: "#/components/schemas/ErrorResponse"
         401:
           description: Unauthorized access
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
     put:
       tags:
         - Trainers
@@ -383,19 +383,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainers/not-assigned/{username}:
     get:
       tags:
@@ -411,7 +411,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetNotAssignedTrainersResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/TrainerProfileWithUsername'
+                example:
+                  - username: Jane.Smith
+                    firstName: Jane
+                    lastName: Smith
+                    specialization: Yoga
+                  - username: David.Rock
+                    firstName: David
+                    lastName: Rock
+                    specialization: Fitness
         400:
           description: Invalid request
           content:
@@ -423,19 +434,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainees/{username}/trainers:
     put:
       tags:
@@ -450,14 +461,30 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateTraineesTrainerRequest"
+              type: array
+              items:
+                $ref: "#/components/schemas/TrainerProfileOnlyUsername"
+              example:
+                - username: William.Turner
+                - username: Jane.Smith
       responses:
         200:
           description: Successful update of trainee's trainer list
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UpdateTraineesTrainerResponse"
+                type: array
+                items:
+                  $ref: "#/components/schemas/TrainerProfileWithUsername"
+                example:
+                  - username: William.Turner
+                    firstName: William
+                    lastName: Turner
+                    specialization: Fitness
+                  - username: Jane.Smith
+                    firstName: Jane
+                    lastName: Smith
+                    specialization: Yoga
         400:
           description: Invalid request
           content:
@@ -469,20 +496,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
-  /trainees/{username}/trainings:
+                $ref: "#/components/schemas/ErrorResponse"
+  /trainings/trainees/{username}:
     get:
       tags:
         - Trainings
@@ -501,7 +528,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetTraineeTrainingsResponse"
+                items:
+                  $ref: "#/components/schemas/GetTraineeTrainingsResponse"
+              example:
+                - trainingName: Training 1
+                  trainingDate: 2021-09-12
+                  trainingType: Yoga
+                  trainingDuration: 2
+                  trainerName: William
+                - trainingName: Training 2
+                  trainingDate: 2021-09-13
+                  trainingType: Yoga
+                  trainingDuration: 2
+                  trainerName: Jane
         400:
           description: Invalid request
           content:
@@ -513,20 +552,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
-  /trainers/{username}/trainings:
+                $ref: "#/components/schemas/ErrorResponse"
+  /trainings/trainers/{username}:
     get:
       tags:
         - Trainings
@@ -544,7 +583,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetTrainerTrainingsResponse"
+                items:
+                  $ref: "#/components/schemas/GetTrainerTrainingsResponse"
+              example:
+                - trainingName: Training 1
+                  trainingDate: 2021-09-12
+                  trainingType: Yoga
+                  trainingDuration: 2
+                  traineeName: John
+                - trainingName: Training 2
+                  trainingDate: 2021-09-13
+                  trainingType: Yoga
+                  trainingDuration: 2
+                  traineeName: Dave
         400:
           description: Invalid request
           content:
@@ -556,19 +607,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainings:
     post:
       tags:
@@ -596,19 +647,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainees/{username}/activate:
     patch:
       tags:
@@ -638,19 +689,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /trainers/{username}/activate:
     patch:
       tags:
@@ -680,19 +731,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
   /training-types:
     get:
       tags:
@@ -704,7 +755,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetTrainingTypeResponse"
+                type: array
+                items:
+                  $ref: "#/components/schemas/GetTrainingTypeResponse"
+                example:
+                  - trainingTypeId: 1
+                    trainingType: Fitness
+                  - trainingTypeId: 2
+                    trainingType: Yoga
         400:
           description: Invalid request
           content:
@@ -716,19 +774,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
         500:
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorMessage"
+                $ref: "#/components/schemas/ErrorResponse"
 
 # Components list
 components:
@@ -736,9 +794,6 @@ components:
     TraineeCreateRequest:
       allOf:
         - $ref: "#/components/schemas/TraineeProfile"
-      required:
-        - firstName
-        - lastName
       example:
         firstName: John
         lastName: Doe
@@ -753,21 +808,13 @@ components:
         trainersList:
           type: array
           items:
-            allOf:
-              - $ref: "#/components/schemas/TrainerProfile"
-            properties:
-              username:
-                type: string
+            $ref: "#/components/schemas/TrainerProfileWithUsername"
     UpdateTraineeProfileRequest:
       allOf:
         - $ref: "#/components/schemas/TraineeProfile"
       properties:
         isActive:
           type: boolean
-      required:
-        - firstName
-        - lastName
-        - isActive
       example:
         firstName: Dave
         lastName: Jones
@@ -785,11 +832,7 @@ components:
         trainersList:
           type: array
           items:
-            allOf:
-              - $ref: "#/components/schemas/TrainerProfile"
-            properties:
-              username:
-                type: string
+            $ref: "#/components/schemas/TrainerProfileWithUsername"
       example:
         username: Dave.Jones
         firstName: Dave
@@ -806,42 +849,6 @@ components:
             firstName: William
             lastName: Turner
             specialization: Fitness
-    UpdateTraineesTrainerRequest:
-      type: object
-      properties:
-        username:
-          type: string
-        trainersList:
-          type: array
-          items:
-            properties:
-              username:
-                type: string
-      required:
-        - trainersList
-      example:
-        username: John.Doe
-        trainerList:
-          - username: William.Turner
-          - username: Jane.Smith
-    UpdateTraineesTrainerResponse:
-      type: array
-      items:
-        type: object
-        allOf:
-          - $ref: "#/components/schemas/TrainerProfile"
-        properties:
-          username:
-            type: string
-      example:
-        - username: William.Turner
-          firstName: William
-          lastName: Turner
-          specialization: Fitness
-        - username: Jane.Smith
-          firstName: Jane
-          lastName: Smith
-          specialization: Yoga
     TraineeProfile:
       type: object
       properties:
@@ -854,14 +861,18 @@ components:
           format: date
         address:
           type: string
+    TrainerTraineeProfileResponse:
+      properties:
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
     TrainerCreateRequest:
       type: object
       allOf:
         - $ref: "#/components/schemas/TrainerProfile"
-      required:
-        - firstName
-        - lastName
-        - specialization
       example:
         firstName: John
         lastName: Doe
@@ -875,13 +886,7 @@ components:
         traineesList:
           type: array
           items:
-            properties:
-              username:
-                type: string
-              firstName:
-                type: string
-              lastName:
-                type: string
+            $ref: "#/components/schemas/TrainerTraineeProfileResponse"
       example:
         firstName: Jane
         lastName: Smith
@@ -898,18 +903,9 @@ components:
       allOf:
         - $ref: "#/components/schemas/TrainerProfile"
       properties:
-        username:
-          type: string
         isActive:
           type: boolean
-      required:
-        - username
-        - firstName
-        - lastName
-        - specialization
-        - isActive
       example:
-        username: William.Turner
         firstName: William
         lastName: Turner
         specialization: Fitness
@@ -925,13 +921,7 @@ components:
         traineesList:
           type: array
           items:
-            properties:
-              username:
-                type: string
-              firstName:
-                type: string
-              lastName:
-                type: string
+            $ref: "#/components/schemas/TrainerTraineeProfileResponse"
       example:
         username: William.Turner
         firstName: William
@@ -945,24 +935,6 @@ components:
           - username: Dave.Jones
             firstName: Dave
             lastName: Jones
-    GetNotAssignedTrainersResponse:
-      type: array
-      items:
-        type: object
-        allOf:
-          - $ref: "#/components/schemas/TrainerProfile"
-        properties:
-          username:
-            type: string
-      example:
-        - username: Jane.Smith
-          firstName: Jane
-          lastName: Smith
-          specialization: Yoga
-        - username: David.Rock
-          firstName: David
-          lastName: Rock
-          specialization: Fitness
     TrainerProfile:
       properties:
         firstName:
@@ -970,47 +942,32 @@ components:
         lastName:
           type: string
         specialization:
-          $ref: '#/components/schemas/TrainingType'
+          type: string
+    TrainerProfileWithUsername:
+      allOf:
+        - $ref: "#/components/schemas/TrainerProfile"
+      properties:
+        username:
+          type: string
+    TrainerProfileOnlyUsername:
+      type: object
+      properties:
+        username:
+          type: string
     GetTraineeTrainingsResponse:
-      type: array
-      items:
-        type: object
-        allOf:
-          - $ref: "#/components/schemas/TrainingProfile"
-        properties:
-          trainerName:
-            type: string
-      example:
-        - trainingName: Training 1
-          trainingDate: 2021-09-12
-          trainingType: Yoga
-          trainingDuration: 2
-          trainerName: William
-        - trainingName: Training 2
-          trainingDate: 2021-09-13
-          trainingType: Yoga
-          trainingDuration: 2
-          trainerName: Jane
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/TrainingProfile"
+      properties:
+        trainerName:
+          type: string
     GetTrainerTrainingsResponse:
-      type: array
-      items:
-        type: object
-        allOf:
-          - $ref: "#/components/schemas/TrainingProfile"
-        properties:
-          traineeName:
-            type: string
-      example:
-        - trainingName: Training 1
-          trainingDate: 2021-09-12
-          trainingType: Yoga
-          trainingDuration: 2
-          traineeName: John
-        - trainingName: Training 2
-          trainingDate: 2021-09-13
-          trainingType: Yoga
-          trainingDuration: 2
-          traineeName: Dave
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/TrainingProfile"
+      properties:
+        traineeName:
+          type: string
     AddTrainingRequest:
       type: object
       properties:
@@ -1024,13 +981,7 @@ components:
           type: string
           format: date
         trainingDuration:
-          type: string
-      required:
-        - traineeUsername
-        - trainerUsername
-        - trainingName
-        - trainingDate
-        - trainingDuration
+          type: integer
       example:
         traineeUsername: John.Doe
         trainerUsername: Jane.Smith
@@ -1045,7 +996,7 @@ components:
           type: string
           format: date
         trainingType:
-          $ref: "#/components/schemas/TrainingType"
+          type: string
         trainingDuration:
           type: integer
       example:
@@ -1068,24 +1019,15 @@ components:
       properties:
         isActive:
           type: boolean
-      required:
-        - isActive
       example:
         isActive: true
     GetTrainingTypeResponse:
-      type: array
-      items:
-        type: object
-        properties:
-          trainingTypeId:
-            type: integer
-          trainingType:
-            $ref: "#/components/schemas/TrainingType"
-      example:
-        - trainingTypeId: 1
-          trainingType: Fitness
-        - trainingTypeId: 2
-          trainingType: Yoga
+      type: object
+      properties:
+        trainingTypeId:
+          type: integer
+        trainingType:
+          type: string
     UserCredentials:
       type: object
       properties:
@@ -1093,36 +1035,21 @@ components:
           type: string
         password:
           type: string
-      required:
-        - username
-        - password
       example:
         username: John.Doe
         password: PrS7J1qY6I
-    LoginChangeRequest:
+    ChangePasswordRequest:
       type: object
       allOf:
         - $ref: "#/components/schemas/UserCredentials"
       properties:
         newPassword:
           type: string
-      required:
-        - username
-        - password
-        - newPassword
       example:
         username: John.Doe
         password: PrS7J1qY6I
         newPassword: newPass
-    TrainingType:
-      type: string
-      enum:
-        - Fitness
-        - Yoga
-        - Zumba
-        - Stretching
-        - Resistance
-    ErrorMessage:
+    ErrorResponse:
       type: object
       properties:
         code:
@@ -1183,7 +1110,7 @@ components:
         format: date
       example: 2000-01-01
     NameParam:
-      name: trainerName
+      name: profileName
       in: query
       description: Profile name parameter
       required: false
@@ -1196,5 +1123,7 @@ components:
       description: Training type name parameter
       required: false
       schema:
-        $ref: "#/components/schemas/TrainingType"
+        properties:
+          trainingType:
+            type: string
       example: Yoga

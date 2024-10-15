@@ -1,20 +1,22 @@
 package com.gym.crm.app.utils;
 
-import com.gym.crm.app.dto.AuthCredentials;
-import com.gym.crm.app.dto.request.CreateTraineeProfileRequest;
-import com.gym.crm.app.dto.request.CreateTrainerProfileRequest;
-import com.gym.crm.app.dto.request.CreateUserProfileRequest;
-import com.gym.crm.app.dto.request.TraineeProfileRequest;
-import com.gym.crm.app.dto.request.TrainerProfileRequest;
-import com.gym.crm.app.dto.request.TrainingRequest;
-import com.gym.crm.app.dto.request.UserProfileRequest;
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.entity.TrainingType;
 import com.gym.crm.app.entity.User;
+import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;
+import com.gym.crm.app.rest.model.AddTrainingRequest;
+import com.gym.crm.app.rest.model.ChangePasswordRequest;
+import com.gym.crm.app.rest.model.TraineeCreateRequest;
+import com.gym.crm.app.rest.model.TrainerCreateRequest;
+import com.gym.crm.app.rest.model.TrainerProfileOnlyUsername;
+import com.gym.crm.app.rest.model.UpdateTraineeProfileRequest;
+import com.gym.crm.app.rest.model.UpdateTrainerProfileRequest;
+import com.gym.crm.app.rest.model.UserCredentials;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class EntityTestData {
 
@@ -272,91 +274,156 @@ public class EntityTestData {
                 .build();
     }
 
-    public static CreateUserProfileRequest getValidCreateUserProfileRequest() {
-        return new CreateUserProfileRequest("firstName", "lastName");
+    public static TrainerCreateRequest getValidCreateTrainerProfileRequest() {
+        return new TrainerCreateRequest()
+                .firstName("firstName")
+                .lastName("lastName")
+                .specialization("Yoga");
     }
 
-    public static CreateUserProfileRequest getInvalidCreateUserProfileRequest() {
-        return new CreateUserProfileRequest(null, null);
+    public static TrainerCreateRequest getInvalidCreateTrainerProfileRequest() {
+        return new TrainerCreateRequest()
+                .firstName(null)
+                .lastName(null)
+                .specialization(null);
     }
 
-    public static CreateTrainerProfileRequest getValidCreateTrainerProfileRequest() {
-        return new CreateTrainerProfileRequest("Yoga", getValidCreateUserProfileRequest());
+    public static TraineeCreateRequest getValidCreateTraineeProfileRequest() {
+        return new TraineeCreateRequest()
+                .firstName("firstName")
+                .lastName("lastName")
+                .dateOfBirth(LocalDate.parse("2000-01-01"))
+                .address("Address");
     }
 
-    public static CreateTrainerProfileRequest getInvalidCreateTrainerProfileRequest() {
-        return new CreateTrainerProfileRequest("Yoga", getInvalidCreateUserProfileRequest());
+    public static TraineeCreateRequest getInvalidCreateTraineeProfileRequest() {
+        return new TraineeCreateRequest()
+                .firstName(null)
+                .lastName(null)
+                .dateOfBirth(null)
+                .address(null);
     }
 
-    public static CreateTraineeProfileRequest getValidCreateTraineeProfileRequest() {
-        return new CreateTraineeProfileRequest(LocalDate.parse("2000-01-01"), "Address", getValidCreateUserProfileRequest());
+    public static UserCredentials getValidJohnDoeAuthCredentials() {
+        return new UserCredentials()
+                .username("John.Doe")
+                .password("password");
     }
 
-    public static CreateTraineeProfileRequest getInvalidCreateTraineeProfileRequest() {
-        return new CreateTraineeProfileRequest(LocalDate.parse("2000-01-01"), "Address", getInvalidCreateUserProfileRequest());
+    public static UserCredentials getValidEmilyDavisAuthCredentials() {
+        return new UserCredentials()
+                .username("Emily.Davis")
+                .password("password");
     }
 
-    public static AuthCredentials getValidJohnDoeAuthCredentials() {
-        return new AuthCredentials("John.Doe", "password");
+    public static UserCredentials getInvalidJohnDoeAuthCredentials() {
+        return new UserCredentials()
+                .username("John.Doe")
+                .password("incorrect");
     }
 
-    public static AuthCredentials getValidEmilyDavisAuthCredentials() {
-        return new AuthCredentials("Emily.Davis", "password");
+    public static UserCredentials getInvalidEmilyDavisAuthCredentials() {
+        return new UserCredentials()
+                .username("Emily.Davis")
+                .password("incorrect");
     }
 
-    public static AuthCredentials getInvalidJohnDoeAuthCredentials() {
-        return new AuthCredentials("John.Doe", "incorrect");
+    public static UserCredentials getNullAuthCredentials() {
+        return new UserCredentials()
+                .username(null)
+                .password(null);
     }
 
-    public static AuthCredentials getInvalidEmilyDavisAuthCredentials() {
-        return new AuthCredentials("Emily.Davis", "incorrect");
+    public static ChangePasswordRequest getValidChangePasswordRequest() {
+        return new ChangePasswordRequest()
+                .username("Emily.Davis")
+                .password("password")
+                .newPassword("newPassword");
     }
 
-    public static AuthCredentials getNullAuthCredentials() {
-        return new AuthCredentials(null, null);
+    public static ChangePasswordRequest getInvalidChangePasswordRequest() {
+        return new ChangePasswordRequest()
+                .username("Emily.Davis")
+                .password("invalid")
+                .newPassword("newPassword");
     }
 
-    public static UserProfileRequest getValidUserProfileRequest() {
-        return new UserProfileRequest("firstName", "lastName");
+    public static ChangePasswordRequest getNullChangePasswordRequest() {
+        return new ChangePasswordRequest()
+                .username(null)
+                .password(null)
+                .newPassword(null);
     }
 
-    public static UserProfileRequest getInvalidUserProfileRequest() {
-        return new UserProfileRequest(null, null);
+    public static UpdateTrainerProfileRequest getValidUpdateTrainerProfileRequest() {
+        return new UpdateTrainerProfileRequest()
+                .firstName("Emily")
+                .lastName("Davis")
+                .specialization("Yoga")
+                .isActive(true);
     }
 
-    public static TrainerProfileRequest getValidTrainerProfileRequest() {
-        return new TrainerProfileRequest("Yoga", getValidUserProfileRequest());
+    public static UpdateTrainerProfileRequest getInvalidTrainerProfileRequest() {
+        return new UpdateTrainerProfileRequest()
+                .firstName(null)
+                .lastName(null)
+                .specialization(null)
+                .isActive(null);
     }
 
-    public static TrainerProfileRequest getInvalidTrainerProfileRequest() {
-        return new TrainerProfileRequest("Yoga", getInvalidUserProfileRequest());
+    public static UpdateTraineeProfileRequest getValidTraineeProfileRequest() {
+        return new UpdateTraineeProfileRequest()
+                .firstName("John")
+                .lastName("Doe")
+                .dateOfBirth(LocalDate.parse("2000-01-01"))
+                .address("Address")
+                .isActive(true);
     }
 
-    public static TraineeProfileRequest getValidTraineeProfileRequest() {
-        return new TraineeProfileRequest(LocalDate.parse("2000-01-01"), "Address2", getValidUserProfileRequest());
+    public static UpdateTraineeProfileRequest getInvalidTraineeProfileRequest() {
+        return new UpdateTraineeProfileRequest()
+                .firstName(null)
+                .lastName(null)
+                .dateOfBirth(null)
+                .address(null)
+                .isActive(null);
     }
 
-    public static TraineeProfileRequest getInvalidTraineeProfileRequest() {
-        return new TraineeProfileRequest(LocalDate.parse("2000-01-01"), "Address1", getInvalidUserProfileRequest());
+    public static ActivateDeactivateProfileRequest getActivateProfileRequest() {
+        return new ActivateDeactivateProfileRequest()
+                .isActive(true);
     }
 
-    public static TrainingRequest getValidTrainingRequest() {
-        return new TrainingRequest(
-                "John.Doe",
-                "David.Brown",
-                "Training name",
-                "Yoga",
-                LocalDate.parse("2021-02-01"),
-                2);
+    public static ActivateDeactivateProfileRequest getDeactivateProfileRequest() {
+        return new ActivateDeactivateProfileRequest()
+                .isActive(false);
     }
 
-    public static TrainingRequest getInvalidTrainingRequest() {
-        return new TrainingRequest(
-                null,
-                null,
-                "Training name",
-                "Yoga",
-                LocalDate.parse("2021-02-01"),
-                2);
+    public static AddTrainingRequest getValidTrainingRequest() {
+        return new AddTrainingRequest()
+                .traineeUsername("John.Doe")
+                .trainerUsername("Emily.Davis")
+                .trainingName("Training name")
+                .trainingDate(LocalDate.parse("2021-02-01"))
+                .trainingDuration(2);
+    }
+
+    public static AddTrainingRequest getInvalidTrainingRequest() {
+        return new AddTrainingRequest()
+                .traineeUsername(null)
+                .trainerUsername(null)
+                .trainingName(null)
+                .trainingDate(null)
+                .trainingDuration(null);
+    }
+
+    public static List<TrainerProfileOnlyUsername> getValidListTrainerProfileOnlyUsernames() {
+        return List.of(new TrainerProfileOnlyUsername().username("Emily.Davis"),
+                new TrainerProfileOnlyUsername().username("David.Brown"));
+    }
+
+    public static List<TrainerProfileOnlyUsername> getInvalidListTrainerProfileOnlyUsernames() {
+        return List.of(new TrainerProfileOnlyUsername().username("invalid"),
+                new TrainerProfileOnlyUsername().username("invalid"));
     }
 }

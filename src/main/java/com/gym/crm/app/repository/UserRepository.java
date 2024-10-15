@@ -8,4 +8,6 @@ public interface UserRepository extends CrudRepository<User> {
 
     Optional<User> findByUsername(String username);
 
+    Long getNextSerialNumber();
+
 }

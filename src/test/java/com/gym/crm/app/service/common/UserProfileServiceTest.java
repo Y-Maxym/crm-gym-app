@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Collections;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -58,8 +57,8 @@ class UserProfileServiceTest {
         // given
         String username = "John.Doe";
 
-        AtomicLong serialNumber = (AtomicLong) ReflectionTestUtils.getField(service, "serialNumber");
-        serialNumber.set(1L);
+        given(repository.getNextSerialNumber())
+                .willReturn(1L);
 
         // when
         String actualUsername = ReflectionTestUtils.invokeMethod(service, "addSerialNumberToUsername", username);
@@ -100,8 +99,8 @@ class UserProfileServiceTest {
         given(repository.findAll())
                 .willReturn(Collections.singletonList(existingUser));
 
-        AtomicLong serialNumber = (AtomicLong) ReflectionTestUtils.getField(service, "serialNumber");
-        serialNumber.set(1L);
+        given(repository.getNextSerialNumber())
+                .willReturn(1L);
 
         // when
         String username = service.generateUsername(firstName, lastName);

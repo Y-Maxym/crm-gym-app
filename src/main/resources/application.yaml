@@ -31,6 +31,9 @@ springdoc:
   swagger-ui:
     enabled: false
 
+api:
+  base-path: /api/v1
+
 security:
   password:
     length: 10

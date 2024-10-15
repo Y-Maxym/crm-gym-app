@@ -16,6 +16,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -45,8 +46,8 @@ public class TrainerRepositoryImpl extends CrudRepositoryImpl<Trainer> implement
     }
 
     @Override
-    public Set<Training> findTrainingsByCriteria(@NotNull String username, LocalDate from, LocalDate to, String traineeName,
-                                                 String trainingType) {
+    public List<Training> findTrainingsByCriteria(@NotNull String username, LocalDate from, LocalDate to, String traineeName,
+                                                  String trainingType) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Training> query = builder.createQuery(Training.class);
         Root<Training> root = query.from(Training.class);
@@ -80,7 +81,7 @@ public class TrainerRepositoryImpl extends CrudRepositoryImpl<Trainer> implement
 
         query.select(root).where(predicates.toArray(new Predicate[0]));
 
-        return new HashSet<>(entityManager.createQuery(query).getResultList());
+        return Collections.unmodifiableList(entityManager.createQuery(query).getResultList());
     }
 
     public List<Trainer> getTrainersNotAssignedByTraineeUsername(String username) {

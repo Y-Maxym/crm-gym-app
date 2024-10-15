@@ -1,26 +1,41 @@
 package com.gym.crm.app.facade;
 
-import com.gym.crm.app.dto.AuthCredentials;
-import com.gym.crm.app.dto.request.CreateTraineeProfileRequest;
-import com.gym.crm.app.dto.request.CreateTrainerProfileRequest;
-import com.gym.crm.app.dto.request.TraineeProfileRequest;
-import com.gym.crm.app.dto.request.TrainerProfileRequest;
-import com.gym.crm.app.dto.request.TrainingRequest;
-import com.gym.crm.app.dto.response.CreateTraineeProfileResponse;
-import com.gym.crm.app.dto.response.CreateTrainerProfileResponse;
-import com.gym.crm.app.dto.response.TraineeProfileResponse;
-import com.gym.crm.app.dto.response.TrainerProfileResponse;
-import com.gym.crm.app.dto.response.TrainingResponse;
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
+import com.gym.crm.app.entity.TrainingType;
 import com.gym.crm.app.entity.User;
+import com.gym.crm.app.exception.AuthenticationException;
 import com.gym.crm.app.exception.EntityPersistException;
+import com.gym.crm.app.mapper.AddTrainingMapper;
 import com.gym.crm.app.mapper.CreateTraineeProfileMapper;
 import com.gym.crm.app.mapper.CreateTrainerProfileMapper;
-import com.gym.crm.app.mapper.TraineeProfileMapper;
+import com.gym.crm.app.mapper.GetTraineeProfileMapper;
+import com.gym.crm.app.mapper.GetTraineeTrainingsMapper;
+import com.gym.crm.app.mapper.GetTrainerProfileMapper;
+import com.gym.crm.app.mapper.GetTrainerTrainingsMapper;
 import com.gym.crm.app.mapper.TrainerProfileMapper;
-import com.gym.crm.app.mapper.TrainingMapper;
+import com.gym.crm.app.mapper.TrainingTypeMapper;
+import com.gym.crm.app.mapper.UpdateTraineeProfileMapper;
+import com.gym.crm.app.mapper.UpdateTrainerProfileMapper;
+import com.gym.crm.app.repository.TrainingTypeRepository;
+import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;
+import com.gym.crm.app.rest.model.AddTrainingRequest;
+import com.gym.crm.app.rest.model.ChangePasswordRequest;
+import com.gym.crm.app.rest.model.GetTraineeProfileResponse;
+import com.gym.crm.app.rest.model.GetTraineeTrainingsResponse;
+import com.gym.crm.app.rest.model.GetTrainerProfileResponse;
+import com.gym.crm.app.rest.model.GetTrainerTrainingsResponse;
+import com.gym.crm.app.rest.model.GetTrainingTypeResponse;
+import com.gym.crm.app.rest.model.TraineeCreateRequest;
+import com.gym.crm.app.rest.model.TrainerCreateRequest;
+import com.gym.crm.app.rest.model.TrainerProfileOnlyUsername;
+import com.gym.crm.app.rest.model.TrainerProfileWithUsername;
+import com.gym.crm.app.rest.model.UpdateTraineeProfileRequest;
+import com.gym.crm.app.rest.model.UpdateTraineeProfileResponse;
+import com.gym.crm.app.rest.model.UpdateTrainerProfileRequest;
+import com.gym.crm.app.rest.model.UpdateTrainerProfileResponse;
+import com.gym.crm.app.rest.model.UserCredentials;
 import com.gym.crm.app.service.TraineeService;
 import com.gym.crm.app.service.TrainerService;
 import com.gym.crm.app.service.TrainingService;
@@ -35,7 +50,18 @@ import org.springframework.validation.BindingResult;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.gym.crm.app.rest.exception.ErrorCode.ACTIVATE_DEACTIVATE_PROFILE_ERROR;
+import static com.gym.crm.app.rest.exception.ErrorCode.AUTHENTICATION_ERROR;
+import static com.gym.crm.app.rest.exception.ErrorCode.INVALID_USERNAME;
+import static com.gym.crm.app.rest.exception.ErrorCode.INVALID_USERNAME_OR_PASSWORD;
+import static com.gym.crm.app.rest.exception.ErrorCode.PASSWORD_CHANGE_ERROR;
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINEE_CREATE_ERROR;
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINEE_UPDATE_ERROR;
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINER_CREATE_ERROR;
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINER_UPDATE_ERROR;
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINING_CREATE_ERROR;
 
 @Service
 @RequiredArgsConstructor
@@ -47,20 +73,28 @@ public class ServiceFacade {
     private final TrainingService trainingService;
     private final UserService userService;
     private final UserProfileService userProfileService;
-    private final AuthService authService;
     private final BindingResultsService bindingResultsService;
 
-    private final TraineeProfileMapper traineeProfileMapper;
     private final TrainerProfileMapper trainerProfileMapper;
-    private final TrainingMapper trainingMapper;
+    private final AddTrainingMapper addTrainingMapper;
     private final CreateTraineeProfileMapper createTraineeProfileMapper;
     private final CreateTrainerProfileMapper createTrainerProfileMapper;
+    private final GetTraineeProfileMapper getTraineeProfileMapper;
+    private final GetTrainerProfileMapper getTrainerProfileMapper;
+    private final UpdateTrainerProfileMapper updateTrainerProfileMapper;
+    private final UpdateTraineeProfileMapper updateTraineeProfileMapper;
+    private final GetTrainerTrainingsMapper getTrainerTrainingsMapper;
+    private final GetTraineeTrainingsMapper getTraineeTrainingsMapper;
+    private final TrainingTypeMapper trainingTypeMapper;
+    private final AuthService authService;
+
+    private final TrainingTypeRepository trainingTypeRepository;
 
     @Transactional
-    public CreateTrainerProfileResponse createTrainerProfile(CreateTrainerProfileRequest request, BindingResult bindingResult) {
-        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer creation error");
+    public UserCredentials createTrainerProfile(TrainerCreateRequest request, BindingResult bindingResult) {
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer creation error", TRAINER_CREATE_ERROR.getCode());
 
-        Trainer trainer = createTrainerProfileMapper.map(request);
+        Trainer trainer = createTrainerProfileMapper.mapToTrainer(request);
 
         String password = userProfileService.generatePassword();
 
@@ -73,14 +107,14 @@ public class ServiceFacade {
         user = user.toBuilder().password(password).build();
         trainer = trainer.toBuilder().user(user).build();
 
-        return createTrainerProfileMapper.map(trainer);
+        return createTrainerProfileMapper.mapToUserCredentials(trainer);
     }
 
     @Transactional
-    public CreateTraineeProfileResponse createTraineeProfile(CreateTraineeProfileRequest request, BindingResult bindingResult) {
-        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainee creation error");
+    public UserCredentials createTraineeProfile(TraineeCreateRequest request, BindingResult bindingResult) {
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainee creation error", TRAINEE_CREATE_ERROR.getCode());
 
-        Trainee trainee = createTraineeProfileMapper.map(request);
+        Trainee trainee = createTraineeProfileMapper.mapToTrainee(request);
 
         String password = userProfileService.generatePassword();
 
@@ -93,164 +127,181 @@ public class ServiceFacade {
         user = user.toBuilder().password(password).build();
         trainee = trainee.toBuilder().user(user).build();
 
-        return createTraineeProfileMapper.map(trainee);
+        return createTraineeProfileMapper.mapToUserCredentials(trainee);
     }
 
-    public TrainerProfileResponse findTrainerProfileByUsername(AuthCredentials credentials) {
-        User user = authService.authenticate(credentials);
+    public GetTrainerProfileResponse findTrainerProfileByUsername(String username) {
+        Trainer trainer = trainerService.findByUsername(username);
 
-        Trainer trainer = trainerService.findByUsername(user.getUsername());
-
-        return trainerProfileMapper.map(trainer);
+        return getTrainerProfileMapper.mapToGetTrainerProfileResponse(trainer);
     }
 
-    public TraineeProfileResponse findTraineeProfileByUsername(AuthCredentials credentials) {
-        User user = authService.authenticate(credentials);
+    public GetTraineeProfileResponse findTraineeProfileByUsername(String username) {
+        Trainee trainee = traineeService.findByUsername(username);
 
-        Trainee trainee = traineeService.findByUsername(user.getUsername());
-
-        return traineeProfileMapper.map(trainee);
+        return getTraineeProfileMapper.mapToGetTraineeProfileResponse(trainee);
     }
 
     @Transactional
-    public void changePassword(String changedPassword, AuthCredentials credentials) {
-        User user = authService.authenticate(credentials);
+    public UpdateTrainerProfileResponse updateTrainerProfile(String username, UpdateTrainerProfileRequest request, BindingResult bindingResult, User sessionUser) {
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer update error", TRAINER_UPDATE_ERROR.getCode());
+        checkUsername(username, sessionUser);
 
-        String hashedPassword = userProfileService.hashPassword(changedPassword);
+        Trainer trainer = trainerService.findByUsername(username);
+        trainer = updateTrainerProfileMapper.updateTraineeProfileFromDto(request, trainer);
+
+        trainer = trainerService.update(trainer);
+
+        return updateTrainerProfileMapper.mapToUpdateTrainerProfileResponse(trainer);
+    }
+
+    @Transactional
+    public UpdateTraineeProfileResponse updateTraineeProfile(String username, UpdateTraineeProfileRequest request, BindingResult bindingResult, User sessionUser) {
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainee update error", TRAINEE_UPDATE_ERROR.getCode());
+        checkUsername(username, sessionUser);
+
+        Trainee trainee = traineeService.findByUsername(username);
+        trainee = updateTraineeProfileMapper.updateTraineeProfileFromDto(request, trainee);
+
+        trainee = traineeService.update(trainee);
+
+        return updateTraineeProfileMapper.mapToUpdateTraineeProfileResponse(trainee);
+    }
+
+    @Transactional
+    public void activateDeactivateProfile(String username, ActivateDeactivateProfileRequest request, BindingResult bindingResult, User sessionUser) {
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Activate/Deactivate profile error", ACTIVATE_DEACTIVATE_PROFILE_ERROR.getCode());
+        checkUsername(username, sessionUser);
+
+        User user = userService.findByUsername(username);
+
+        if (user.isActive() == request.getIsActive()) {
+            return;
+        }
+
+        user = user.toBuilder().isActive(request.getIsActive()).build();
+        userService.update(user);
+    }
+
+    @Transactional
+    public void deleteTraineeProfileByUsername(String username, User sessionUser) {
+        checkUsername(username, sessionUser);
+
+        traineeService.deleteByUsername(username);
+    }
+
+    public List<GetTraineeTrainingsResponse> getTraineeTrainingsByCriteria(String username, LocalDate from, LocalDate to, String trainerName, String trainingType) {
+        traineeService.findByUsername(username);
+
+        List<Training> trainings = traineeService.findTrainingsByCriteria(username, from, to, trainerName, trainingType);
+
+        return trainings.stream()
+                .map(getTraineeTrainingsMapper::mapToGetTraineeTrainingsResponse)
+                .toList();
+    }
+
+    public List<GetTrainerTrainingsResponse> getTrainerTrainingsByCriteria(String username, LocalDate from, LocalDate to, String traineeName, String trainingType) {
+        trainerService.findByUsername(username);
+
+        List<Training> trainings = trainerService.findTrainingsByCriteria(username, from, to, traineeName, trainingType);
+
+        return trainings.stream()
+                .map(getTrainerTrainingsMapper::mapToGetTrainerTrainingsResponse)
+                .toList();
+    }
+
+    @Transactional
+    public void addTraining(AddTrainingRequest request, BindingResult bindingResult) {
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Training creation error", TRAINING_CREATE_ERROR.getCode());
+
+        Trainee trainee = traineeService.findByUsername(request.getTraineeUsername());
+        Trainer trainer = trainerService.findByUsername(request.getTrainerUsername());
+
+        trainee.getTrainers().add(trainer);
+
+        Training training = addTrainingMapper.mapToTraining(request);
+
+        training = training.toBuilder().trainingType(trainer.getSpecialization()).build();
+
+        trainingService.save(training);
+    }
+
+    public List<TrainerProfileWithUsername> getTrainersNotAssignedByTraineeUsername(String username) {
+        traineeService.findByUsername(username);
+
+        List<Trainer> trainers = trainerService.getTrainersNotAssignedByTraineeUsername(username);
+
+        return trainers.stream()
+                .map(trainerProfileMapper::mapToTrainerProfileWithUsername)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<TrainerProfileWithUsername> updateTraineesTrainerList(String username, List<TrainerProfileOnlyUsername> request, User sessionUser) {
+        checkUsername(username, sessionUser);
+
+        Trainee trainee = traineeService.findByUsername(username);
+        List<Trainer> trainerList = request.stream()
+                .map(trainer -> trainerService.findByUsername(trainer.getUsername()))
+                .toList();
+
+        trainee.getTrainers().clear();
+        trainee.getTrainers().addAll(trainerList);
+        traineeService.update(trainee);
+
+        return trainee.getTrainers().stream()
+                .map(trainerProfileMapper::mapToTrainerProfileWithUsername)
+                .toList();
+    }
+
+    public List<GetTrainingTypeResponse> getTrainingTypes() {
+        List<TrainingType> trainingTypes = trainingTypeRepository.findAll();
+
+        return trainingTypes.stream()
+                .map(trainingTypeMapper::mapToGetTrainingTypeResponse)
+                .toList();
+    }
+
+    public User authenticate(UserCredentials credentials, BindingResult bindingResult) {
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Authentication error", AUTHENTICATION_ERROR.getCode());
+
+        String username = credentials.getUsername();
+        String password = credentials.getPassword();
+
+        return authService.authenticate(username, password);
+    }
+
+
+    @Transactional
+    public void changePassword(ChangePasswordRequest request, BindingResult bindingResult, User sessionUser) {
+        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Password change error", PASSWORD_CHANGE_ERROR.getCode());
+
+        String username = request.getUsername();
+        String password = request.getPassword();
+        checkCredentials(username, password, sessionUser);
+
+        User user = userService.findByUsername(username);
+
+        String hashedPassword = userProfileService.hashPassword(request.getNewPassword());
         user = user.toBuilder().password(hashedPassword).build();
 
         userService.update(user);
     }
 
-    @Transactional
-    public void updateTrainerProfile(TrainerProfileRequest request, BindingResult bindingResult, AuthCredentials credentials) {
-        authService.authenticate(credentials);
-
-        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer update error");
-
-        Trainer updatedTrainer = trainerProfileMapper.map(request);
-
-        String username = credentials.username();
-
-        Trainer trainer = trainerService.findByUsername(username);
-        User user = trainer.getUser();
-
-        user = updateUserProfile(updatedTrainer.getUser(), user);
-
-        trainer = updatedTrainer.toBuilder().id(trainer.getId()).user(user).build();
-        trainerService.update(trainer);
-    }
-
-    @Transactional
-    public void updateTraineeProfile(TraineeProfileRequest request, BindingResult bindingResult, AuthCredentials credentials) {
-        Trainee updatedTrainee = traineeProfileMapper.map(request);
-
-        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainee update error");
-
-        authService.authenticate(credentials);
-
-        String username = credentials.username();
-
-        Trainee trainee = traineeService.findByUsername(username);
-        User user = trainee.getUser();
-
-        user = updateUserProfile(updatedTrainee.getUser(), user);
-
-        trainee = updatedTrainee.toBuilder().id(trainee.getId()).user(user).build();
-        traineeService.update(trainee);
-    }
-
-    @Transactional
-    public void activateProfile(AuthCredentials credentials) {
-        User user = authService.authenticate(credentials);
-
-        if (!user.isActive()) {
-            user = user.toBuilder().isActive(true).build();
-
-            userService.update(user);
+    private void checkCredentials(String username, String password, User sessionUser) {
+        if (!hasValidCredentials(username, password, sessionUser)) {
+            throw new AuthenticationException("Invalid username or password", INVALID_USERNAME_OR_PASSWORD.getCode());
         }
     }
 
-    @Transactional
-    public void deactivateProfile(AuthCredentials credentials) {
-        User user = authService.authenticate(credentials);
-
-        if (user.isActive()) {
-            user = user.toBuilder().isActive(false).build();
-
-            userService.update(user);
+    private void checkUsername(String username, User sessionUser) {
+        if (!sessionUser.getUsername().equals(username)) {
+            throw new AuthenticationException("Invalid username", INVALID_USERNAME.getCode());
         }
     }
 
-    @Transactional
-    public void deleteTraineeProfileByUsername(AuthCredentials credentials) {
-        User user = authService.authenticate(credentials);
-
-        traineeService.deleteByUsername(user.getUsername());
-    }
-
-    public Set<TrainingResponse> getTraineeTrainingsByCriteria(LocalDate from, LocalDate to, String trainerName, String trainingType, AuthCredentials credentials) {
-        User user = authService.authenticate(credentials);
-
-        Set<Training> trainings = traineeService.findTrainingsByCriteria(user.getUsername(), from, to, trainerName, trainingType);
-
-        return trainingMapper.mapList(trainings);
-    }
-
-    public Set<TrainingResponse> getTrainerTrainingsByCriteria(LocalDate from, LocalDate to, String traineeName, String trainingType, AuthCredentials credentials) {
-        User user = authService.authenticate(credentials);
-
-        Set<Training> trainings = trainerService.findTrainingsByCriteria(user.getUsername(), from, to, traineeName, trainingType);
-
-        return trainingMapper.mapList(trainings);
-    }
-
-    @Transactional
-    public void addTraining(TrainingRequest request, BindingResult bindingResult, AuthCredentials credentials) {
-        authService.authenticate(credentials);
-
-        bindingResultsService.handle(bindingResult, EntityPersistException::new, "Training creation error");
-
-        Training training = trainingMapper.map(request);
-
-        trainingService.save(training);
-    }
-
-    public List<TrainerProfileResponse> getTrainersNotAssignedByTraineeUsername(AuthCredentials credentials) {
-        User user = authService.authenticate(credentials);
-
-        List<Trainer> trainers = trainerService.getTrainersNotAssignedByTraineeUsername(user.getUsername());
-
-        return trainerProfileMapper.mapList(trainers);
-    }
-
-    @Transactional
-    public void addTrainerToTrainee(String trainerUsername, AuthCredentials credentials) {
-        User user = authService.authenticate(credentials);
-
-        Trainee trainee = traineeService.findByUsername(user.getUsername());
-        Trainer trainer = trainerService.findByUsername(trainerUsername);
-
-        trainee.getTrainers().add(trainer);
-        traineeService.update(trainee);
-    }
-
-    @Transactional
-    public void removeTraineesTrainer(String trainerUsername, AuthCredentials credentials) {
-        User user = authService.authenticate(credentials);
-
-        Trainee trainee = traineeService.findByUsername(user.getUsername());
-        Trainer trainer = trainerService.findByUsername(trainerUsername);
-
-        trainee.getTrainers().remove(trainer);
-        traineeService.update(trainee);
-    }
-
-    private User updateUserProfile(User updatedUser, User user) {
-        String firstName = updatedUser.getFirstName();
-        String lastName = updatedUser.getLastName();
-        String updatedUsername = userProfileService.generateUsername(firstName, lastName);
-
-        return user.toBuilder().firstName(firstName).lastName(lastName).username(updatedUsername).build();
+    private boolean hasValidCredentials(String username, String password, User sessionUser) {
+        return sessionUser.getUsername().equals(username)
+                && userProfileService.isPasswordCorrect(password, sessionUser.getPassword());
     }
 }

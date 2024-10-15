@@ -13,8 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINER_WITH_ID_NOT_FOUND;
+import static com.gym.crm.app.rest.exception.ErrorCode.TRAINER_WITH_USERNAME_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.ERROR_TRAINER_WITH_ID_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.ERROR_TRAINER_WITH_USERNAME_NOT_FOUND;
 
@@ -30,17 +31,17 @@ public class TrainerServiceImpl implements TrainerService {
         entityValidator.checkId(id);
 
         return repository.findById(id)
-                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINER_WITH_ID_NOT_FOUND, id)));
+                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINER_WITH_ID_NOT_FOUND, id), TRAINER_WITH_ID_NOT_FOUND.getCode()));
     }
 
     @Override
     public Trainer findByUsername(String username) {
         return repository.findByUsername(username)
-                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINER_WITH_USERNAME_NOT_FOUND, username)));
+                .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINER_WITH_USERNAME_NOT_FOUND, username), TRAINER_WITH_USERNAME_NOT_FOUND.getCode()));
     }
 
     @Override
-    public Set<Training> findTrainingsByCriteria(String username, LocalDate from, LocalDate to, String traineeName, String trainingType) {
+    public List<Training> findTrainingsByCriteria(String username, LocalDate from, LocalDate to, String traineeName, String trainingType) {
         return repository.findTrainingsByCriteria(username, from, to, traineeName, trainingType);
     }
 
@@ -57,10 +58,10 @@ public class TrainerServiceImpl implements TrainerService {
         repository.save(trainer);
     }
 
-    public void update(Trainer trainer) {
+    public Trainer update(Trainer trainer) {
         entityValidator.checkEntity(trainer);
         entityValidator.checkId(trainer.getId());
 
-        repository.update(trainer);
+        return repository.update(trainer);
     }
 }
