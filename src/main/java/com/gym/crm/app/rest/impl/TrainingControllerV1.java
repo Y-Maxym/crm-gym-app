@@ -1,6 +1,7 @@
-package com.gym.crm.app.rest;
+package com.gym.crm.app.rest.impl;
 
 import com.gym.crm.app.facade.ServiceFacade;
+import com.gym.crm.app.rest.TrainingController;
 import com.gym.crm.app.rest.model.AddTrainingRequest;
 import com.gym.crm.app.rest.model.GetTraineeTrainingsResponse;
 import com.gym.crm.app.rest.model.GetTrainerTrainingsResponse;
@@ -26,7 +27,7 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.base-path}/trainings")
 @RequiredArgsConstructor
-public class TrainingControllerV1 {
+public class TrainingControllerV1 implements TrainingController {
 
     private final ServiceFacade service;
     private final CreateTrainingValidator createTrainingValidator;

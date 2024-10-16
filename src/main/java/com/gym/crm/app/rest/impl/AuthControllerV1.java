@@ -1,7 +1,8 @@
-package com.gym.crm.app.rest;
+package com.gym.crm.app.rest.impl;
 
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.facade.ServiceFacade;
+import com.gym.crm.app.rest.AuthController;
 import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;
 import com.gym.crm.app.rest.model.ChangePasswordRequest;
 import com.gym.crm.app.rest.model.UserCredentials;
@@ -30,7 +31,7 @@ import static com.gym.crm.app.rest.SessionUtil.getSessionUser;
 @RestController
 @RequestMapping("${api.base-path}")
 @RequiredArgsConstructor
-public class AuthControllerV1 {
+public class AuthControllerV1 implements AuthController {
 
     private final ServiceFacade service;
     private final ChangePasswordValidator changePasswordValidator;

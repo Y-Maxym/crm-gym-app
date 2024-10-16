@@ -1,7 +1,8 @@
-package com.gym.crm.app.rest;
+package com.gym.crm.app.rest.impl;
 
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.facade.ServiceFacade;
+import com.gym.crm.app.rest.TrainerController;
 import com.gym.crm.app.rest.model.GetTrainerProfileResponse;
 import com.gym.crm.app.rest.model.TrainerCreateRequest;
 import com.gym.crm.app.rest.model.TrainerProfileWithUsername;
@@ -33,7 +34,7 @@ import static com.gym.crm.app.rest.SessionUtil.getSessionUser;
 @RestController
 @RequestMapping("${api.base-path}/trainers")
 @RequiredArgsConstructor
-public class TrainerControllerV1 {
+public class TrainerControllerV1 implements TrainerController {
 
     private final ServiceFacade service;
     private final CreateTrainerValidator createTrainerValidator;

@@ -1,6 +1,7 @@
-package com.gym.crm.app.rest;
+package com.gym.crm.app.rest.impl;
 
 import com.gym.crm.app.facade.ServiceFacade;
+import com.gym.crm.app.rest.TrainingTypeController;
 import com.gym.crm.app.rest.model.GetTrainingTypeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.base-path}/training-types")
 @RequiredArgsConstructor
-public class TrainingTypeControllerV1 {
+public class TrainingTypeControllerV1 implements TrainingTypeController {
 
     private final ServiceFacade service;
 

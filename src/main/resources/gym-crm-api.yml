@@ -132,12 +132,6 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationError"
-        401:
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
                 $ref: "#/components/schemas/ErrorResponse"
         403:
           description: Access forbidden
@@ -292,7 +286,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationError"
+                $ref: "#/components/schemas/ErrorResponse"
         401:
           description: Unauthorized access
           content:
@@ -428,7 +422,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationError"
+                $ref: "#/components/schemas/ErrorResponse"
         401:
           description: Unauthorized access
           content:
@@ -546,7 +540,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationError"
+                $ref: "#/components/schemas/ErrorResponse"
         401:
           description: Unauthorized access
           content:
@@ -601,7 +595,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationError"
+                $ref: "#/components/schemas/ErrorResponse"
         401:
           description: Unauthorized access
           content:
@@ -660,55 +654,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /trainees/{username}/activate:
+  /{username}/activate:
     patch:
       tags:
         - Trainees
-      summary: Activate/De-Activate trainee
-      description: Activate/De-Activate trainee
-      operationId: activate-deactivate-trainee
-      parameters:
-        - $ref: "#/components/parameters/UsernameParam"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ActivateDeactivateProfileRequest"
-      responses:
-        200:
-          description: Successful activation/deactivation of trainee
-        400:
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ValidationError"
-        401:
-          description: Unauthorized access
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        403:
-          description: Access forbidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        500:
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-  /trainers/{username}/activate:
-    patch:
-      tags:
         - Trainers
-      summary: Activate/De-Activate trainer
-      description: Activate/De-Activate trainer
-      operationId: activate-deactivate-trainer
+      summary: Activate/De-Activate profile
+      description: Activate/De-Activate profile
+      operationId: activate-deactivate-profile
       parameters:
         - $ref: "#/components/parameters/UsernameParam"
       requestBody:
@@ -719,13 +672,13 @@ paths:
               $ref: "#/components/schemas/ActivateDeactivateProfileRequest"
       responses:
         200:
-          description: Successful activation/deactivation of trainer
+          description: Successful activation/deactivation of user profile
         400:
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationError"
+                $ref: "#/components/schemas/ErrorResponse"
         401:
           description: Unauthorized access
           content:
@@ -768,7 +721,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationError"
+                $ref: "#/components/schemas/ErrorResponse"
         401:
           description: Unauthorized access
           content:

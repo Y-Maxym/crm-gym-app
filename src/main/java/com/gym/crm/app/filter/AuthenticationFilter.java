@@ -24,7 +24,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private static final String UNAUTHORIZED_MESSAGE = "Unauthorized";
     private static final List<String> EXCLUDED_URLS = List.of("/api/v1/login", "/api/v1/trainees/register", "/api/v1/trainers/register",
-            "/swagger-ui/index.html", "/swagger-ui.html", "/v1/api-docs");
+            "/swagger-ui", "/v1/api-docs");
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
