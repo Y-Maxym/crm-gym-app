@@ -13,13 +13,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mockStatic;
 
 @ExtendWith(MockitoExtension.class)
 class LogHandlerTest {
@@ -57,16 +60,20 @@ class LogHandlerTest {
         // given
         String methodName = "testMethod";
         String className = "TestClass";
+        String transactionId = "transactionId";
         Object[] args = {1, "test"};
         String infoMessage = "Info message";
         String debugMessage = "Debug message";
+
+        MockedStatic<MDC> mockedStatic = mockStatic(MDC.class);
+        mockedStatic.when(() -> MDC.get("transactionId")).thenReturn(transactionId);
 
         given(joinPoint.getSignature()).willReturn(signature);
         given(signature.getName()).willReturn(methodName);
         given(signature.getDeclaringTypeName()).willReturn(className);
         given(joinPoint.getArgs()).willReturn(args);
-        given(messageHelper.getMessage("INFO_CODE", methodName, className)).willReturn(infoMessage);
-        given(messageHelper.getMessage("DEBUG_CODE", className, methodName, Arrays.toString(args))).willReturn(debugMessage);
+        given(messageHelper.getMessage("INFO_CODE", methodName, className, transactionId)).willReturn(infoMessage);
+        given(messageHelper.getMessage("DEBUG_CODE", className, methodName, transactionId, Arrays.toString(args))).willReturn(debugMessage);
 
         // when
         logHandler.logBefore(joinPoint, "INFO_CODE", "DEBUG_CODE");
@@ -74,6 +81,8 @@ class LogHandlerTest {
         // then
         assertThat(listAppender.list).extracting("formattedMessage")
                 .containsExactly(infoMessage, debugMessage);
+
+        mockedStatic.close();
     }
 
     @Test
@@ -82,15 +91,19 @@ class LogHandlerTest {
         // given
         String methodName = "testMethod";
         String className = "TestClass";
+        String transactionId = "transactionId";
         Object result = "result";
         String infoMessage = "Info message";
         String debugMessage = "Debug message";
 
+        MockedStatic<MDC> mockedStatic = mockStatic(MDC.class);
+        mockedStatic.when(() -> MDC.get("transactionId")).thenReturn(transactionId);
+
         given(joinPoint.getSignature()).willReturn(signature);
         given(signature.getName()).willReturn(methodName);
         given(signature.getDeclaringTypeName()).willReturn(className);
-        given(messageHelper.getMessage("INFO_CODE", methodName, className)).willReturn(infoMessage);
-        given(messageHelper.getMessage("DEBUG_CODE", className, methodName, result)).willReturn(debugMessage);
+        given(messageHelper.getMessage("INFO_CODE", methodName, className, transactionId)).willReturn(infoMessage);
+        given(messageHelper.getMessage("DEBUG_CODE", className, methodName, transactionId, result)).willReturn(debugMessage);
 
         // when
         logHandler.logAfterReturning(joinPoint, result, "INFO_CODE", "DEBUG_CODE");
@@ -98,6 +111,8 @@ class LogHandlerTest {
         // then
         assertThat(listAppender.list).extracting("formattedMessage")
                 .containsExactly(infoMessage, debugMessage);
+
+        mockedStatic.close();
     }
 
     @Test
@@ -106,15 +121,19 @@ class LogHandlerTest {
         // given
         String methodName = "testMethod";
         String className = "TestClass";
+        String transactionId = "transactionId";
         Exception ex = new RuntimeException("Error occurred");
         String infoMessage = "Info message";
         String errorMessage = "Error message";
 
+        MockedStatic<MDC> mockedStatic = mockStatic(MDC.class);
+        mockedStatic.when(() -> MDC.get("transactionId")).thenReturn(transactionId);
+
         given(joinPoint.getSignature()).willReturn(signature);
         given(signature.getName()).willReturn(methodName);
         given(signature.getDeclaringTypeName()).willReturn(className);
-        given(messageHelper.getMessage("INFO_CODE", methodName, className)).willReturn(infoMessage);
-        given(messageHelper.getMessage("ERROR_CODE", className, methodName, ex.getMessage())).willReturn(errorMessage);
+        given(messageHelper.getMessage("INFO_CODE", methodName, className, transactionId)).willReturn(infoMessage);
+        given(messageHelper.getMessage("ERROR_CODE", className, methodName, transactionId, ex.getMessage())).willReturn(errorMessage);
 
         // when
         logHandler.logAfterThrowing(joinPoint, ex, "INFO_CODE", "ERROR_CODE");
@@ -122,5 +141,7 @@ class LogHandlerTest {
         // then
         assertThat(listAppender.list).extracting("formattedMessage")
                 .containsExactly(infoMessage, errorMessage);
+
+        mockedStatic.close();
     }
 }

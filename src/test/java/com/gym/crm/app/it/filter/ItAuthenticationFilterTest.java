@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 @Rollback
-class AuthenticationFilterTest extends AbstractItTest {
+class ItAuthenticationFilterTest extends AbstractItTest {
 
     @Autowired
     private MockMvc mvc;
