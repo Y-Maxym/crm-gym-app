@@ -2,7 +2,6 @@ package com.gym.crm.app.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gym.crm.app.logging.MessageHelper;
-import com.gym.crm.app.util.CustomContentCachingRequestWrapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,6 +52,7 @@ public class RestLoggingFilter extends OncePerRequestFilter {
         if (cachedBody.length > 0) {
             Object json = objectMapper.readValue(cachedBody, Object.class);
             requestBody = objectMapper.writeValueAsString(json);
+            requestBody = hideCredentials(requestBody);
         }
 
         log.info(messageHelper.getMessage(INFO_REST_LOGGING_FILTER_REQUEST,
@@ -69,11 +69,25 @@ public class RestLoggingFilter extends OncePerRequestFilter {
         if (cachedBody.length > 0) {
             Object json = objectMapper.readValue(cachedBody, Object.class);
             responseBody = objectMapper.writeValueAsString(json);
+            responseBody = hideCredentials(responseBody);
         }
 
         log.info(messageHelper.getMessage(INFO_REST_LOGGING_FILTER_RESPONSE,
                 response.getStatus(),
                 responseBody,
                 transactionId));
+    }
+
+    private boolean hasCredentials(String body) {
+        return body.contains("username") || body.contains("password");
+    }
+
+    private String hideCredentials(String body) {
+        if (hasCredentials(body)) {
+            return body.replaceAll("\"username\":\"[^\"]*\"", "\"username\":\"****\"")
+                    .replaceAll("\"password\":\"[^\"]*\"", "\"password\":\"****\"");
+        }
+
+        return body;
     }
 }

@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.UUID;
 
 import static com.gym.crm.app.util.Constants.INFO_TRANSACTION_FILTER_END;
-import static com.gym.crm.app.util.Constants.INFO_TRANSACTION_FILTER_ERROR;
 import static com.gym.crm.app.util.Constants.INFO_TRANSACTION_FILTER_START;
 
 @Component
@@ -39,9 +38,6 @@ public class TransactionLoggingFilter extends OncePerRequestFilter {
             log.info(messageHelper.getMessage(INFO_TRANSACTION_FILTER_START, transactionId));
             filterChain.doFilter(request, response);
             log.info(messageHelper.getMessage(INFO_TRANSACTION_FILTER_END, transactionId));
-        } catch (Exception e) {
-            log.info(messageHelper.getMessage(INFO_TRANSACTION_FILTER_ERROR, transactionId));
-            throw e;
         } finally {
             MDC.clear();
         }

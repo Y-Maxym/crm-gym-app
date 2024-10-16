@@ -1,4 +1,4 @@
-package com.gym.crm.app.util;
+package com.gym.crm.app.filter;
 
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;
