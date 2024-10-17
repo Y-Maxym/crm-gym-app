@@ -1,10 +1,9 @@
 package com.gym.crm.app.service.impl;
 
 import com.gym.crm.app.entity.Trainee;
-import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
-import com.gym.crm.app.repository.impl.TraineeRepositoryImpl;
+import com.gym.crm.app.repository.TraineeRepository;
 import com.gym.crm.app.service.common.EntityValidator;
 import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +18,6 @@ import java.util.Optional;
 
 import static com.gym.crm.app.util.Constants.ERROR_TRAINEE_WITH_ID_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.ERROR_TRAINEE_WITH_USERNAME_NOT_FOUND;
-import static com.gym.crm.app.util.Constants.ERROR_USER_WITH_USERNAME_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.WARN_TRAINEE_WITH_ID_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.WARN_TRAINEE_WITH_USERNAME_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,7 +38,7 @@ class TraineeServiceImplTest {
     private EntityValidator entityValidator;
 
     @Mock
-    private TraineeRepositoryImpl repository;
+    private TraineeRepository repository;
 
     @InjectMocks
     private TraineeServiceImpl service;
@@ -91,7 +89,7 @@ class TraineeServiceImplTest {
         Trainee expected = EntityTestData.getPersistedTraineeJohnDoe();
         String username = expected.getUser().getUsername();
 
-        given(repository.findByUsername(username))
+        given(repository.findByUserUsername(username))
                 .willReturn(Optional.of(expected));
 
         // when
@@ -109,7 +107,7 @@ class TraineeServiceImplTest {
         String username = "username";
         String message = "Trainee with username %s not found".formatted(username);
 
-        given(repository.findByUsername(username))
+        given(repository.findByUserUsername(username))
                 .willReturn(Optional.empty());
         given(messageHelper.getMessage(ERROR_TRAINEE_WITH_USERNAME_NOT_FOUND, username))
                 .willReturn(message);
@@ -166,7 +164,7 @@ class TraineeServiceImplTest {
         service.update(trainee);
 
         // then
-        verify(repository, only()).update(trainee);
+        verify(repository, only()).save(trainee);
     }
 
     @Test
@@ -213,8 +211,8 @@ class TraineeServiceImplTest {
         String username = "username";
 
         doNothing().when(entityValidator).checkEntity(username);
-        doNothing().when(repository).deleteByUsername(username);
-        given(repository.findByUsername(username))
+        doNothing().when(repository).deleteByUserUsername(username);
+        given(repository.findByUserUsername(username))
                 .willReturn(Optional.of(EntityTestData.getPersistedTraineeJohnDoe()));
 
         // when
@@ -222,7 +220,7 @@ class TraineeServiceImplTest {
 
         // then
         verify(messageHelper, never()).getMessage(WARN_TRAINEE_WITH_USERNAME_NOT_FOUND, username);
-        verify(repository).deleteByUsername(username);
+        verify(repository).deleteByUserUsername(username);
     }
 
     @Test
@@ -232,7 +230,7 @@ class TraineeServiceImplTest {
         String username = "username";
 
         doNothing().when(entityValidator).checkEntity(username);
-        given(repository.findByUsername(username))
+        given(repository.findByUserUsername(username))
                 .willReturn(Optional.empty());
 
         // when
@@ -240,6 +238,6 @@ class TraineeServiceImplTest {
 
         // then
         verify(messageHelper).getMessage(WARN_TRAINEE_WITH_USERNAME_NOT_FOUND, username);
-        verify(repository).deleteByUsername(username);
+        verify(repository).deleteByUserUsername(username);
     }
 }

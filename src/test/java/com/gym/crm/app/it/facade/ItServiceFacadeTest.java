@@ -58,7 +58,6 @@ class ItServiceFacadeTest extends AbstractItTest {
     @Autowired
     private UserProfileService userProfileService;
 
-
     @Autowired
     private ServiceFacade serviceFacade;
 

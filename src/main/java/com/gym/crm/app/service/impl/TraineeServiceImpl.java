@@ -40,7 +40,7 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public Trainee findByUsername(String username) {
-        return repository.findByUsername(username)
+        return repository.findByUserUsername(username)
                 .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINEE_WITH_USERNAME_NOT_FOUND, username), TRAINEE_WITH_USERNAME_NOT_FOUND.getCode()));
     }
 
@@ -59,7 +59,7 @@ public class TraineeServiceImpl implements TraineeService {
         entityValidator.checkEntity(trainee);
         entityValidator.checkId(trainee.getId());
 
-        return repository.update(trainee);
+        return repository.save(trainee);
     }
 
     public void deleteById(Long id) {
@@ -76,10 +76,10 @@ public class TraineeServiceImpl implements TraineeService {
     public void deleteByUsername(String username) {
         entityValidator.checkEntity(username);
 
-        if (repository.findByUsername(username).isEmpty()) {
+        if (repository.findByUserUsername(username).isEmpty()) {
             log.warn(messageHelper.getMessage(WARN_TRAINEE_WITH_USERNAME_NOT_FOUND, username));
         }
 
-        repository.deleteByUsername(username);
+        repository.deleteByUserUsername(username);
     }
 }

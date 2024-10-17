@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
         entityValidator.checkEntity(user);
         entityValidator.checkId(user.getId());
 
-        repository.update(user);
+        repository.save(user);
     }
 
     @Override

@@ -2,20 +2,17 @@ package com.gym.crm.app.repository;
 
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.utils.EntityTestData;
-import org.hibernate.PersistentObjectException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Testcontainers
-class UserRepositoryImplTest extends AbstractTestRepository<UserRepository> {
+class UserRepositoryTest extends AbstractTestRepository<UserRepository> {
 
     @Test
     @DisplayName("Test find user by id functionality")
@@ -80,19 +77,6 @@ class UserRepositoryImplTest extends AbstractTestRepository<UserRepository> {
     }
 
     @Test
-    @DisplayName("Test save user with id functionality")
-    public void givenUserWithId_whenSaveUser_thenExceptionIsThrown() {
-        // given
-        User user = EntityTestData.getPersistedUserJohnDoe();
-
-        // when
-        InvalidDataAccessApiUsageException ex = assertThrows(InvalidDataAccessApiUsageException.class, () -> repository.save(user));
-
-        // then
-        assertThat(ex).hasCauseInstanceOf(PersistentObjectException.class);
-    }
-
-    @Test
     @DisplayName("Test update user functionality")
     public void givenUser_whenUpdateUser_thenUserIsUpdated() {
         // given
@@ -103,7 +87,7 @@ class UserRepositoryImplTest extends AbstractTestRepository<UserRepository> {
         userToUpdate = userToUpdate.toBuilder().isActive(false).build();
 
         // when
-        User actual = repository.update(userToUpdate);
+        User actual = repository.save(userToUpdate);
 
         // then
         assertThat(actual).isNotNull();
@@ -116,12 +100,12 @@ class UserRepositoryImplTest extends AbstractTestRepository<UserRepository> {
         // given
         User user = EntityTestData.getTransientUserJohnDoe();
         entityManager.persist(user);
+        entityManager.clear();
 
         // when
         repository.deleteById(user.getId());
 
         // then
-        entityManager.clear();
         User actual = entityManager.find(User.class, user.getId());
 
         assertThat(actual).isNull();

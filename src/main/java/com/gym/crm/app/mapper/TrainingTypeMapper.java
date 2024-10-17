@@ -29,7 +29,7 @@ public abstract class TrainingTypeMapper {
     }
 
     public TrainingType mapToTrainingType(String trainingType) {
-        return repository.findByName(trainingType)
+        return repository.findByTrainingTypeName(trainingType)
                 .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINING_TYPE_WITH_NAME_NOT_FOUND, trainingType), TRAINING_TYPE_NAME_NOT_FOUND.getCode()));
     }
 }

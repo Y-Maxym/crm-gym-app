@@ -1,7 +1,7 @@
 package com.gym.crm.app.service.common;
 
 import com.gym.crm.app.entity.User;
-import com.gym.crm.app.repository.impl.UserRepositoryImpl;
+import com.gym.crm.app.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.verify;
 class UserProfileServiceTest {
 
     @Mock
-    private UserRepositoryImpl repository;
+    private UserRepository repository;
 
     @Mock
     private PasswordGenerator passwordGenerator;

@@ -4,10 +4,8 @@ import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.utils.EntityTestData;
-import org.hibernate.PersistentObjectException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
@@ -15,10 +13,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Testcontainers
-class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository> {
+class TrainerRepositoryTest extends AbstractTestRepository<TrainerRepository> {
 
     @Test
     @DisplayName("Test find trainer by id functionality")
@@ -87,26 +84,28 @@ class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository
     @DisplayName("Test find trainings by null criteria functionality")
     public void givenNullCriteria_whenFindTrainings_thenReturnTrainings() {
         // given
-        addTrainingList();
+        List<Training> trainingList = addTrainingList();
+        String username = trainingList.get(0).getTrainer().getUser().getUsername();
 
         // when
-        List<Training> trainings = repository.findTrainingsByCriteria(null, null, null, null, null);
+        List<Training> trainings = repository.findTrainingsByCriteria(username, null, null, null, null);
 
         // then
-        assertThat(trainings.size()).isEqualTo(2);
+        assertThat(trainings.size()).isEqualTo(1);
     }
 
     @Test
     @DisplayName("Test find trainings by blank criteria functionality")
     public void givenBlankCriteria_whenFindTrainings_thenReturnTrainings() {
         // given
-        addTrainingList();
+        List<Training> trainingList = addTrainingList();
+        String username = trainingList.get(0).getTrainer().getUser().getUsername();
 
         // when
-        List<Training> trainings = repository.findTrainingsByCriteria("", null, null, "", "");
+        List<Training> trainings = repository.findTrainingsByCriteria(username, null, null, "", "");
 
         // then
-        assertThat(trainings.size()).isEqualTo(2);
+        assertThat(trainings.size()).isEqualTo(0);
     }
 
     @Test
@@ -124,19 +123,6 @@ class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository
     }
 
     @Test
-    @DisplayName("Test save trainer with id functionality")
-    public void givenTrainerWithId_whenSaveTrainer_thenExceptionIsThrown() {
-        // given
-        Trainer trainer = EntityTestData.getPersistedTrainerEmilyDavis();
-
-        // when
-        InvalidDataAccessApiUsageException ex = assertThrows(InvalidDataAccessApiUsageException.class, () -> repository.save(trainer));
-
-        // then
-        assertThat(ex).hasCauseInstanceOf(PersistentObjectException.class);
-    }
-
-    @Test
     @DisplayName("Test update trainer functionality")
     public void givenTrainer_whenUpdateTrainer_thenTrainerIsUpdated() {
         // given
@@ -144,7 +130,7 @@ class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository
         entityManager.persist(trainer);
 
         // when
-        Trainer actual = repository.update(trainer);
+        Trainer actual = repository.save(trainer);
 
         // then
         assertThat(actual).isNotNull();
@@ -156,12 +142,12 @@ class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository
         // given
         Trainer trainer = EntityTestData.getTransientTrainerEmilyDavis();
         entityManager.persist(trainer);
+        entityManager.clear();
 
         // when
         repository.deleteById(trainer.getId());
 
         // then
-        entityManager.clear();
         Trainer actual = entityManager.find(Trainer.class, trainer.getId());
 
         assertThat(actual).isNull();
@@ -169,13 +155,13 @@ class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository
 
     @Test
     @DisplayName("Test find trainer by username functionality")
-    public void givenUsername_whenFindByUsername_thenTrainerIsFound() {
+    public void givenUsername_whenFindByUserUsername_thenTrainerIsFound() {
         // given
         Trainer expected = EntityTestData.getTransientTrainerEmilyDavis();
         entityManager.persist(expected);
 
         // when
-        Optional<Trainer> actual = repository.findByUsername(expected.getUser().getUsername());
+        Optional<Trainer> actual = repository.findByUserUsername(expected.getUser().getUsername());
 
         // then
         assertThat(actual.isPresent()).isTrue();
@@ -184,13 +170,13 @@ class TrainerRepositoryImplTest extends AbstractTestRepository<TrainerRepository
 
     @Test
     @DisplayName("Test find trainer by incorrect username functionality")
-    public void givenIncorrectUsername_whenFindByUsername_thenTrainerIsNotFound() {
+    public void givenIncorrectUsername_whenFindByUserUsername_thenTrainerIsNotFound() {
         // given
         Trainer expected = EntityTestData.getTransientTrainerEmilyDavis();
         entityManager.persist(expected);
 
         // when
-        Optional<Trainer> actual = repository.findByUsername("username");
+        Optional<Trainer> actual = repository.findByUserUsername("username");
 
         // then
         assertThat(actual.isEmpty()).isTrue();

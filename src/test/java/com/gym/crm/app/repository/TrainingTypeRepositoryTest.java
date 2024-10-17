@@ -8,13 +8,13 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class TrainingTypeRepositoryImplTest extends AbstractTestRepository<TrainingTypeRepository> {
+class TrainingTypeRepositoryTest extends AbstractTestRepository<TrainingTypeRepository> {
 
     @Test
     @DisplayName("Test find training type by name functionality")
-    public void givenName_whenFindByName_thenTypeIsFound() {
+    public void givenName_whenFindByTrainingTypeName_thenTypeIsFound() {
         // when
-        Optional<TrainingType> actual = repository.findByName("Fitness");
+        Optional<TrainingType> actual = repository.findByTrainingTypeName("Fitness");
 
         // then
         assertThat(actual.isPresent()).isTrue();
@@ -24,7 +24,7 @@ class TrainingTypeRepositoryImplTest extends AbstractTestRepository<TrainingType
     @DisplayName("Test find training type by incorrect name functionality")
     public void givenIncorrectName_whenFindByUsername_thenTypeIsNotFound() {
         // when
-        Optional<TrainingType> actual = repository.findByName("training type");
+        Optional<TrainingType> actual = repository.findByTrainingTypeName("training type");
 
         // then
         assertThat(actual.isEmpty()).isTrue();

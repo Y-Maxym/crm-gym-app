@@ -3,10 +3,8 @@ package com.gym.crm.app.repository;
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.utils.EntityTestData;
-import org.hibernate.PersistentObjectException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
@@ -14,10 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Testcontainers
-class TraineeRepositoryImplTest extends AbstractTestRepository<TraineeRepository> {
+class TraineeRepositoryTest extends AbstractTestRepository<TraineeRepository> {
 
     @Test
     @DisplayName("Test find trainee by id functionality")
@@ -86,26 +83,29 @@ class TraineeRepositoryImplTest extends AbstractTestRepository<TraineeRepository
     @DisplayName("Test find trainings by null criteria functionality")
     public void givenNullCriteria_whenFindTrainings_thenReturnTrainings() {
         // given
-        addTrainingList();
+        List<Training> trainingList = addTrainingList();
+
+        String username = trainingList.get(0).getTrainee().getUser().getUsername();
 
         // when
-        List<Training> trainings = repository.findTrainingsByCriteria(null, null, null, null, null);
+        List<Training> trainings = repository.findTrainingsByCriteria(username, null, null, null, null);
 
         // then
-        assertThat(trainings.size()).isEqualTo(2);
+        assertThat(trainings.size()).isEqualTo(1);
     }
 
     @Test
     @DisplayName("Test find trainings by blank criteria functionality")
     public void givenBlankCriteria_whenFindTrainings_thenReturnTrainings() {
         // given
-        addTrainingList();
+        List<Training> trainingList = addTrainingList();
+        String username = trainingList.get(0).getTrainee().getUser().getUsername();
 
         // when
-        List<Training> trainings = repository.findTrainingsByCriteria("", null, null, "", "");
+        List<Training> trainings = repository.findTrainingsByCriteria(username, null, null, "", "");
 
         // then
-        assertThat(trainings.size()).isEqualTo(2);
+        assertThat(trainings.size()).isEqualTo(0);
     }
 
     @Test
@@ -123,19 +123,6 @@ class TraineeRepositoryImplTest extends AbstractTestRepository<TraineeRepository
     }
 
     @Test
-    @DisplayName("Test save trainee with id functionality")
-    public void givenTraineeWithId_whenSaveTrainee_thenExceptionIsThrown() {
-        // given
-        Trainee trainee = EntityTestData.getPersistedTraineeJohnDoe();
-
-        // when
-        InvalidDataAccessApiUsageException ex = assertThrows(InvalidDataAccessApiUsageException.class, () -> repository.save(trainee));
-
-        // then
-        assertThat(ex).hasCauseInstanceOf(PersistentObjectException.class);
-    }
-
-    @Test
     @DisplayName("Test update trainee functionality")
     public void givenTrainee_whenUpdateTrainee_thenTraineeIsUpdated() {
         // given
@@ -148,7 +135,7 @@ class TraineeRepositoryImplTest extends AbstractTestRepository<TraineeRepository
         traineeToUpdate = traineeToUpdate.toBuilder().address(updatedAddress).build();
 
         // when
-        Trainee actual = repository.update(traineeToUpdate);
+        Trainee actual = repository.save(traineeToUpdate);
 
         // then
         assertThat(actual).isNotNull();
@@ -161,12 +148,12 @@ class TraineeRepositoryImplTest extends AbstractTestRepository<TraineeRepository
         // given
         Trainee trainee = EntityTestData.getTransientTraineeJohnDoe();
         entityManager.persist(trainee);
+        entityManager.clear();
 
         // when
         repository.deleteById(trainee.getId());
 
         // then
-        entityManager.clear();
         Trainee actual = entityManager.find(Trainee.class, trainee.getId());
 
         assertThat(actual).isNull();
@@ -174,13 +161,13 @@ class TraineeRepositoryImplTest extends AbstractTestRepository<TraineeRepository
 
     @Test
     @DisplayName("Test find trainee by username functionality")
-    public void givenUsername_whenFindByUsername_thenTraineeIsFound() {
+    public void givenUsername_whenFindByUserUsername_thenTraineeIsFound() {
         // given
         Trainee expected = EntityTestData.getTransientTraineeJohnDoe();
         entityManager.persist(expected);
 
         // when
-        Optional<Trainee> actual = repository.findByUsername(expected.getUser().getUsername());
+        Optional<Trainee> actual = repository.findByUserUsername(expected.getUser().getUsername());
 
         // then
         assertThat(actual.isPresent()).isTrue();
@@ -189,13 +176,13 @@ class TraineeRepositoryImplTest extends AbstractTestRepository<TraineeRepository
 
     @Test
     @DisplayName("Test find trainee by incorrect username functionality")
-    public void givenIncorrectUsername_whenFindByUsername_thenTraineeIsNotFound() {
+    public void givenIncorrectUsername_whenFindByUserUsername_thenTraineeIsNotFound() {
         // given
         Trainee expected = EntityTestData.getTransientTraineeJohnDoe();
         entityManager.persist(expected);
 
         // when
-        Optional<Trainee> actual = repository.findByUsername("username");
+        Optional<Trainee> actual = repository.findByUserUsername("username");
 
         // then
         assertThat(actual.isEmpty()).isTrue();
@@ -203,17 +190,17 @@ class TraineeRepositoryImplTest extends AbstractTestRepository<TraineeRepository
 
     @Test
     @DisplayName("Test delete trainee by username functionality")
-    public void givenUsername_whenDeleteByUsername_thenTraineeIsDeleted() {
+    public void givenUsername_whenDeleteByUserUsername_thenTraineeIsDeleted() {
         // given
         Trainee trainee = EntityTestData.getTransientTraineeJohnDoe();
         entityManager.persist(trainee);
+        entityManager.clear();
         String username = trainee.getUser().getUsername();
 
         // when
-        repository.deleteByUsername(username);
+        repository.deleteByUserUsername(username);
 
         // then
-        entityManager.clear();
         Trainee actual = entityManager.find(Trainee.class, trainee.getId());
 
         assertThat(actual).isNull();

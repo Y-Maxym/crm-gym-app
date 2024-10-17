@@ -36,7 +36,7 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public Trainer findByUsername(String username) {
-        return repository.findByUsername(username)
+        return repository.findByUserUsername(username)
                 .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINER_WITH_USERNAME_NOT_FOUND, username), TRAINER_WITH_USERNAME_NOT_FOUND.getCode()));
     }
 
@@ -62,6 +62,6 @@ public class TrainerServiceImpl implements TrainerService {
         entityValidator.checkEntity(trainer);
         entityValidator.checkId(trainer.getId());
 
-        return repository.update(trainer);
+        return repository.save(trainer);
     }
 }
