@@ -16,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
+import java.util.List;
 
 import static com.gym.crm.app.util.Constants.INFO_REST_LOGGING_FILTER_REQUEST;
 import static com.gym.crm.app.util.Constants.INFO_REST_LOGGING_FILTER_RESPONSE;
@@ -26,6 +27,8 @@ import static com.gym.crm.app.util.Constants.INFO_REST_LOGGING_FILTER_RESPONSE;
 @RequiredArgsConstructor
 public class RestLoggingFilter extends OncePerRequestFilter {
 
+    private static final List<String> EXCLUDED_URLS = List.of("/swagger-ui", "/v1/api-docs");
+
     private final ObjectMapper objectMapper;
     private final MessageHelper messageHelper;
 
@@ -33,6 +36,11 @@ public class RestLoggingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
+        if (hasExcludedUrl(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String transactionId = MDC.get("transactionId");
         CustomContentCachingRequestWrapper requestWrapper = new CustomContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
@@ -76,6 +84,13 @@ public class RestLoggingFilter extends OncePerRequestFilter {
                 response.getStatus(),
                 responseBody,
                 transactionId));
+    }
+
+    private boolean hasExcludedUrl(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+
+        return EXCLUDED_URLS.stream()
+                .anyMatch(uri::startsWith);
     }
 
     private boolean hasCredentials(String body) {

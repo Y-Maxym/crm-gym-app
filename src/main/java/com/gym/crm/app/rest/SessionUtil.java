@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpSession;
 
 public class SessionUtil {
 
-    protected static User getSessionUser(HttpServletRequest httpRequest) {
+    public static User getSessionUser(HttpServletRequest httpRequest) {
         HttpSession session = httpRequest.getSession();
         return (User) session.getAttribute("user");
     }
