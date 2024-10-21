@@ -8,7 +8,10 @@ import com.gym.crm.app.service.TrainingService;
 import com.gym.crm.app.service.common.EntityValidator;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.gym.crm.app.rest.exception.ErrorCode.TRAINING_WITH_ID_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.ERROR_TRAINING_WITH_ID_NOT_FOUND;
@@ -26,6 +29,11 @@ public class TrainingServiceImpl implements TrainingService {
 
         return repository.findById(id)
                 .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINING_WITH_ID_NOT_FOUND, id), TRAINING_WITH_ID_NOT_FOUND.getCode()));
+    }
+
+    @Override
+    public List<Training> findByCriteria(Specification<Training> specification) {
+        return repository.findAll(specification);
     }
 
     public void save(Training training) {

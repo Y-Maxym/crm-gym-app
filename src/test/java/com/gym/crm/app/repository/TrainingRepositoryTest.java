@@ -1,11 +1,15 @@
 package com.gym.crm.app.repository;
 
 import com.gym.crm.app.entity.Training;
+import com.gym.crm.app.spectification.TraineeTrainingSpecification;
+import com.gym.crm.app.spectification.TrainerTrainingSpecification;
 import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.jpa.domain.Specification;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,5 +107,138 @@ class TrainingRepositoryTest extends AbstractTestRepository<TrainingRepository> 
         Training actual = entityManager.find(Training.class, training.getId());
 
         assertThat(actual).isNull();
+    }
+
+
+    @Test
+    @DisplayName("Test find trainee trainings by criteria functionality")
+    public void givenValidTraineeCriteria_whenFindTrainings_thenReturnTrainings() {
+        // given
+        List<Training> trainings = addTraineeTrainingList();
+        Training training = trainings.get(1);
+
+
+        String username = training.getTrainee().getUser().getUsername();
+        LocalDate from = training.getTrainingDate();
+        LocalDate to = training.getTrainingDate();
+        String trainerName = training.getTrainer().getUser().getFirstName();
+        String trainingType = training.getTrainingType().getTrainingTypeName();
+
+        Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(username, from, to, trainerName, trainingType);
+
+        // when
+        List<Training> actual = repository.findAll(specification);
+
+        // then
+        assertThat(actual.size()).isEqualTo(1);
+        assertThat(actual).contains(training);
+    }
+
+    @Test
+    @DisplayName("Test find trainee trainings by null criteria functionality")
+    public void givenNullTraineeCriteria_whenFindTrainings_thenReturnTrainings() {
+        // given
+        List<Training> trainingList = addTraineeTrainingList();
+
+        String username = trainingList.get(0).getTrainee().getUser().getUsername();
+        Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(username, null, null, null, null);
+
+        // when
+        List<Training> trainings = repository.findAll(specification);
+
+        // then
+        assertThat(trainings.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("Test find trainee trainings by blank criteria functionality")
+    public void givenBlankTraineeCriteria_whenFindTrainings_thenReturnTrainings() {
+        // given
+        List<Training> trainingList = addTraineeTrainingList();
+
+        String username = trainingList.get(0).getTrainee().getUser().getUsername();
+        Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(username, null, null, "", "");
+
+        // when
+        List<Training> trainings = repository.findAll(specification);
+
+        // then
+        assertThat(trainings.size()).isEqualTo(1);
+    }
+
+
+    @Test
+    @DisplayName("Test find trainer trainings by criteria functionality")
+    public void givenValidTrainerCriteria_whenFindTrainings_thenReturnTrainings() {
+        // given
+        List<Training> trainings = addTrainerTrainingList();
+        Training training = trainings.get(1);
+
+        String username = training.getTrainer().getUser().getUsername();
+        LocalDate from = training.getTrainingDate();
+        LocalDate to = training.getTrainingDate();
+        String traineeName = training.getTrainee().getUser().getFirstName();
+        String trainingType = training.getTrainingType().getTrainingTypeName();
+
+        Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(username, from, to, traineeName, trainingType);
+
+        // when
+        List<Training> actual = repository.findAll(specification);
+
+        // then
+        assertThat(actual.size()).isEqualTo(1);
+        assertThat(actual).contains(training);
+    }
+
+    @Test
+    @DisplayName("Test find trainings by null criteria functionality")
+    public void givenNullTrainerCriteria_whenFindTrainings_thenReturnTrainings() {
+        // given
+        List<Training> trainingList = addTrainerTrainingList();
+        String username = trainingList.get(0).getTrainer().getUser().getUsername();
+
+        Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(username, null, null, null, null);
+
+        // when
+        List<Training> trainings = repository.findAll(specification);
+
+        // then
+        assertThat(trainings.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("Test find trainings by blank criteria functionality")
+    public void givenBlankTrainerCriteria_whenFindTrainings_thenReturnTrainings() {
+        // given
+        List<Training> trainingList = addTrainerTrainingList();
+        String username = trainingList.get(0).getTrainer().getUser().getUsername();
+
+        Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(username, null, null, "", "");
+
+        // when
+        List<Training> trainings = repository.findAll(specification);
+
+        // then
+        assertThat(trainings.size()).isEqualTo(1);
+    }
+
+    private List<Training> addTraineeTrainingList() {
+        Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
+        Training training2 = EntityTestData.getTransientTrainingDavidBrown();
+
+        entityManager.persist(training1);
+        entityManager.persist(training2);
+
+        return List.of(training1, training2);
+    }
+
+    private List<Training> addTrainerTrainingList() {
+        Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
+        Training training2 = EntityTestData.getTransientTrainingDavidBrown();
+
+        entityManager.persist(training1);
+        entityManager.persist(training2);
+
+        return List.of(training1, training2);
     }
 }

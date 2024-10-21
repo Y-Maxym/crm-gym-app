@@ -482,7 +482,7 @@ class ItServiceFacadeTest extends AbstractItTest {
         String traineeName = "John";
 
         // when
-        List<GetTrainerTrainingsResponse> actual = serviceFacade.getTrainerTrainingsByCriteria(username, from, to, traineeName, null);
+        List<GetTrainerTrainingsResponse> actual = serviceFacade.getTrainerTrainingsByCriteria(username, from, to, traineeName);
 
         // then
         assertThat(actual).hasSize(1);

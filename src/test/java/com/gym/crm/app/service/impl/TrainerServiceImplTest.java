@@ -118,23 +118,6 @@ class TrainerServiceImplTest {
     }
 
     @Test
-    @DisplayName("Test find trainings by criteria functionality")
-    public void givenCriteria_whenFindByCriteria_thenRepositoryIsCalled() {
-        // given
-        String username = "username";
-        LocalDate from = LocalDate.parse("2020-01-01");
-        LocalDate to = LocalDate.parse("2020-01-01");
-        String trainee = "trainee";
-        String trainingType = "trainingType";
-
-        // when
-        service.findTrainingsByCriteria(username, from, to, trainee, trainingType);
-
-        // then
-        verify(repository).findTrainingsByCriteria(username, from, to, trainee, trainingType);
-    }
-
-    @Test
     @DisplayName("Test save trainer functionality")
     public void givenSaveTrainer_whenSave_thenRepositoryIsCalled() {
         // given

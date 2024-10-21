@@ -51,8 +51,7 @@ public interface TrainingController {
     ResponseEntity<List<GetTrainerTrainingsResponse>> getTrainerTrainings(String username,
                                                                           LocalDate periodFrom,
                                                                           LocalDate periodTo,
-                                                                          String trainerName,
-                                                                          String trainingType);
+                                                                          String trainerName);
 
     @Operation(summary = "Add training", description = "Create a new training session")
     @RequestBody(description = "Request to create a new training", required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = AddTrainingRequest.class)))

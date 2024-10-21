@@ -43,7 +43,10 @@ import com.gym.crm.app.service.UserService;
 import com.gym.crm.app.service.common.AuthService;
 import com.gym.crm.app.service.common.BindingResultsService;
 import com.gym.crm.app.service.common.UserProfileService;
+import com.gym.crm.app.spectification.TraineeTrainingSpecification;
+import com.gym.crm.app.spectification.TrainerTrainingSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -193,17 +196,20 @@ public class ServiceFacade {
     public List<GetTraineeTrainingsResponse> getTraineeTrainingsByCriteria(String username, LocalDate from, LocalDate to, String trainerName, String trainingType) {
         traineeService.findByUsername(username);
 
-        List<Training> trainings = traineeService.findTrainingsByCriteria(username, from, to, trainerName, trainingType);
+        Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(username, from, to, trainerName, trainingType);
+        List<Training> trainings = trainingService.findByCriteria(specification);
 
         return trainings.stream()
                 .map(getTraineeTrainingsMapper::mapToGetTraineeTrainingsResponse)
                 .toList();
     }
 
-    public List<GetTrainerTrainingsResponse> getTrainerTrainingsByCriteria(String username, LocalDate from, LocalDate to, String traineeName, String trainingType) {
-        trainerService.findByUsername(username);
+    public List<GetTrainerTrainingsResponse> getTrainerTrainingsByCriteria(String username, LocalDate from, LocalDate to, String traineeName) {
+        Trainer trainer = trainerService.findByUsername(username);
+        String trainingType = trainer.getSpecialization().getTrainingTypeName();
 
-        List<Training> trainings = trainerService.findTrainingsByCriteria(username, from, to, traineeName, trainingType);
+        Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(username, from, to, traineeName, trainingType);
+        List<Training> trainings = trainingService.findByCriteria(specification);
 
         return trainings.stream()
                 .map(getTrainerTrainingsMapper::mapToGetTrainerTrainingsResponse)

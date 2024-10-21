@@ -1,13 +1,11 @@
 package com.gym.crm.app.repository;
 
 import com.gym.crm.app.entity.Trainee;
-import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,56 +54,6 @@ class TraineeRepositoryTest extends AbstractTestRepository<TraineeRepository> {
         // then
         assertThat(actual.size()).isEqualTo(3);
         assertThat(actual).containsAll(trainees);
-    }
-
-    @Test
-    @DisplayName("Test find trainings by criteria functionality")
-    public void givenValidCriteria_whenFindTrainings_thenReturnTrainings() {
-        // given
-        List<Training> trainings = addTrainingList();
-        Training training = trainings.get(1);
-
-        String username = training.getTrainee().getUser().getUsername();
-        LocalDate from = training.getTrainingDate();
-        LocalDate to = training.getTrainingDate();
-        String trainerName = training.getTrainer().getUser().getFirstName();
-        String trainingType = training.getTrainingType().getTrainingTypeName();
-
-        // when
-        List<Training> actual = repository.findTrainingsByCriteria(username, from, to, trainerName, trainingType);
-
-        // then
-        assertThat(actual.size()).isEqualTo(1);
-        assertThat(actual).contains(training);
-    }
-
-    @Test
-    @DisplayName("Test find trainings by null criteria functionality")
-    public void givenNullCriteria_whenFindTrainings_thenReturnTrainings() {
-        // given
-        List<Training> trainingList = addTrainingList();
-
-        String username = trainingList.get(0).getTrainee().getUser().getUsername();
-
-        // when
-        List<Training> trainings = repository.findTrainingsByCriteria(username, null, null, null, null);
-
-        // then
-        assertThat(trainings.size()).isEqualTo(1);
-    }
-
-    @Test
-    @DisplayName("Test find trainings by blank criteria functionality")
-    public void givenBlankCriteria_whenFindTrainings_thenReturnTrainings() {
-        // given
-        List<Training> trainingList = addTrainingList();
-        String username = trainingList.get(0).getTrainee().getUser().getUsername();
-
-        // when
-        List<Training> trainings = repository.findTrainingsByCriteria(username, null, null, "", "");
-
-        // then
-        assertThat(trainings.size()).isEqualTo(0);
     }
 
     @Test
@@ -216,15 +164,5 @@ class TraineeRepositoryTest extends AbstractTestRepository<TraineeRepository> {
         entityManager.persist(trainee3);
 
         return List.of(trainee1, trainee2, trainee3);
-    }
-
-    private List<Training> addTrainingList() {
-        Training training1 = EntityTestData.getTransientTrainingEmilyDavis();
-        Training training2 = EntityTestData.getTransientTrainingDavidBrown();
-
-        entityManager.persist(training1);
-        entityManager.persist(training2);
-
-        return List.of(training1, training2);
     }
 }

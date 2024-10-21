@@ -35,6 +35,8 @@ import com.gym.crm.app.service.UserService;
 import com.gym.crm.app.service.common.AuthService;
 import com.gym.crm.app.service.common.BindingResultsService;
 import com.gym.crm.app.service.common.UserProfileService;
+import com.gym.crm.app.spectification.TraineeTrainingSpecification;
+import com.gym.crm.app.spectification.TrainerTrainingSpecification;
 import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,7 +45,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -63,6 +67,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -474,6 +479,12 @@ class ServiceFacadeTest {
         LocalDate to = LocalDate.parse("2020-01-02");
         String trainerName = "Emily";
 
+        Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(username, from, to, trainerName, null);
+
+        MockedStatic<TraineeTrainingSpecification> mockedStatic = mockStatic(TraineeTrainingSpecification.class);
+        mockedStatic.when(() -> TraineeTrainingSpecification.findByCriteria(any(), any(), any(), any(), any()))
+                .thenReturn(specification);
+
         given(traineeService.findByUsername(username))
                 .willReturn(trainee);
 
@@ -481,7 +492,9 @@ class ServiceFacadeTest {
         serviceFacade.getTraineeTrainingsByCriteria(username, from, to, trainerName, null);
 
         // then
-        verify(traineeService).findTrainingsByCriteria(username, from, to, trainerName, null);
+        verify(trainingService).findByCriteria(specification);
+
+        mockedStatic.close();
     }
 
     @Test
@@ -495,13 +508,21 @@ class ServiceFacadeTest {
         LocalDate to = LocalDate.parse("2020-01-02");
         String traineeName = "John";
 
+        Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(username, from, to, traineeName, trainer.getSpecialization().getTrainingTypeName());
+
+        MockedStatic<TrainerTrainingSpecification> mockedStatic = mockStatic(TrainerTrainingSpecification.class);
+        mockedStatic.when(() -> TrainerTrainingSpecification.findByCriteria(any(), any(), any(), any(), any()))
+                .thenReturn(specification);
+
         given(trainerService.findByUsername(username))
                 .willReturn(trainer);
         // when
-        serviceFacade.getTrainerTrainingsByCriteria(username, from, to, traineeName, null);
+        serviceFacade.getTrainerTrainingsByCriteria(username, from, to, traineeName);
 
         // then
-        verify(trainerService).findTrainingsByCriteria(username, from, to, traineeName, null);
+        verify(trainingService).findByCriteria(specification);
+
+        mockedStatic.close();
     }
 
     @Test

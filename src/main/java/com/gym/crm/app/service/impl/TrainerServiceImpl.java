@@ -1,7 +1,6 @@
 package com.gym.crm.app.service.impl;
 
 import com.gym.crm.app.entity.Trainer;
-import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.TrainerRepository;
@@ -11,7 +10,6 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static com.gym.crm.app.rest.exception.ErrorCode.TRAINER_WITH_ID_NOT_FOUND;
@@ -38,11 +36,6 @@ public class TrainerServiceImpl implements TrainerService {
     public Trainer findByUsername(String username) {
         return repository.findByUserUsername(username)
                 .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINER_WITH_USERNAME_NOT_FOUND, username), TRAINER_WITH_USERNAME_NOT_FOUND.getCode()));
-    }
-
-    @Override
-    public List<Training> findTrainingsByCriteria(String username, LocalDate from, LocalDate to, String traineeName, String trainingType) {
-        return repository.findTrainingsByCriteria(username, from, to, traineeName, trainingType);
     }
 
     @Override

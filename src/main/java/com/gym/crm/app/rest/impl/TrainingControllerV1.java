@@ -52,9 +52,8 @@ public class TrainingControllerV1 implements TrainingController {
     public ResponseEntity<List<GetTrainerTrainingsResponse>> getTrainerTrainings(@PathVariable String username,
                                                                                  @RequestParam(name = "periodFrom", required = false) LocalDate periodFrom,
                                                                                  @RequestParam(name = "periodTo", required = false) LocalDate periodTo,
-                                                                                 @RequestParam(name = "profileName", required = false) String trainerName,
-                                                                                 @RequestParam(name = "trainingType", required = false) String trainingType) {
-        List<GetTrainerTrainingsResponse> trainings = service.getTrainerTrainingsByCriteria(username, periodFrom, periodTo, trainerName, trainingType);
+                                                                                 @RequestParam(name = "profileName", required = false) String trainerName) {
+        List<GetTrainerTrainingsResponse> trainings = service.getTrainerTrainingsByCriteria(username, periodFrom, periodTo, trainerName);
 
         return ResponseEntity.status(HttpStatus.OK).body(trainings);
     }
