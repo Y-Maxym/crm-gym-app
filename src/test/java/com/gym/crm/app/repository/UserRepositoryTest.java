@@ -141,12 +141,16 @@ class UserRepositoryTest extends AbstractTestRepository<UserRepository> {
     }
 
     @Test
-    @DisplayName("Test get next serial number")
-    void whenGetNextSerialNumber_thenUserIsReturned() {
+    @DisplayName("Test find all by username contains functionality")
+    void givenUser_whenGetNextSerialNumber_thenUserIsReturned() {
+        // given
+        User expected = EntityTestData.getTransientUserJohnDoe();
+        entityManager.persist(expected);
+
         // when
-        Long actual = repository.getNextSerialNumber();
+        List<User> actual = repository.findAllByUsernameContains(expected.getUsername());
 
         // then
-        assertThat(actual).isNotNull();
+        assertThat(actual.size()).isEqualTo(1);
     }
 }

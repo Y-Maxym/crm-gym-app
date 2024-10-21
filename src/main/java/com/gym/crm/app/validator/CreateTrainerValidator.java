@@ -43,5 +43,11 @@ public class CreateTrainerValidator implements Validator {
         if (!isNull(specialization) && specialization.length() > 30) {
             errors.rejectValue("specialization", "specialization.length.error", "Specialization is longer than 30 characters");
         }
+        if (!isNull(firstName) && firstName.matches(".*\\d.*")) {
+            errors.rejectValue("firstName", "first.name.digits.error", "First name contains digits");
+        }
+        if (!isNull(lastName) && lastName.matches(".*\\d.*")) {
+            errors.rejectValue("lastName", "last.name.digits.error", "Last name contains digits");
+        }
     }
 }

@@ -90,4 +90,22 @@ class UpdateTraineeValidatorTest {
         assertThat(errors.getFieldErrors()).extracting(ObjectError::getCode)
                 .containsExactly("first.name.length.error", "last.name.length.error");
     }
+
+    @Test
+    @DisplayName("Test fields contain digit chars functionality")
+    void givenFieldsContainDigits_whenValidate_thenHasErrors() {
+        // given
+        UpdateTraineeProfileRequest request = EntityTestData.getValidTraineeProfileRequest();
+        request.setFirstName("123");
+        request.setLastName("123");
+        errors = new BeanPropertyBindingResult(request, "updateTraineeProfileRequest");
+
+        // when
+        validator.validate(request, errors);
+
+        // then
+        assertThat(errors.getErrorCount()).isEqualTo(2);
+        assertThat(errors.getFieldErrors()).extracting(ObjectError::getCode)
+                .containsExactly("first.name.digits.error", "last.name.digits.error");
+    }
 }

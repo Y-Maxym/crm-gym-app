@@ -35,11 +35,11 @@ public class UserProfileService {
     }
 
     private boolean isDuplicatedUsername(String username) {
-        return repository.findAll().stream().anyMatch(user -> user.getUsername().equals(username));
+        return repository.findByUsername(username).isPresent();
     }
 
     private String addSerialNumberToUsername(String username) {
-        Long serialNumber = repository.getNextSerialNumber();
+        int serialNumber = repository.findAllByUsernameContains(username).size();
 
         return username + serialNumber;
     }

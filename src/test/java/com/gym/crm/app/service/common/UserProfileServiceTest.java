@@ -2,6 +2,7 @@ package com.gym.crm.app.service.common;
 
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.repository.UserRepository;
+import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,8 +12,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -57,8 +61,8 @@ class UserProfileServiceTest {
         // given
         String username = "John.Doe";
 
-        given(repository.getNextSerialNumber())
-                .willReturn(1L);
+        given(repository.findAllByUsernameContains(anyString()))
+                .willReturn(List.of(EntityTestData.getPersistedUserJohnDoe()));
 
         // when
         String actualUsername = ReflectionTestUtils.invokeMethod(service, "addSerialNumberToUsername", username);
@@ -75,8 +79,8 @@ class UserProfileServiceTest {
         String firstName = "John";
         String lastName = "Doe";
 
-        given(repository.findAll())
-                .willReturn(Collections.emptyList());
+        given(repository.findByUsername(anyString()))
+                .willReturn(Optional.empty());
 
         // when
         String username = service.generateUsername(firstName, lastName);
@@ -96,11 +100,10 @@ class UserProfileServiceTest {
                 .username("John.Doe")
                 .build();
 
-        given(repository.findAll())
+        given(repository.findAllByUsernameContains(anyString()))
                 .willReturn(Collections.singletonList(existingUser));
-
-        given(repository.getNextSerialNumber())
-                .willReturn(1L);
+        given(repository.findByUsername(anyString()))
+                .willReturn(Optional.of(existingUser));
 
         // when
         String username = service.generateUsername(firstName, lastName);
@@ -115,8 +118,8 @@ class UserProfileServiceTest {
         // given
         String username = "uniqueUsername";
 
-        given(repository.findAll())
-                .willReturn(Collections.emptyList());
+        given(repository.findByUsername(username))
+                .willReturn(Optional.empty());
 
         // when
         Boolean isDuplicated = ReflectionTestUtils.invokeMethod(service, "isDuplicatedUsername", username);
@@ -135,8 +138,8 @@ class UserProfileServiceTest {
                 .username("John.Doe")
                 .build();
 
-        given(repository.findAll())
-                .willReturn(Collections.singletonList(existingUser));
+        given(repository.findByUsername(username))
+                .willReturn(Optional.of(existingUser));
 
         // when
         Boolean isDuplicated = ReflectionTestUtils.invokeMethod(service, "isDuplicatedUsername", username);

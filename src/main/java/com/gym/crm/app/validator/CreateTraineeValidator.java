@@ -36,5 +36,11 @@ public class CreateTraineeValidator implements Validator {
         if (!isNull(lastName) && lastName.length() > 50) {
             errors.rejectValue("lastName", "last.name.length.error", "Last name is longer than 50 characters");
         }
+        if (!isNull(firstName) && firstName.matches(".*\\d.*")) {
+            errors.rejectValue("firstName", "first.name.digits.error", "First name contains digits");
+        }
+        if (!isNull(lastName) && lastName.matches(".*\\d.*")) {
+            errors.rejectValue("lastName", "last.name.digits.error", "Last name contains digits");
+        }
     }
 }
