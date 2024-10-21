@@ -10,8 +10,8 @@ import com.gym.crm.app.rest.model.TrainerProfileWithUsername;
 import com.gym.crm.app.rest.model.UpdateTraineeProfileRequest;
 import com.gym.crm.app.rest.model.UpdateTraineeProfileResponse;
 import com.gym.crm.app.rest.model.UserCredentials;
-import com.gym.crm.app.validator.CreateTraineeValidator;
-import com.gym.crm.app.validator.UpdateTraineeValidator;
+import com.gym.crm.app.facade.validator.CreateTraineeValidator;
+import com.gym.crm.app.facade.validator.UpdateTraineeValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -52,6 +52,7 @@ public class TraineeControllerV1 implements TraineeController {
         binder.addValidators(updateValidator);
     }
 
+    @Override
     @PostMapping("/register")
     public ResponseEntity<UserCredentials> traineeRegister(@RequestBody @Validated TraineeCreateRequest request,
                                                            BindingResult bindingResult) {
@@ -60,6 +61,7 @@ public class TraineeControllerV1 implements TraineeController {
         return ResponseEntity.status(HttpStatus.OK).body(profile);
     }
 
+    @Override
     @GetMapping("/{username}")
     public ResponseEntity<GetTraineeProfileResponse> getTraineeProfile(@PathVariable String username) {
         GetTraineeProfileResponse trainee = service.findTraineeProfileByUsername(username);
@@ -67,6 +69,7 @@ public class TraineeControllerV1 implements TraineeController {
         return ResponseEntity.status(HttpStatus.OK).body(trainee);
     }
 
+    @Override
     @PutMapping("/{username}")
     public ResponseEntity<UpdateTraineeProfileResponse> updateTraineeProfile(@PathVariable String username,
                                                                              @RequestBody @Validated UpdateTraineeProfileRequest request,
@@ -78,6 +81,7 @@ public class TraineeControllerV1 implements TraineeController {
         return ResponseEntity.status(HttpStatus.OK).body(profile);
     }
 
+    @Override
     @DeleteMapping("/{username}")
     public ResponseEntity<?> deleteTraineeProfile(@PathVariable String username,
                                                   HttpServletRequest httpServletRequest) {
@@ -87,6 +91,7 @@ public class TraineeControllerV1 implements TraineeController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @Override
     @PutMapping("/{username}/trainers")
     public ResponseEntity<List<TrainerProfileWithUsername>> updateTraineeTrainerList(@PathVariable String username,
                                                                                      @RequestBody List<TrainerProfileOnlyUsername> request,

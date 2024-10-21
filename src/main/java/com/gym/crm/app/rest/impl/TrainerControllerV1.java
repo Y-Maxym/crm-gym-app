@@ -9,8 +9,8 @@ import com.gym.crm.app.rest.model.TrainerProfileWithUsername;
 import com.gym.crm.app.rest.model.UpdateTrainerProfileRequest;
 import com.gym.crm.app.rest.model.UpdateTrainerProfileResponse;
 import com.gym.crm.app.rest.model.UserCredentials;
-import com.gym.crm.app.validator.CreateTrainerValidator;
-import com.gym.crm.app.validator.UpdateTrainerValidator;
+import com.gym.crm.app.facade.validator.CreateTrainerValidator;
+import com.gym.crm.app.facade.validator.UpdateTrainerValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -50,6 +50,7 @@ public class TrainerControllerV1 implements TrainerController {
         binder.addValidators(updateTrainerValidator);
     }
 
+    @Override
     @PostMapping("/register")
     public ResponseEntity<UserCredentials> trainerRegister(@RequestBody @Validated TrainerCreateRequest request,
                                                            BindingResult bindingResult) {
@@ -58,6 +59,7 @@ public class TrainerControllerV1 implements TrainerController {
         return ResponseEntity.status(HttpStatus.OK).body(profile);
     }
 
+    @Override
     @GetMapping("/{username}")
     public ResponseEntity<GetTrainerProfileResponse> getTrainerProfile(@PathVariable String username) {
         GetTrainerProfileResponse trainer = service.findTrainerProfileByUsername(username);
@@ -65,6 +67,7 @@ public class TrainerControllerV1 implements TrainerController {
         return ResponseEntity.status(HttpStatus.OK).body(trainer);
     }
 
+    @Override
     @PutMapping("/{username}")
     public ResponseEntity<UpdateTrainerProfileResponse> updateTrainerProfile(@PathVariable String username,
                                                                              @RequestBody @Validated UpdateTrainerProfileRequest request,
@@ -76,6 +79,7 @@ public class TrainerControllerV1 implements TrainerController {
         return ResponseEntity.status(HttpStatus.OK).body(profile);
     }
 
+    @Override
     @GetMapping("/not-assigned/{username}")
     public ResponseEntity<List<TrainerProfileWithUsername>> getTrainersNotAssigned(@PathVariable String username) {
         List<TrainerProfileWithUsername> trainers = service.getTrainersNotAssignedByTraineeUsername(username);

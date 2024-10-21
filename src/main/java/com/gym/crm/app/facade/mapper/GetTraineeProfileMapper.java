@@ -1,4 +1,4 @@
-package com.gym.crm.app.mapper;
+package com.gym.crm.app.facade.mapper;
 
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.rest.model.GetTraineeProfileResponse;

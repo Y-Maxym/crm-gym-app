@@ -3,21 +3,22 @@ package com.gym.crm.app.facade;
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
+import com.gym.crm.app.entity.TrainingSearchFilter;
 import com.gym.crm.app.entity.TrainingType;
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.AuthenticationException;
 import com.gym.crm.app.exception.EntityPersistException;
-import com.gym.crm.app.mapper.AddTrainingMapper;
-import com.gym.crm.app.mapper.CreateTraineeProfileMapper;
-import com.gym.crm.app.mapper.CreateTrainerProfileMapper;
-import com.gym.crm.app.mapper.GetTraineeProfileMapper;
-import com.gym.crm.app.mapper.GetTraineeTrainingsMapper;
-import com.gym.crm.app.mapper.GetTrainerProfileMapper;
-import com.gym.crm.app.mapper.GetTrainerTrainingsMapper;
-import com.gym.crm.app.mapper.TrainerProfileMapper;
-import com.gym.crm.app.mapper.TrainingTypeMapper;
-import com.gym.crm.app.mapper.UpdateTraineeProfileMapper;
-import com.gym.crm.app.mapper.UpdateTrainerProfileMapper;
+import com.gym.crm.app.facade.mapper.AddTrainingMapper;
+import com.gym.crm.app.facade.mapper.CreateTraineeProfileMapper;
+import com.gym.crm.app.facade.mapper.CreateTrainerProfileMapper;
+import com.gym.crm.app.facade.mapper.GetTraineeProfileMapper;
+import com.gym.crm.app.facade.mapper.GetTraineeTrainingsMapper;
+import com.gym.crm.app.facade.mapper.GetTrainerProfileMapper;
+import com.gym.crm.app.facade.mapper.GetTrainerTrainingsMapper;
+import com.gym.crm.app.facade.mapper.TrainerProfileMapper;
+import com.gym.crm.app.facade.mapper.TrainingTypeMapper;
+import com.gym.crm.app.facade.mapper.UpdateTraineeProfileMapper;
+import com.gym.crm.app.facade.mapper.UpdateTrainerProfileMapper;
 import com.gym.crm.app.repository.TrainingTypeRepository;
 import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;
 import com.gym.crm.app.rest.model.AddTrainingRequest;
@@ -43,10 +44,7 @@ import com.gym.crm.app.service.UserService;
 import com.gym.crm.app.service.common.AuthService;
 import com.gym.crm.app.service.common.BindingResultsService;
 import com.gym.crm.app.service.common.UserProfileService;
-import com.gym.crm.app.spectification.TraineeTrainingSpecification;
-import com.gym.crm.app.spectification.TrainerTrainingSpecification;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -194,10 +192,14 @@ public class ServiceFacade {
     }
 
     public List<GetTraineeTrainingsResponse> getTraineeTrainingsByCriteria(String username, LocalDate from, LocalDate to, String trainerName, String trainingType) {
-        traineeService.findByUsername(username);
-
-        Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(username, from, to, trainerName, trainingType);
-        List<Training> trainings = trainingService.findByCriteria(specification);
+        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder()
+                .username(username)
+                .from(from)
+                .to(to)
+                .profileName(trainerName)
+                .trainingType(trainingType)
+                .build();
+        List<Training> trainings = trainingService.findTraineeTrainingByCriteria(searchFilter);
 
         return trainings.stream()
                 .map(getTraineeTrainingsMapper::mapToGetTraineeTrainingsResponse)
@@ -205,11 +207,13 @@ public class ServiceFacade {
     }
 
     public List<GetTrainerTrainingsResponse> getTrainerTrainingsByCriteria(String username, LocalDate from, LocalDate to, String traineeName) {
-        Trainer trainer = trainerService.findByUsername(username);
-        String trainingType = trainer.getSpecialization().getTrainingTypeName();
-
-        Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(username, from, to, traineeName, trainingType);
-        List<Training> trainings = trainingService.findByCriteria(specification);
+        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder()
+                .username(username)
+                .from(from)
+                .to(to)
+                .profileName(traineeName)
+                .build();
+        List<Training> trainings = trainingService.findTrainerTrainingByCriteria(searchFilter);
 
         return trainings.stream()
                 .map(getTrainerTrainingsMapper::mapToGetTrainerTrainingsResponse)

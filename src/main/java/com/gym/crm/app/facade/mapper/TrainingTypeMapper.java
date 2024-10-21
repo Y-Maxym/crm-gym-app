@@ -1,4 +1,4 @@
-package com.gym.crm.app.mapper;
+package com.gym.crm.app.facade.mapper;
 
 import com.gym.crm.app.entity.TrainingType;
 import com.gym.crm.app.exception.EntityValidationException;
@@ -14,7 +14,7 @@ import static com.gym.crm.app.rest.exception.ErrorCode.TRAINING_TYPE_NAME_NOT_FO
 import static com.gym.crm.app.util.Constants.ERROR_TRAINING_TYPE_WITH_NAME_NOT_FOUND;
 
 @Mapper(componentModel = "spring")
-@Setter(onMethod_ = @Autowired)
+@Setter(onMethod_ = {@Autowired})
 public abstract class TrainingTypeMapper {
 
     protected MessageHelper messageHelper;

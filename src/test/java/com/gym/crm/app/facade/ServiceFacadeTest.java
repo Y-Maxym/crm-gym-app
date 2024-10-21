@@ -3,21 +3,22 @@ package com.gym.crm.app.facade;
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
+import com.gym.crm.app.entity.TrainingSearchFilter;
 import com.gym.crm.app.entity.TrainingType;
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.AuthenticationException;
 import com.gym.crm.app.exception.EntityPersistException;
-import com.gym.crm.app.mapper.AddTrainingMapper;
-import com.gym.crm.app.mapper.CreateTraineeProfileMapper;
-import com.gym.crm.app.mapper.CreateTrainerProfileMapper;
-import com.gym.crm.app.mapper.GetTraineeProfileMapper;
-import com.gym.crm.app.mapper.GetTraineeTrainingsMapper;
-import com.gym.crm.app.mapper.GetTrainerProfileMapper;
-import com.gym.crm.app.mapper.GetTrainerTrainingsMapper;
-import com.gym.crm.app.mapper.TrainerProfileMapper;
-import com.gym.crm.app.mapper.TrainingTypeMapper;
-import com.gym.crm.app.mapper.UpdateTraineeProfileMapper;
-import com.gym.crm.app.mapper.UpdateTrainerProfileMapper;
+import com.gym.crm.app.facade.mapper.AddTrainingMapper;
+import com.gym.crm.app.facade.mapper.CreateTraineeProfileMapper;
+import com.gym.crm.app.facade.mapper.CreateTrainerProfileMapper;
+import com.gym.crm.app.facade.mapper.GetTraineeProfileMapper;
+import com.gym.crm.app.facade.mapper.GetTraineeTrainingsMapper;
+import com.gym.crm.app.facade.mapper.GetTrainerProfileMapper;
+import com.gym.crm.app.facade.mapper.GetTrainerTrainingsMapper;
+import com.gym.crm.app.facade.mapper.TrainerProfileMapper;
+import com.gym.crm.app.facade.mapper.TrainingTypeMapper;
+import com.gym.crm.app.facade.mapper.UpdateTraineeProfileMapper;
+import com.gym.crm.app.facade.mapper.UpdateTrainerProfileMapper;
 import com.gym.crm.app.repository.TrainingTypeRepository;
 import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;
 import com.gym.crm.app.rest.model.AddTrainingRequest;
@@ -35,8 +36,6 @@ import com.gym.crm.app.service.UserService;
 import com.gym.crm.app.service.common.AuthService;
 import com.gym.crm.app.service.common.BindingResultsService;
 import com.gym.crm.app.service.common.UserProfileService;
-import com.gym.crm.app.spectification.TraineeTrainingSpecification;
-import com.gym.crm.app.spectification.TrainerTrainingSpecification;
 import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,9 +44,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -67,7 +64,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -473,28 +469,16 @@ class ServiceFacadeTest {
     void givenCriteria_whenGetTraineeTrainings_thenTrainingsIsReturned() {
         // given
         String username = "John.Doe";
-        Trainee trainee = EntityTestData.getPersistedTraineeJohnDoe();
 
         LocalDate from = LocalDate.parse("2020-01-01");
         LocalDate to = LocalDate.parse("2020-01-02");
         String trainerName = "Emily";
 
-        Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(username, from, to, trainerName, null);
-
-        MockedStatic<TraineeTrainingSpecification> mockedStatic = mockStatic(TraineeTrainingSpecification.class);
-        mockedStatic.when(() -> TraineeTrainingSpecification.findByCriteria(any(), any(), any(), any(), any()))
-                .thenReturn(specification);
-
-        given(traineeService.findByUsername(username))
-                .willReturn(trainee);
-
         // when
         serviceFacade.getTraineeTrainingsByCriteria(username, from, to, trainerName, null);
 
         // then
-        verify(trainingService).findByCriteria(specification);
-
-        mockedStatic.close();
+        verify(trainingService).findTraineeTrainingByCriteria(any(TrainingSearchFilter.class));
     }
 
     @Test
@@ -502,27 +486,16 @@ class ServiceFacadeTest {
     void givenCriteria_whenGetTrainerTrainings_thenTrainingsIsReturned() {
         // given
         String username = "David.Brown";
-        Trainer trainer = EntityTestData.getPersistedTrainerDavidBrown();
 
         LocalDate from = LocalDate.parse("2020-01-01");
         LocalDate to = LocalDate.parse("2020-01-02");
         String traineeName = "John";
 
-        Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(username, from, to, traineeName, trainer.getSpecialization().getTrainingTypeName());
-
-        MockedStatic<TrainerTrainingSpecification> mockedStatic = mockStatic(TrainerTrainingSpecification.class);
-        mockedStatic.when(() -> TrainerTrainingSpecification.findByCriteria(any(), any(), any(), any(), any()))
-                .thenReturn(specification);
-
-        given(trainerService.findByUsername(username))
-                .willReturn(trainer);
         // when
         serviceFacade.getTrainerTrainingsByCriteria(username, from, to, traineeName);
 
         // then
-        verify(trainingService).findByCriteria(specification);
-
-        mockedStatic.close();
+        verify(trainingService).findTrainerTrainingByCriteria(any(TrainingSearchFilter.class));
     }
 
     @Test

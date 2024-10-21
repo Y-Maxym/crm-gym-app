@@ -1,4 +1,4 @@
-package com.gym.crm.app.mapper;
+package com.gym.crm.app.facade.mapper;
 
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
@@ -12,7 +12,7 @@ import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring", uses = {TrainerProfileMapper.class, TrainingTypeMapper.class})
-@Setter(onMethod_ = @Autowired)
+@Setter(onMethod_ = {@Autowired})
 public abstract class AddTrainingMapper {
 
     protected TrainerService trainerService;

@@ -6,9 +6,9 @@ import com.gym.crm.app.rest.AuthController;
 import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;
 import com.gym.crm.app.rest.model.ChangePasswordRequest;
 import com.gym.crm.app.rest.model.UserCredentials;
-import com.gym.crm.app.validator.ActivateDeactivateProfileValidator;
-import com.gym.crm.app.validator.ChangePasswordValidator;
-import com.gym.crm.app.validator.UserCredentialsValidator;
+import com.gym.crm.app.facade.validator.ActivateDeactivateProfileValidator;
+import com.gym.crm.app.facade.validator.ChangePasswordValidator;
+import com.gym.crm.app.facade.validator.UserCredentialsValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +53,7 @@ public class AuthControllerV1 implements AuthController {
         binder.addValidators(activateDeactivateProfileValidator);
     }
 
+    @Override
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Validated UserCredentials credentials,
                                    BindingResult bindingResult,
@@ -65,6 +66,7 @@ public class AuthControllerV1 implements AuthController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @Override
     @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -73,6 +75,7 @@ public class AuthControllerV1 implements AuthController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @Override
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody @Validated ChangePasswordRequest request,
                                             BindingResult bindingResult,
@@ -83,6 +86,7 @@ public class AuthControllerV1 implements AuthController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @Override
     @PatchMapping("/{username}/activate")
     public ResponseEntity<?> activateDeactivateProfile(@PathVariable String username,
                                                        @RequestBody @Validated ActivateDeactivateProfileRequest request,

@@ -6,9 +6,9 @@ import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.TrainerRepository;
 import com.gym.crm.app.service.TrainerService;
 import com.gym.crm.app.service.common.EntityValidator;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,13 +18,15 @@ import static com.gym.crm.app.util.Constants.ERROR_TRAINER_WITH_ID_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.ERROR_TRAINER_WITH_USERNAME_NOT_FOUND;
 
 @Service
-@Setter(onMethod_ = @Autowired)
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TrainerServiceImpl implements TrainerService {
 
-    private MessageHelper messageHelper;
-    private TrainerRepository repository;
-    private EntityValidator entityValidator;
+    private final MessageHelper messageHelper;
+    private final TrainerRepository repository;
+    private final EntityValidator entityValidator;
 
+    @Override
     public Trainer findById(Long id) {
         entityValidator.checkId(id);
 
@@ -45,12 +47,16 @@ public class TrainerServiceImpl implements TrainerService {
         return repository.getTrainersNotAssignedByTraineeUsername(username);
     }
 
+    @Override
+    @Transactional
     public void save(Trainer trainer) {
         entityValidator.checkEntity(trainer);
 
         repository.save(trainer);
     }
 
+    @Override
+    @Transactional
     public Trainer update(Trainer trainer) {
         entityValidator.checkEntity(trainer);
         entityValidator.checkId(trainer.getId());

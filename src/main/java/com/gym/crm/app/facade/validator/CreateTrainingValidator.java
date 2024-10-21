@@ -1,4 +1,4 @@
-package com.gym.crm.app.validator;
+package com.gym.crm.app.facade.validator;
 
 import com.gym.crm.app.rest.model.AddTrainingRequest;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +10,7 @@ import org.springframework.validation.Validator;
 import java.time.LocalDate;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
@@ -46,13 +47,13 @@ public class CreateTrainingValidator implements Validator {
         if (isNull(trainingDuration)) {
             errors.rejectValue("trainingDuration", "training.duration.empty.error", "Training duration is required");
         }
-        if (!isNull(traineeUsername) && traineeUsername.length() > 100) {
+        if (nonNull(traineeUsername) && traineeUsername.length() > 100) {
             errors.rejectValue("traineeUsername", "trainee.username.length.error", "Trainee username is longer than 100 characters");
         }
-        if (!isNull(trainerUsername) && trainerUsername.length() > 100) {
+        if (nonNull(trainerUsername) && trainerUsername.length() > 100) {
             errors.rejectValue("trainerUsername", "trainer.username.length.error", "Trainer username is longer than 100 characters");
         }
-        if (!isNull(trainingName) && trainingName.length() > 100) {
+        if (nonNull(trainingName) && trainingName.length() > 100) {
             errors.rejectValue("trainingName", "training.name.length.error", "Training name is longer than 100 characters");
         }
     }

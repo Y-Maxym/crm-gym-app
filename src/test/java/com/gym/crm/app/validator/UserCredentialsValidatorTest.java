@@ -1,5 +1,6 @@
 package com.gym.crm.app.validator;
 
+import com.gym.crm.app.facade.validator.UserCredentialsValidator;
 import com.gym.crm.app.rest.model.TrainerCreateRequest;
 import com.gym.crm.app.rest.model.UserCredentials;
 import com.gym.crm.app.utils.EntityTestData;

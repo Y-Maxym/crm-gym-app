@@ -1,18 +1,20 @@
 package com.gym.crm.app.service.impl;
 
 import com.gym.crm.app.entity.Training;
+import com.gym.crm.app.entity.TrainingSearchFilter;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.TrainingRepository;
 import com.gym.crm.app.service.common.EntityValidator;
-import com.gym.crm.app.spectification.TraineeTrainingSpecification;
-import com.gym.crm.app.spectification.TrainerTrainingSpecification;
+import com.gym.crm.app.service.spectification.TraineeTrainingSpecification;
+import com.gym.crm.app.service.spectification.TrainerTrainingSpecification;
 import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -24,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 
@@ -99,7 +102,7 @@ class TrainingServiceImplTest {
 
     @Test
     @DisplayName("Test find trainee trainings by criteria functionality")
-    public void givenTraineeCriteria_whenFindByCriteria_thenRepositoryIsCalled() {
+    public void givenTraineeCriteria_whenFindTraineeTrainingByCriteria_thenRepositoryIsCalled() {
         // given
         String username = "username";
         LocalDate from = LocalDate.parse("2020-01-01");
@@ -107,13 +110,26 @@ class TrainingServiceImplTest {
         String trainerName = "trainerName";
         String trainingType = "trainingType";
 
-        Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(username, from, to, trainerName, trainingType);
+        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder()
+                .username(username)
+                .from(from)
+                .to(to)
+                .profileName(trainerName)
+                .trainingType(trainingType)
+                .build();
+        Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(searchFilter);
+
+        MockedStatic<TraineeTrainingSpecification> mockedStatic = mockStatic(TraineeTrainingSpecification.class);
+        mockedStatic.when(() -> TraineeTrainingSpecification.findByCriteria(searchFilter))
+                .thenReturn(specification);
 
         // when
-        service.findByCriteria(specification);
+        service.findTraineeTrainingByCriteria(searchFilter);
 
         // then
         verify(repository).findAll(specification);
+
+        mockedStatic.close();
     }
 
 
@@ -127,12 +143,25 @@ class TrainingServiceImplTest {
         String traineeName = "trainee";
         String trainingType = "trainingType";
 
-        Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(username, from, to, traineeName, trainingType);
+        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder()
+                .username(username)
+                .from(from)
+                .to(to)
+                .profileName(traineeName)
+                .trainingType(trainingType)
+                .build();
+        Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(searchFilter);
+
+        MockedStatic<TrainerTrainingSpecification> mockedStatic = mockStatic(TrainerTrainingSpecification.class);
+        mockedStatic.when(() -> TrainerTrainingSpecification.findByCriteria(searchFilter))
+                .thenReturn(specification);
 
         // when
-        service.findByCriteria(specification);
+        service.findTrainerTrainingByCriteria(searchFilter);
 
         // then
         verify(repository).findAll(specification);
+
+        mockedStatic.close();
     }
 }

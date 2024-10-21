@@ -1,8 +1,9 @@
 package com.gym.crm.app.repository;
 
 import com.gym.crm.app.entity.Training;
-import com.gym.crm.app.spectification.TraineeTrainingSpecification;
-import com.gym.crm.app.spectification.TrainerTrainingSpecification;
+import com.gym.crm.app.entity.TrainingSearchFilter;
+import com.gym.crm.app.service.spectification.TraineeTrainingSpecification;
+import com.gym.crm.app.service.spectification.TrainerTrainingSpecification;
 import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -117,14 +118,20 @@ class TrainingRepositoryTest extends AbstractTestRepository<TrainingRepository> 
         List<Training> trainings = addTraineeTrainingList();
         Training training = trainings.get(1);
 
-
         String username = training.getTrainee().getUser().getUsername();
         LocalDate from = training.getTrainingDate();
         LocalDate to = training.getTrainingDate();
         String trainerName = training.getTrainer().getUser().getFirstName();
         String trainingType = training.getTrainingType().getTrainingTypeName();
 
-        Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(username, from, to, trainerName, trainingType);
+        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder()
+                .username(username)
+                .from(from)
+                .to(to)
+                .profileName(trainerName)
+                .trainingType(trainingType)
+                .build();
+        Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(searchFilter);
 
         // when
         List<Training> actual = repository.findAll(specification);
@@ -141,7 +148,8 @@ class TrainingRepositoryTest extends AbstractTestRepository<TrainingRepository> 
         List<Training> trainingList = addTraineeTrainingList();
 
         String username = trainingList.get(0).getTrainee().getUser().getUsername();
-        Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(username, null, null, null, null);
+        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder().username(username).build();
+        Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(searchFilter);
 
         // when
         List<Training> trainings = repository.findAll(specification);
@@ -157,7 +165,12 @@ class TrainingRepositoryTest extends AbstractTestRepository<TrainingRepository> 
         List<Training> trainingList = addTraineeTrainingList();
 
         String username = trainingList.get(0).getTrainee().getUser().getUsername();
-        Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(username, null, null, "", "");
+        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder()
+                .username(username)
+                .profileName("")
+                .trainingType("")
+                .build();
+        Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(searchFilter);
 
         // when
         List<Training> trainings = repository.findAll(specification);
@@ -180,7 +193,14 @@ class TrainingRepositoryTest extends AbstractTestRepository<TrainingRepository> 
         String traineeName = training.getTrainee().getUser().getFirstName();
         String trainingType = training.getTrainingType().getTrainingTypeName();
 
-        Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(username, from, to, traineeName, trainingType);
+        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder()
+                .username(username)
+                .from(from)
+                .to(to)
+                .profileName(traineeName)
+                .trainingType(trainingType)
+                .build();
+        Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(searchFilter);
 
         // when
         List<Training> actual = repository.findAll(specification);
@@ -195,9 +215,10 @@ class TrainingRepositoryTest extends AbstractTestRepository<TrainingRepository> 
     public void givenNullTrainerCriteria_whenFindTrainings_thenReturnTrainings() {
         // given
         List<Training> trainingList = addTrainerTrainingList();
-        String username = trainingList.get(0).getTrainer().getUser().getUsername();
 
-        Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(username, null, null, null, null);
+        String username = trainingList.get(0).getTrainer().getUser().getUsername();
+        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder().username(username).build();
+        Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(searchFilter);
 
         // when
         List<Training> trainings = repository.findAll(specification);
@@ -211,9 +232,14 @@ class TrainingRepositoryTest extends AbstractTestRepository<TrainingRepository> 
     public void givenBlankTrainerCriteria_whenFindTrainings_thenReturnTrainings() {
         // given
         List<Training> trainingList = addTrainerTrainingList();
-        String username = trainingList.get(0).getTrainer().getUser().getUsername();
 
-        Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(username, null, null, "", "");
+        String username = trainingList.get(0).getTrainer().getUser().getUsername();
+        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder()
+                .username(username)
+                .profileName("")
+                .trainingType("")
+                .build();
+        Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(searchFilter);
 
         // when
         List<Training> trainings = repository.findAll(specification);

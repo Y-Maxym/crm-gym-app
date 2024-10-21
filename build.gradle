@@ -73,7 +73,7 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(
                 files(classDirectories.files.collect {
-                    fileTree(dir: it, exclude: ['com/gym/crm/app/mapper/**', 'org/openapitools/**', 'com/gym/crm/app/rest/model'])
+                    fileTree(dir: it, exclude: ['com/gym/crm/app/facade/mapper/**', 'org/openapitools/**', 'com/gym/crm/app/rest/model'])
                 })
         )
     }
