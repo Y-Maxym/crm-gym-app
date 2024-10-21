@@ -2,5 +2,5 @@ logging:
   threshold:
     file: warn
   level:
-    com.gym.crm.app: info
-    root: info
+    com.gym.crm.app: debug
+    root: debug
