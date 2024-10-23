@@ -19,7 +19,6 @@ import com.gym.crm.app.facade.mapper.TrainerProfileMapper;
 import com.gym.crm.app.facade.mapper.TrainingTypeMapper;
 import com.gym.crm.app.facade.mapper.UpdateTraineeProfileMapper;
 import com.gym.crm.app.facade.mapper.UpdateTrainerProfileMapper;
-import com.gym.crm.app.repository.TrainingTypeRepository;
 import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;
 import com.gym.crm.app.rest.model.AddTrainingRequest;
 import com.gym.crm.app.rest.model.ChangePasswordRequest;
@@ -32,6 +31,7 @@ import com.gym.crm.app.rest.model.UserCredentials;
 import com.gym.crm.app.service.TraineeService;
 import com.gym.crm.app.service.TrainerService;
 import com.gym.crm.app.service.TrainingService;
+import com.gym.crm.app.service.TrainingTypeService;
 import com.gym.crm.app.service.UserService;
 import com.gym.crm.app.service.common.AuthService;
 import com.gym.crm.app.service.common.BindingResultsService;
@@ -126,7 +126,7 @@ class ServiceFacadeTest {
     private AddTrainingMapper addTrainingMapper;
 
     @Mock
-    private TrainingTypeRepository trainingTypeRepository;
+    private TrainingTypeService trainingTypeService;
 
     @InjectMocks
     private ServiceFacade serviceFacade;
@@ -579,14 +579,14 @@ class ServiceFacadeTest {
         // given
         List<TrainingType> trainingTypes = List.of(EntityTestData.getTrainingTypeFitness(), EntityTestData.getTrainingTypeYoga());
 
-        given(trainingTypeRepository.findAll())
+        given(trainingTypeService.findAll())
                 .willReturn(trainingTypes);
 
         // when
         serviceFacade.getTrainingTypes();
 
         // then
-        verify(trainingTypeRepository).findAll();
+        verify(trainingTypeService).findAll();
         verify(trainingTypeMapper, times(trainingTypes.size())).mapToGetTrainingTypeResponse(any(TrainingType.class));
     }
 

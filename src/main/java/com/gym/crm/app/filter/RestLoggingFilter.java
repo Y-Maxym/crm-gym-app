@@ -16,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static com.gym.crm.app.util.Constants.INFO_REST_LOGGING_FILTER_REQUEST;
@@ -23,11 +24,11 @@ import static com.gym.crm.app.util.Constants.INFO_REST_LOGGING_FILTER_RESPONSE;
 
 @Component
 @Slf4j
-@Order(2)
+@Order(3)
 @RequiredArgsConstructor
 public class RestLoggingFilter extends OncePerRequestFilter {
 
-    private static final List<String> EXCLUDED_URLS = List.of("/swagger-ui", "/v1/api-docs");
+    private static final List<String> EXCLUDED_URLS = List.of("/swagger-ui", "/v1/api-docs", "/actuator/prometheus");
 
     private final ObjectMapper objectMapper;
     private final MessageHelper messageHelper;
@@ -55,7 +56,7 @@ public class RestLoggingFilter extends OncePerRequestFilter {
 
     private void logRequestDetails(CustomContentCachingRequestWrapper request, String transactionId) throws IOException {
         byte[] cachedBody = request.getCachedBody();
-        String requestBody = "";
+        String requestBody = new String(cachedBody, StandardCharsets.UTF_8);
 
         if (cachedBody.length > 0) {
             Object json = objectMapper.readValue(cachedBody, Object.class);
@@ -72,7 +73,7 @@ public class RestLoggingFilter extends OncePerRequestFilter {
 
     private void logResponseDetails(ContentCachingResponseWrapper response, String transactionId) throws IOException {
         byte[] cachedBody = response.getContentAsByteArray();
-        String responseBody = "";
+        String responseBody = new String(cachedBody, StandardCharsets.UTF_8);
 
         if (cachedBody.length > 0) {
             Object json = objectMapper.readValue(cachedBody, Object.class);

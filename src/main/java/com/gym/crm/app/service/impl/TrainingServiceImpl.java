@@ -21,7 +21,6 @@ import static com.gym.crm.app.util.Constants.ERROR_TRAINING_WITH_ID_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class TrainingServiceImpl implements TrainingService {
 
     private final MessageHelper messageHelper;
@@ -29,6 +28,7 @@ public class TrainingServiceImpl implements TrainingService {
     private final EntityValidator validator;
 
     @Override
+    @Transactional(readOnly = true)
     public Training findById(Long id) {
         validator.checkId(id);
 
@@ -37,6 +37,7 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Training> findTraineeTrainingByCriteria(TrainingSearchFilter searchFilter) {
         validator.checkIfTraineeExist(searchFilter.getUsername());
 
@@ -46,6 +47,7 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Training> findTrainerTrainingByCriteria(TrainingSearchFilter searchFilter) {
         validator.checkIfTrainerExist(searchFilter.getUsername());
 

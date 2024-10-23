@@ -1,21 +1,19 @@
 spring:
   application:
     name: gym-crm-app
-
+  config:
+    import: optional:file:.env[.properties]
   profiles:
     active: local
-
   datasource:
     url: ${DATASOURCE_URL}
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
-
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
     default-schema: public
     enabled: true
-
   jpa:
     open-in-view: false
     hibernate:
@@ -25,11 +23,38 @@ spring:
         show_sql: true
         format_sql: true
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: always
+  health:
+    db:
+      enabled: false
+    diskspace:
+      enabled: false
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+logging:
+  file:
+    name: logs/application.log
+
 springdoc:
   api-docs:
-    enabled: false
+    enabled: true
+    groups:
+      enabled: true
+    path: /v1/api-docs
   swagger-ui:
-    enabled: false
+    enabled: true
+    path: swagger-ui.html
+    display-request-duration: true
 
 api:
   base-path: /api/v1

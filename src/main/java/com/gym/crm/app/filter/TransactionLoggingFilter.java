@@ -21,7 +21,7 @@ import static com.gym.crm.app.util.Constants.INFO_TRANSACTION_FILTER_START;
 
 @Component
 @Slf4j
-@Order(1)
+@Order(2)
 @RequiredArgsConstructor
 public class TransactionLoggingFilter extends OncePerRequestFilter {
 

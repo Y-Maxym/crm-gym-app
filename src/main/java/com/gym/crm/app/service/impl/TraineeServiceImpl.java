@@ -21,7 +21,6 @@ import static com.gym.crm.app.util.Constants.WARN_TRAINEE_WITH_USERNAME_NOT_FOUN
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class TraineeServiceImpl implements TraineeService {
 
     private final MessageHelper messageHelper;
@@ -29,6 +28,7 @@ public class TraineeServiceImpl implements TraineeService {
     private final EntityValidator entityValidator;
 
     @Override
+    @Transactional(readOnly = true)
     public Trainee findById(Long id) {
         entityValidator.checkId(id);
 
@@ -37,6 +37,7 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Trainee findByUsername(String username) {
         return repository.findByUserUsername(username)
                 .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINEE_WITH_USERNAME_NOT_FOUND, username), TRAINEE_WITH_USERNAME_NOT_FOUND.getCode()));

@@ -19,7 +19,6 @@ import static com.gym.crm.app.util.Constants.ERROR_TRAINER_WITH_USERNAME_NOT_FOU
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class TrainerServiceImpl implements TrainerService {
 
     private final MessageHelper messageHelper;
@@ -27,6 +26,7 @@ public class TrainerServiceImpl implements TrainerService {
     private final EntityValidator entityValidator;
 
     @Override
+    @Transactional(readOnly = true)
     public Trainer findById(Long id) {
         entityValidator.checkId(id);
 
@@ -35,12 +35,14 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Trainer findByUsername(String username) {
         return repository.findByUserUsername(username)
                 .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINER_WITH_USERNAME_NOT_FOUND, username), TRAINER_WITH_USERNAME_NOT_FOUND.getCode()));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Trainer> getTrainersNotAssignedByTraineeUsername(String username) {
         entityValidator.checkEntity(username);
 

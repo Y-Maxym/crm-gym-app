@@ -22,7 +22,6 @@ import static java.util.Objects.isNull;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
@@ -31,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final EntityValidator entityValidator;
 
     @Override
+    @Transactional(readOnly = true)
     public User findById(Long id) {
         entityValidator.checkId(id);
 
@@ -39,6 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User findByUsername(String username) {
         entityValidator.checkEntity(username);
 

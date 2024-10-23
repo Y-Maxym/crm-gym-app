@@ -19,7 +19,6 @@ import com.gym.crm.app.facade.mapper.TrainerProfileMapper;
 import com.gym.crm.app.facade.mapper.TrainingTypeMapper;
 import com.gym.crm.app.facade.mapper.UpdateTraineeProfileMapper;
 import com.gym.crm.app.facade.mapper.UpdateTrainerProfileMapper;
-import com.gym.crm.app.repository.TrainingTypeRepository;
 import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;
 import com.gym.crm.app.rest.model.AddTrainingRequest;
 import com.gym.crm.app.rest.model.ChangePasswordRequest;
@@ -40,13 +39,13 @@ import com.gym.crm.app.rest.model.UserCredentials;
 import com.gym.crm.app.service.TraineeService;
 import com.gym.crm.app.service.TrainerService;
 import com.gym.crm.app.service.TrainingService;
+import com.gym.crm.app.service.TrainingTypeService;
 import com.gym.crm.app.service.UserService;
 import com.gym.crm.app.service.common.AuthService;
 import com.gym.crm.app.service.common.BindingResultsService;
 import com.gym.crm.app.service.common.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import java.time.LocalDate;
@@ -66,12 +65,12 @@ import static com.gym.crm.app.rest.exception.ErrorCode.TRAINING_CREATE_ERROR;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ServiceFacade {
 
     private final TraineeService traineeService;
     private final TrainerService trainerService;
     private final TrainingService trainingService;
+    private final TrainingTypeService trainingTypeService;
     private final UserService userService;
     private final UserProfileService userProfileService;
     private final BindingResultsService bindingResultsService;
@@ -89,9 +88,6 @@ public class ServiceFacade {
     private final TrainingTypeMapper trainingTypeMapper;
     private final AuthService authService;
 
-    private final TrainingTypeRepository trainingTypeRepository;
-
-    @Transactional
     public UserCredentials createTrainerProfile(TrainerCreateRequest request, BindingResult bindingResult) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer creation error", TRAINER_CREATE_ERROR.getCode());
 
@@ -111,7 +107,6 @@ public class ServiceFacade {
         return createTrainerProfileMapper.mapToUserCredentials(trainer);
     }
 
-    @Transactional
     public UserCredentials createTraineeProfile(TraineeCreateRequest request, BindingResult bindingResult) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainee creation error", TRAINEE_CREATE_ERROR.getCode());
 
@@ -143,7 +138,6 @@ public class ServiceFacade {
         return getTraineeProfileMapper.mapToGetTraineeProfileResponse(trainee);
     }
 
-    @Transactional
     public UpdateTrainerProfileResponse updateTrainerProfile(String username, UpdateTrainerProfileRequest request, BindingResult bindingResult, User sessionUser) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer update error", TRAINER_UPDATE_ERROR.getCode());
         checkUsername(username, sessionUser);
@@ -156,7 +150,6 @@ public class ServiceFacade {
         return updateTrainerProfileMapper.mapToUpdateTrainerProfileResponse(trainer);
     }
 
-    @Transactional
     public UpdateTraineeProfileResponse updateTraineeProfile(String username, UpdateTraineeProfileRequest request, BindingResult bindingResult, User sessionUser) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainee update error", TRAINEE_UPDATE_ERROR.getCode());
         checkUsername(username, sessionUser);
@@ -169,7 +162,6 @@ public class ServiceFacade {
         return updateTraineeProfileMapper.mapToUpdateTraineeProfileResponse(trainee);
     }
 
-    @Transactional
     public void activateDeactivateProfile(String username, ActivateDeactivateProfileRequest request, BindingResult bindingResult, User sessionUser) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Activate/Deactivate profile error", ACTIVATE_DEACTIVATE_PROFILE_ERROR.getCode());
         checkUsername(username, sessionUser);
@@ -184,7 +176,6 @@ public class ServiceFacade {
         userService.update(user);
     }
 
-    @Transactional
     public void deleteTraineeProfileByUsername(String username, User sessionUser) {
         checkUsername(username, sessionUser);
 
@@ -220,7 +211,6 @@ public class ServiceFacade {
                 .toList();
     }
 
-    @Transactional
     public void addTraining(AddTrainingRequest request, BindingResult bindingResult) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Training creation error", TRAINING_CREATE_ERROR.getCode());
 
@@ -246,7 +236,6 @@ public class ServiceFacade {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public List<TrainerProfileWithUsername> updateTraineesTrainerList(String username, List<TrainerProfileOnlyUsername> request, User sessionUser) {
         checkUsername(username, sessionUser);
 
@@ -265,7 +254,7 @@ public class ServiceFacade {
     }
 
     public List<GetTrainingTypeResponse> getTrainingTypes() {
-        List<TrainingType> trainingTypes = trainingTypeRepository.findAll();
+        List<TrainingType> trainingTypes = trainingTypeService.findAll();
 
         return trainingTypes.stream()
                 .map(trainingTypeMapper::mapToGetTrainingTypeResponse)
@@ -282,7 +271,6 @@ public class ServiceFacade {
     }
 
 
-    @Transactional
     public void changePassword(ChangePasswordRequest request, BindingResult bindingResult, User sessionUser) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Password change error", PASSWORD_CHANGE_ERROR.getCode());
 
