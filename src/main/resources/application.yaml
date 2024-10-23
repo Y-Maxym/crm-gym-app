@@ -23,6 +23,20 @@ spring:
         show_sql: true
         format_sql: true
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+  health:
+    db:
+      enabled: false
+    diskspace:
+      enabled: false
+
 logging:
   file:
     name: logs/application.log
