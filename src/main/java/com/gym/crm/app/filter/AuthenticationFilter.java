@@ -19,12 +19,12 @@ import static com.gym.crm.app.rest.exception.ErrorCode.UNAUTHORIZED_ERROR;
 import static java.util.Objects.isNull;
 
 @Component
-@Order(3)
+@Order(4)
 public class AuthenticationFilter extends OncePerRequestFilter {
 
     private static final String UNAUTHORIZED_MESSAGE = "Unauthorized";
     private static final List<String> EXCLUDED_URLS = List.of("/api/v1/login", "/api/v1/trainees/register", "/api/v1/trainers/register",
-            "/swagger-ui", "/v1/api-docs");
+            "/swagger-ui", "/v1/api-docs", "/actuator/prometheus");
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
