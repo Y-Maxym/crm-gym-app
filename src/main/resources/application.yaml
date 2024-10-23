@@ -37,7 +37,6 @@ management:
     diskspace:
       enabled: false
 
-
 logging:
   file:
     name: logs/application.log
