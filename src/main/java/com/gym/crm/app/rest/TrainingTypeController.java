@@ -2,7 +2,6 @@ package com.gym.crm.app.rest;
 
 import com.gym.crm.app.rest.model.ErrorResponse;
 import com.gym.crm.app.rest.model.GetTrainingTypeResponse;
-import com.gym.crm.app.rest.model.ValidationError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

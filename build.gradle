@@ -31,6 +31,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
@@ -74,7 +75,7 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(
                 files(classDirectories.files.collect {
-                    fileTree(dir: it, exclude: ['com/gym/crm/app/mapper/**', 'org/openapitools/**', 'com/gym/crm/app/rest/model'])
+                    fileTree(dir: it, exclude: ['com/gym/crm/app/facade/mapper/**', 'org/openapitools/**', 'com/gym/crm/app/rest/model'])
                 })
         )
     }

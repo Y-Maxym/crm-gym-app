@@ -19,6 +19,7 @@ public class TrainingTypeControllerV1 implements TrainingTypeController {
 
     private final ServiceFacade service;
 
+    @Override
     @GetMapping
     public ResponseEntity<List<GetTrainingTypeResponse>> getAllTrainingTypes() {
         List<GetTrainingTypeResponse> trainingTypes = service.getTrainingTypes();

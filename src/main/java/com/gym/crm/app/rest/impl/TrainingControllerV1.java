@@ -5,7 +5,7 @@ import com.gym.crm.app.rest.TrainingController;
 import com.gym.crm.app.rest.model.AddTrainingRequest;
 import com.gym.crm.app.rest.model.GetTraineeTrainingsResponse;
 import com.gym.crm.app.rest.model.GetTrainerTrainingsResponse;
-import com.gym.crm.app.validator.CreateTrainingValidator;
+import com.gym.crm.app.facade.validator.CreateTrainingValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +37,7 @@ public class TrainingControllerV1 implements TrainingController {
         binder.addValidators(createTrainingValidator);
     }
 
+    @Override
     @GetMapping("/trainees/{username}")
     public ResponseEntity<List<GetTraineeTrainingsResponse>> getTraineeTrainings(@PathVariable String username,
                                                                                  @RequestParam(name = "periodFrom", required = false) LocalDate periodFrom,
@@ -48,17 +49,18 @@ public class TrainingControllerV1 implements TrainingController {
         return ResponseEntity.status(HttpStatus.OK).body(trainings);
     }
 
+    @Override
     @GetMapping("/trainers/{username}")
     public ResponseEntity<List<GetTrainerTrainingsResponse>> getTrainerTrainings(@PathVariable String username,
                                                                                  @RequestParam(name = "periodFrom", required = false) LocalDate periodFrom,
                                                                                  @RequestParam(name = "periodTo", required = false) LocalDate periodTo,
-                                                                                 @RequestParam(name = "profileName", required = false) String trainerName,
-                                                                                 @RequestParam(name = "trainingType", required = false) String trainingType) {
-        List<GetTrainerTrainingsResponse> trainings = service.getTrainerTrainingsByCriteria(username, periodFrom, periodTo, trainerName, trainingType);
+                                                                                 @RequestParam(name = "profileName", required = false) String trainerName) {
+        List<GetTrainerTrainingsResponse> trainings = service.getTrainerTrainingsByCriteria(username, periodFrom, periodTo, trainerName);
 
         return ResponseEntity.status(HttpStatus.OK).body(trainings);
     }
 
+    @Override
     @PostMapping
     public ResponseEntity<?> createTraining(@RequestBody @Validated AddTrainingRequest trainingRequest,
                                             BindingResult bindingResult) {

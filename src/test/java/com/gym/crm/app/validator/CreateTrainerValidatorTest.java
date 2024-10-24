@@ -1,5 +1,6 @@
 package com.gym.crm.app.validator;
 
+import com.gym.crm.app.facade.validator.CreateTrainerValidator;
 import com.gym.crm.app.rest.model.TraineeCreateRequest;
 import com.gym.crm.app.rest.model.TrainerCreateRequest;
 import com.gym.crm.app.utils.EntityTestData;
@@ -90,5 +91,23 @@ class CreateTrainerValidatorTest {
         assertThat(errors.getErrorCount()).isEqualTo(3);
         assertThat(errors.getFieldErrors()).extracting(ObjectError::getCode)
                 .containsExactly("first.name.length.error", "last.name.length.error", "specialization.length.error");
+    }
+
+    @Test
+    @DisplayName("Test fields contain digit chars functionality")
+    void givenFieldsContainDigits_whenValidate_thenHasErrors() {
+        // given
+        TrainerCreateRequest request = EntityTestData.getValidCreateTrainerProfileRequest();
+        request.setFirstName("123");
+        request.setLastName("123");
+        errors = new BeanPropertyBindingResult(request, "trainerCreateRequest");
+
+        // when
+        validator.validate(request, errors);
+
+        // then
+        assertThat(errors.getErrorCount()).isEqualTo(2);
+        assertThat(errors.getFieldErrors()).extracting(ObjectError::getCode)
+                .containsExactly("first.name.digits.error", "last.name.digits.error");
     }
 }

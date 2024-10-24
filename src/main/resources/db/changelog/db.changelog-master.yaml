@@ -23,3 +23,5 @@ databaseChangeLog:
       file: db/changelog/2024-09-24-insert-initial-data.yaml
   - include:
       file: db/changelog/2024-10-10-create-serial-number-sequence.yaml
+  - include:
+      file: db/changelog/2024-10-21-drop-serial-number-sequence.yaml

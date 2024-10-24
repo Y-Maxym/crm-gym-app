@@ -1,19 +1,15 @@
 package com.gym.crm.app.service.impl;
 
 import com.gym.crm.app.entity.Trainee;
-import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.TraineeRepository;
 import com.gym.crm.app.service.TraineeService;
 import com.gym.crm.app.service.common.EntityValidator;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.gym.crm.app.rest.exception.ErrorCode.TRAINEE_WITH_ID_NOT_FOUND;
 import static com.gym.crm.app.rest.exception.ErrorCode.TRAINEE_WITH_USERNAME_NOT_FOUND;
@@ -24,13 +20,15 @@ import static com.gym.crm.app.util.Constants.WARN_TRAINEE_WITH_USERNAME_NOT_FOUN
 
 @Slf4j
 @Service
-@Setter(onMethod_ = @Autowired)
+@RequiredArgsConstructor
 public class TraineeServiceImpl implements TraineeService {
 
-    private MessageHelper messageHelper;
-    private TraineeRepository repository;
-    private EntityValidator entityValidator;
+    private final MessageHelper messageHelper;
+    private final TraineeRepository repository;
+    private final EntityValidator entityValidator;
 
+    @Override
+    @Transactional(readOnly = true)
     public Trainee findById(Long id) {
         entityValidator.checkId(id);
 
@@ -39,29 +37,31 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Trainee findByUsername(String username) {
-        return repository.findByUsername(username)
+        return repository.findByUserUsername(username)
                 .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINEE_WITH_USERNAME_NOT_FOUND, username), TRAINEE_WITH_USERNAME_NOT_FOUND.getCode()));
     }
 
     @Override
-    public List<Training> findTrainingsByCriteria(String username, LocalDate from, LocalDate to, String trainerName, String trainingType) {
-        return repository.findTrainingsByCriteria(username, from, to, trainerName, trainingType);
-    }
-
+    @Transactional
     public void save(Trainee trainee) {
         entityValidator.checkEntity(trainee);
 
         repository.save(trainee);
     }
 
+    @Override
+    @Transactional
     public Trainee update(Trainee trainee) {
         entityValidator.checkEntity(trainee);
         entityValidator.checkId(trainee.getId());
 
-        return repository.update(trainee);
+        return repository.save(trainee);
     }
 
+    @Override
+    @Transactional
     public void deleteById(Long id) {
         entityValidator.checkId(id);
 
@@ -73,13 +73,14 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
+    @Transactional
     public void deleteByUsername(String username) {
         entityValidator.checkEntity(username);
 
-        if (repository.findByUsername(username).isEmpty()) {
+        if (repository.findByUserUsername(username).isEmpty()) {
             log.warn(messageHelper.getMessage(WARN_TRAINEE_WITH_USERNAME_NOT_FOUND, username));
         }
 
-        repository.deleteByUsername(username);
+        repository.deleteByUserUsername(username);
     }
 }

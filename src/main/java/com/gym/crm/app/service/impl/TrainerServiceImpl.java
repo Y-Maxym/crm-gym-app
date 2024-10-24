@@ -1,17 +1,15 @@
 package com.gym.crm.app.service.impl;
 
 import com.gym.crm.app.entity.Trainer;
-import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.TrainerRepository;
 import com.gym.crm.app.service.TrainerService;
 import com.gym.crm.app.service.common.EntityValidator;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static com.gym.crm.app.rest.exception.ErrorCode.TRAINER_WITH_ID_NOT_FOUND;
@@ -20,13 +18,15 @@ import static com.gym.crm.app.util.Constants.ERROR_TRAINER_WITH_ID_NOT_FOUND;
 import static com.gym.crm.app.util.Constants.ERROR_TRAINER_WITH_USERNAME_NOT_FOUND;
 
 @Service
-@Setter(onMethod_ = @Autowired)
+@RequiredArgsConstructor
 public class TrainerServiceImpl implements TrainerService {
 
-    private MessageHelper messageHelper;
-    private TrainerRepository repository;
-    private EntityValidator entityValidator;
+    private final MessageHelper messageHelper;
+    private final TrainerRepository repository;
+    private final EntityValidator entityValidator;
 
+    @Override
+    @Transactional(readOnly = true)
     public Trainer findById(Long id) {
         entityValidator.checkId(id);
 
@@ -35,33 +35,34 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Trainer findByUsername(String username) {
-        return repository.findByUsername(username)
+        return repository.findByUserUsername(username)
                 .orElseThrow(() -> new EntityValidationException(messageHelper.getMessage(ERROR_TRAINER_WITH_USERNAME_NOT_FOUND, username), TRAINER_WITH_USERNAME_NOT_FOUND.getCode()));
     }
 
     @Override
-    public List<Training> findTrainingsByCriteria(String username, LocalDate from, LocalDate to, String traineeName, String trainingType) {
-        return repository.findTrainingsByCriteria(username, from, to, traineeName, trainingType);
-    }
-
-    @Override
+    @Transactional(readOnly = true)
     public List<Trainer> getTrainersNotAssignedByTraineeUsername(String username) {
         entityValidator.checkEntity(username);
 
         return repository.getTrainersNotAssignedByTraineeUsername(username);
     }
 
+    @Override
+    @Transactional
     public void save(Trainer trainer) {
         entityValidator.checkEntity(trainer);
 
         repository.save(trainer);
     }
 
+    @Override
+    @Transactional
     public Trainer update(Trainer trainer) {
         entityValidator.checkEntity(trainer);
         entityValidator.checkId(trainer.getId());
 
-        return repository.update(trainer);
+        return repository.save(trainer);
     }
 }

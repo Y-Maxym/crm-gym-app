@@ -7,10 +7,10 @@ import com.gym.crm.app.repository.UserRepository;
 import com.gym.crm.app.service.UserService;
 import com.gym.crm.app.service.common.EntityValidator;
 import com.gym.crm.app.service.common.UserProfileService;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.gym.crm.app.rest.exception.ErrorCode.USER_WITH_ID_NOT_FOUND;
 import static com.gym.crm.app.rest.exception.ErrorCode.USER_WITH_USERNAME_NOT_FOUND;
@@ -21,15 +21,16 @@ import static java.util.Objects.isNull;
 
 @Slf4j
 @Service
-@Setter(onMethod_ = @Autowired)
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private UserRepository repository;
-    private MessageHelper messageHelper;
-    private UserProfileService userProfileService;
-    private EntityValidator entityValidator;
+    private final UserRepository repository;
+    private final MessageHelper messageHelper;
+    private final UserProfileService userProfileService;
+    private final EntityValidator entityValidator;
 
     @Override
+    @Transactional(readOnly = true)
     public User findById(Long id) {
         entityValidator.checkId(id);
 
@@ -38,6 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User findByUsername(String username) {
         entityValidator.checkEntity(username);
 
@@ -46,6 +48,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User save(User user) {
         entityValidator.checkEntity(user);
 
@@ -74,14 +77,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void update(User user) {
         entityValidator.checkEntity(user);
         entityValidator.checkId(user.getId());
 
-        repository.update(user);
+        repository.save(user);
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
         entityValidator.checkId(id);
 

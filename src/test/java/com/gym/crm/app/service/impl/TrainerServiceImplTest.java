@@ -3,7 +3,7 @@ package com.gym.crm.app.service.impl;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
-import com.gym.crm.app.repository.impl.TrainerRepositoryImpl;
+import com.gym.crm.app.repository.TrainerRepository;
 import com.gym.crm.app.service.common.EntityValidator;
 import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +35,7 @@ class TrainerServiceImplTest {
     private EntityValidator entityValidator;
 
     @Mock
-    private TrainerRepositoryImpl repository;
+    private TrainerRepository repository;
 
     @InjectMocks
     private TrainerServiceImpl service;
@@ -87,7 +86,7 @@ class TrainerServiceImplTest {
         Trainer expected = EntityTestData.getPersistedTrainerEmilyDavis();
         String username = expected.getUser().getUsername();
 
-        given(repository.findByUsername(username))
+        given(repository.findByUserUsername(username))
                 .willReturn(Optional.of(expected));
 
         // when
@@ -105,7 +104,7 @@ class TrainerServiceImplTest {
         String username = "username";
         String message = "Trainer with username %s not found".formatted(username);
 
-        given(repository.findByUsername(username))
+        given(repository.findByUserUsername(username))
                 .willReturn(Optional.empty());
         given(messageHelper.getMessage(ERROR_TRAINER_WITH_USERNAME_NOT_FOUND, username))
                 .willReturn(message);
@@ -115,23 +114,6 @@ class TrainerServiceImplTest {
 
         // then
         assertThat(ex.getMessage()).isEqualTo(message);
-    }
-
-    @Test
-    @DisplayName("Test find trainings by criteria functionality")
-    public void givenCriteria_whenFindByCriteria_thenRepositoryIsCalled() {
-        // given
-        String username = "username";
-        LocalDate from = LocalDate.parse("2020-01-01");
-        LocalDate to = LocalDate.parse("2020-01-01");
-        String trainee = "trainee";
-        String trainingType = "trainingType";
-
-        // when
-        service.findTrainingsByCriteria(username, from, to, trainee, trainingType);
-
-        // then
-        verify(repository).findTrainingsByCriteria(username, from, to, trainee, trainingType);
     }
 
     @Test
@@ -161,7 +143,7 @@ class TrainerServiceImplTest {
         service.update(trainer);
 
         // then
-        verify(repository, only()).update(trainer);
+        verify(repository, only()).save(trainer);
     }
 
     @Test

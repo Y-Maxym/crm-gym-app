@@ -1,7 +1,7 @@
 package com.gym.crm.app.logging.aspect;
 
 import com.gym.crm.app.logging.LogHandler;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -9,7 +9,6 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static com.gym.crm.app.util.Constants.DEBUG_SERVICE_EXCEPTION;
@@ -22,10 +21,10 @@ import static com.gym.crm.app.util.Constants.INFO_SERVICE_RESULT;
 @Slf4j
 @Aspect
 @Component
-@Setter(onMethod_ = @Autowired)
+@RequiredArgsConstructor
 public class ServiceLoggingAspect {
 
-    private LogHandler logHandler;
+    private final LogHandler logHandler;
 
     @Pointcut("execution(* com.gym.crm.app.service..*(..))")
     public void serviceMethods() {

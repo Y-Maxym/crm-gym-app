@@ -1,5 +1,6 @@
 package com.gym.crm.app.validator;
 
+import com.gym.crm.app.facade.validator.UpdateTrainerValidator;
 import com.gym.crm.app.rest.model.TraineeCreateRequest;
 import com.gym.crm.app.rest.model.UpdateTrainerProfileRequest;
 import com.gym.crm.app.utils.EntityTestData;
@@ -81,7 +82,7 @@ class UpdateTrainerValidatorTest {
         request.setFirstName("long".repeat(100));
         request.setLastName("long".repeat(100));
         request.setSpecialization("long".repeat(100));
-        errors = new BeanPropertyBindingResult(request, "trainerCreateRequest");
+        errors = new BeanPropertyBindingResult(request, "updateTrainerProfileRequest");
 
         // when
         validator.validate(request, errors);
@@ -90,5 +91,23 @@ class UpdateTrainerValidatorTest {
         assertThat(errors.getErrorCount()).isEqualTo(3);
         assertThat(errors.getFieldErrors()).extracting(ObjectError::getCode)
                 .containsExactly("first.name.length.error", "last.name.length.error", "specialization.length.error");
+    }
+
+    @Test
+    @DisplayName("Test fields contain digit chars functionality")
+    void givenFieldsContainDigits_whenValidate_thenHasErrors() {
+        // given
+        UpdateTrainerProfileRequest request = EntityTestData.getValidUpdateTrainerProfileRequest();
+        request.setFirstName("123");
+        request.setLastName("123");
+        errors = new BeanPropertyBindingResult(request, "updateTrainerProfileRequest");
+
+        // when
+        validator.validate(request, errors);
+
+        // then
+        assertThat(errors.getErrorCount()).isEqualTo(2);
+        assertThat(errors.getFieldErrors()).extracting(ObjectError::getCode)
+                .containsExactly("first.name.digits.error", "last.name.digits.error");
     }
 }

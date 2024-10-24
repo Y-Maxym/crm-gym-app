@@ -75,7 +75,7 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("Test authenticate with invalid passwpord functionality")
+    @DisplayName("Test authenticate with invalid password functionality")
     void givenInvalidPassword_whenAuthenticate_thenThrowAuthenticationException() {
         // given
         String username = "username";
