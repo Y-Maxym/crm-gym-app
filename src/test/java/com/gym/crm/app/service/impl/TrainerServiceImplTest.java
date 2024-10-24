@@ -1,18 +1,25 @@
 package com.gym.crm.app.service.impl;
 
 import com.gym.crm.app.entity.Trainer;
+import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.TrainerRepository;
+import com.gym.crm.app.service.TrainingService;
 import com.gym.crm.app.service.common.EntityValidator;
+import com.gym.crm.app.service.search.TrainerTrainingSearchFilter;
+import com.gym.crm.app.service.spectification.TrainerTrainingSpecification;
 import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 
@@ -36,6 +44,9 @@ class TrainerServiceImplTest {
 
     @Mock
     private TrainerRepository repository;
+
+    @Mock
+    private TrainingService trainingService;
 
     @InjectMocks
     private TrainerServiceImpl service;
@@ -167,5 +178,35 @@ class TrainerServiceImplTest {
         // then
         assertThat(actual).isNotNull();
         assertThat(actual).isEqualTo(trainers);
+    }
+
+    @Test
+    @DisplayName("Test find trainings by criteria functionality")
+    public void givenCriteria_whenFindByCriteria_thenRepositoryIsCalled() {
+        // given
+        String username = "username";
+        LocalDate from = LocalDate.parse("2020-01-01");
+        LocalDate to = LocalDate.parse("2020-01-01");
+        String traineeName = "trainee";
+
+        TrainerTrainingSearchFilter searchFilter = TrainerTrainingSearchFilter.builder()
+                .username(username)
+                .from(from)
+                .to(to)
+                .profileName(traineeName)
+                .build();
+        Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(searchFilter);
+
+        MockedStatic<TrainerTrainingSpecification> mockedStatic = mockStatic(TrainerTrainingSpecification.class);
+        mockedStatic.when(() -> TrainerTrainingSpecification.findByCriteria(searchFilter))
+                .thenReturn(specification);
+
+        // when
+        service.findTrainingByCriteria(searchFilter);
+
+        // then
+        verify(trainingService).findAll(searchFilter);
+
+        mockedStatic.close();
     }
 }

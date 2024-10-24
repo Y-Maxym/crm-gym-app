@@ -1,7 +1,8 @@
 package com.gym.crm.app.repository;
 
 import com.gym.crm.app.entity.Training;
-import com.gym.crm.app.entity.TrainingSearchFilter;
+import com.gym.crm.app.service.search.TraineeTrainingSearchFilter;
+import com.gym.crm.app.service.search.TrainerTrainingSearchFilter;
 import com.gym.crm.app.service.spectification.TraineeTrainingSpecification;
 import com.gym.crm.app.service.spectification.TrainerTrainingSpecification;
 import com.gym.crm.app.utils.EntityTestData;
@@ -124,7 +125,7 @@ class TrainingRepositoryTest extends AbstractTestRepository<TrainingRepository> 
         String trainerName = training.getTrainer().getUser().getFirstName();
         String trainingType = training.getTrainingType().getTrainingTypeName();
 
-        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder()
+        TraineeTrainingSearchFilter searchFilter = TraineeTrainingSearchFilter.builder()
                 .username(username)
                 .from(from)
                 .to(to)
@@ -148,7 +149,7 @@ class TrainingRepositoryTest extends AbstractTestRepository<TrainingRepository> 
         List<Training> trainingList = addTraineeTrainingList();
 
         String username = trainingList.get(0).getTrainee().getUser().getUsername();
-        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder().username(username).build();
+        TraineeTrainingSearchFilter searchFilter = TraineeTrainingSearchFilter.builder().username(username).build();
         Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(searchFilter);
 
         // when
@@ -165,7 +166,7 @@ class TrainingRepositoryTest extends AbstractTestRepository<TrainingRepository> 
         List<Training> trainingList = addTraineeTrainingList();
 
         String username = trainingList.get(0).getTrainee().getUser().getUsername();
-        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder()
+        TraineeTrainingSearchFilter searchFilter = TraineeTrainingSearchFilter.builder()
                 .username(username)
                 .profileName("")
                 .trainingType("")
@@ -191,14 +192,12 @@ class TrainingRepositoryTest extends AbstractTestRepository<TrainingRepository> 
         LocalDate from = training.getTrainingDate();
         LocalDate to = training.getTrainingDate();
         String traineeName = training.getTrainee().getUser().getFirstName();
-        String trainingType = training.getTrainingType().getTrainingTypeName();
 
-        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder()
+        TrainerTrainingSearchFilter searchFilter = TrainerTrainingSearchFilter.builder()
                 .username(username)
                 .from(from)
                 .to(to)
                 .profileName(traineeName)
-                .trainingType(trainingType)
                 .build();
         Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(searchFilter);
 
@@ -217,7 +216,7 @@ class TrainingRepositoryTest extends AbstractTestRepository<TrainingRepository> 
         List<Training> trainingList = addTrainerTrainingList();
 
         String username = trainingList.get(0).getTrainer().getUser().getUsername();
-        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder().username(username).build();
+        TrainerTrainingSearchFilter searchFilter = TrainerTrainingSearchFilter.builder().username(username).build();
         Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(searchFilter);
 
         // when
@@ -234,10 +233,9 @@ class TrainingRepositoryTest extends AbstractTestRepository<TrainingRepository> 
         List<Training> trainingList = addTrainerTrainingList();
 
         String username = trainingList.get(0).getTrainer().getUser().getUsername();
-        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder()
+        TrainerTrainingSearchFilter searchFilter = TrainerTrainingSearchFilter.builder()
                 .username(username)
                 .profileName("")
-                .trainingType("")
                 .build();
         Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(searchFilter);
 

@@ -1,14 +1,12 @@
 package com.gym.crm.app.service.impl;
 
 import com.gym.crm.app.entity.Training;
-import com.gym.crm.app.entity.TrainingSearchFilter;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.TrainingRepository;
 import com.gym.crm.app.service.TrainingService;
 import com.gym.crm.app.service.common.EntityValidator;
-import com.gym.crm.app.service.spectification.TraineeTrainingSpecification;
-import com.gym.crm.app.service.spectification.TrainerTrainingSpecification;
+import com.gym.crm.app.service.search.TrainingSearchFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -37,21 +35,8 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Training> findTraineeTrainingByCriteria(TrainingSearchFilter searchFilter) {
-        validator.checkIfTraineeExist(searchFilter.getUsername());
-
-        Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(searchFilter);
-
-        return repository.findAll(specification);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Training> findTrainerTrainingByCriteria(TrainingSearchFilter searchFilter) {
-        validator.checkIfTrainerExist(searchFilter.getUsername());
-
-        Specification<Training> specification = TrainerTrainingSpecification.findByCriteria(searchFilter);
+    public List<Training> findAll(TrainingSearchFilter filter) {
+        Specification<Training> specification = filter.toSpecification();
 
         return repository.findAll(specification);
     }

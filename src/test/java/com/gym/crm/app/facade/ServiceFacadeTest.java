@@ -3,7 +3,6 @@ package com.gym.crm.app.facade;
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
-import com.gym.crm.app.entity.TrainingSearchFilter;
 import com.gym.crm.app.entity.TrainingType;
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.AuthenticationException;
@@ -36,6 +35,8 @@ import com.gym.crm.app.service.UserService;
 import com.gym.crm.app.service.common.AuthService;
 import com.gym.crm.app.service.common.BindingResultsService;
 import com.gym.crm.app.service.common.UserProfileService;
+import com.gym.crm.app.service.search.TraineeTrainingSearchFilter;
+import com.gym.crm.app.service.search.TrainerTrainingSearchFilter;
 import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -478,7 +479,7 @@ class ServiceFacadeTest {
         serviceFacade.getTraineeTrainingsByCriteria(username, from, to, trainerName, null);
 
         // then
-        verify(trainingService).findTraineeTrainingByCriteria(any(TrainingSearchFilter.class));
+        verify(traineeService).findTrainingByCriteria(any(TraineeTrainingSearchFilter.class));
     }
 
     @Test
@@ -495,7 +496,7 @@ class ServiceFacadeTest {
         serviceFacade.getTrainerTrainingsByCriteria(username, from, to, traineeName);
 
         // then
-        verify(trainingService).findTrainerTrainingByCriteria(any(TrainingSearchFilter.class));
+        verify(trainerService).findTrainingByCriteria(any(TrainerTrainingSearchFilter.class));
     }
 
     @Test
