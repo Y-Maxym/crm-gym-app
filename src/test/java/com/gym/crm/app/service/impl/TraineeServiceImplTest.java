@@ -1,18 +1,25 @@
 package com.gym.crm.app.service.impl;
 
 import com.gym.crm.app.entity.Trainee;
+import com.gym.crm.app.entity.Training;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.logging.MessageHelper;
 import com.gym.crm.app.repository.TraineeRepository;
+import com.gym.crm.app.service.TrainingService;
 import com.gym.crm.app.service.common.EntityValidator;
+import com.gym.crm.app.service.search.TraineeTrainingSearchFilter;
+import com.gym.crm.app.service.spectification.TraineeTrainingSpecification;
 import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static com.gym.crm.app.util.Constants.ERROR_TRAINEE_WITH_ID_NOT_FOUND;
@@ -23,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
@@ -38,6 +46,9 @@ class TraineeServiceImplTest {
 
     @Mock
     private TraineeRepository repository;
+
+    @Mock
+    private TrainingService trainingService;
 
     @InjectMocks
     private TraineeServiceImpl service;
@@ -221,5 +232,37 @@ class TraineeServiceImplTest {
         // then
         verify(messageHelper).getMessage(WARN_TRAINEE_WITH_USERNAME_NOT_FOUND, username);
         verify(repository).deleteByUserUsername(username);
+    }
+
+    @Test
+    @DisplayName("Test find trainee trainings by criteria functionality")
+    public void givenTraineeCriteria_whenFindTraineeTrainingByCriteria_thenRepositoryIsCalled() {
+        // given
+        String username = "username";
+        LocalDate from = LocalDate.parse("2020-01-01");
+        LocalDate to = LocalDate.parse("2020-01-01");
+        String trainerName = "trainerName";
+        String trainingType = "trainingType";
+
+        TraineeTrainingSearchFilter searchFilter = TraineeTrainingSearchFilter.builder()
+                .username(username)
+                .from(from)
+                .to(to)
+                .profileName(trainerName)
+                .trainingType(trainingType)
+                .build();
+        Specification<Training> specification = TraineeTrainingSpecification.findByCriteria(searchFilter);
+
+        MockedStatic<TraineeTrainingSpecification> mockedStatic = mockStatic(TraineeTrainingSpecification.class);
+        mockedStatic.when(() -> TraineeTrainingSpecification.findByCriteria(searchFilter))
+                .thenReturn(specification);
+
+        // when
+        service.findTrainingByCriteria(searchFilter);
+
+        // then
+        verify(trainingService).findAll(searchFilter);
+
+        mockedStatic.close();
     }
 }

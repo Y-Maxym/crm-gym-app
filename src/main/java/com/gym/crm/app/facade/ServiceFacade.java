@@ -3,7 +3,6 @@ package com.gym.crm.app.facade;
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
-import com.gym.crm.app.entity.TrainingSearchFilter;
 import com.gym.crm.app.entity.TrainingType;
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.AuthenticationException;
@@ -44,6 +43,8 @@ import com.gym.crm.app.service.UserService;
 import com.gym.crm.app.service.common.AuthService;
 import com.gym.crm.app.service.common.BindingResultsService;
 import com.gym.crm.app.service.common.UserProfileService;
+import com.gym.crm.app.service.search.TraineeTrainingSearchFilter;
+import com.gym.crm.app.service.search.TrainerTrainingSearchFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -183,14 +184,14 @@ public class ServiceFacade {
     }
 
     public List<GetTraineeTrainingsResponse> getTraineeTrainingsByCriteria(String username, LocalDate from, LocalDate to, String trainerName, String trainingType) {
-        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder()
+        TraineeTrainingSearchFilter searchFilter = TraineeTrainingSearchFilter.builder()
                 .username(username)
                 .from(from)
                 .to(to)
                 .profileName(trainerName)
                 .trainingType(trainingType)
                 .build();
-        List<Training> trainings = trainingService.findTraineeTrainingByCriteria(searchFilter);
+        List<Training> trainings = traineeService.findTrainingByCriteria(searchFilter);
 
         return trainings.stream()
                 .map(getTraineeTrainingsMapper::mapToGetTraineeTrainingsResponse)
@@ -198,13 +199,13 @@ public class ServiceFacade {
     }
 
     public List<GetTrainerTrainingsResponse> getTrainerTrainingsByCriteria(String username, LocalDate from, LocalDate to, String traineeName) {
-        TrainingSearchFilter searchFilter = TrainingSearchFilter.builder()
+        TrainerTrainingSearchFilter searchFilter = TrainerTrainingSearchFilter.builder()
                 .username(username)
                 .from(from)
                 .to(to)
                 .profileName(traineeName)
                 .build();
-        List<Training> trainings = trainingService.findTrainerTrainingByCriteria(searchFilter);
+        List<Training> trainings = trainerService.findTrainingByCriteria(searchFilter);
 
         return trainings.stream()
                 .map(getTrainerTrainingsMapper::mapToGetTrainerTrainingsResponse)
