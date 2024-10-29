@@ -46,6 +46,7 @@ import com.gym.crm.app.service.common.UserProfileService;
 import com.gym.crm.app.service.search.TraineeTrainingSearchFilter;
 import com.gym.crm.app.service.search.TrainerTrainingSearchFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
@@ -262,7 +263,7 @@ public class ServiceFacade {
                 .toList();
     }
 
-    public User authenticate(UserCredentials credentials, BindingResult bindingResult) {
+    public Authentication authenticate(UserCredentials credentials, BindingResult bindingResult) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Authentication error", AUTHENTICATION_ERROR.getCode());
 
         String username = credentials.getUsername();

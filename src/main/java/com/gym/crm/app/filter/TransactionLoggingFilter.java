@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.springframework.core.annotation.Order;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -21,7 +20,6 @@ import static com.gym.crm.app.util.Constants.INFO_TRANSACTION_FILTER_START;
 
 @Component
 @Slf4j
-@Order(2)
 @RequiredArgsConstructor
 public class TransactionLoggingFilter extends OncePerRequestFilter {
 

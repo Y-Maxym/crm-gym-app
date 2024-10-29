@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
@@ -53,8 +52,7 @@ public interface TrainerController {
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     ResponseEntity<UpdateTrainerProfileResponse> updateTrainerProfile(String username,
                                                                       UpdateTrainerProfileRequest request,
-                                                                      BindingResult bindingResult,
-                                                                      HttpServletRequest httpServletRequest);
+                                                                      BindingResult bindingResult);
 
     @Parameter(description = "Username of the trainee", required = true)
     @Operation(summary = "Get active trainers not assigned to trainee", description = "Retrieve a list of active trainers who are not assigned to a specific trainee by username.")

@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
@@ -27,7 +28,8 @@ public interface AuthController {
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     ResponseEntity<?> login(UserCredentials credentials,
                             BindingResult bindingResult,
-                            HttpServletRequest request);
+                            HttpServletRequest request,
+                            HttpServletResponse response);
 
     @Operation(summary = "Logout", description = "Logout from the system")
     @ApiResponse(responseCode = "200", description = "Successful logout")
@@ -44,8 +46,7 @@ public interface AuthController {
     @ApiResponse(responseCode = "403", description = "Access forbidden", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     ResponseEntity<?> changePassword(ChangePasswordRequest request,
-                                     BindingResult bindingResult,
-                                     HttpServletRequest httpServletRequest);
+                                     BindingResult bindingResult);
 
     @Parameter(name = "username", description = "Username of the user", required = true)
     @RequestBody(description = "Request to activate/deactivate user profile", required = true, content = @Content(mediaType = "application/json", schema = @Schema(implementation = ActivateDeactivateProfileRequest.class)))
@@ -57,6 +58,5 @@ public interface AuthController {
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     ResponseEntity<?> activateDeactivateProfile(String username,
                                                 ActivateDeactivateProfileRequest request,
-                                                BindingResult bindingResult,
-                                                HttpServletRequest httpServletRequest);
+                                                BindingResult bindingResult);
 }

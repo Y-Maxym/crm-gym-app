@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
@@ -53,8 +52,7 @@ public interface TraineeController {
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     ResponseEntity<UpdateTraineeProfileResponse> updateTraineeProfile(String username,
                                                                       UpdateTraineeProfileRequest request,
-                                                                      BindingResult bindingResult,
-                                                                      HttpServletRequest httpServletRequest);
+                                                                      BindingResult bindingResult);
 
     @Operation(summary = "Delete trainee profile", description = "Delete trainee profile")
     @Parameter(name = "username", description = "The username of the trainee", required = true)
@@ -63,7 +61,7 @@ public interface TraineeController {
     @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "403", description = "Access forbidden", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    ResponseEntity<?> deleteTraineeProfile(String username, HttpServletRequest httpServletRequest);
+    ResponseEntity<?> deleteTraineeProfile(String username);
 
     @Operation(summary = "Update trainee's trainer list", description = "Update trainee's trainer list")
     @Parameter(name = "username", description = "The username of the trainee", required = true)
@@ -74,6 +72,5 @@ public interface TraineeController {
     @ApiResponse(responseCode = "403", description = "Access forbidden", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     ResponseEntity<List<TrainerProfileWithUsername>> updateTraineeTrainerList(String username,
-                                                                              List<TrainerProfileOnlyUsername> request,
-                                                                              HttpServletRequest httpServletRequest);
+                                                                              List<TrainerProfileOnlyUsername> request);
 }

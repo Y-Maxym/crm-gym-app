@@ -27,7 +27,7 @@ class UserProfileServiceTest {
     private UserRepository repository;
 
     @Mock
-    private PasswordGenerator passwordGenerator;
+    private PasswordUtils passwordUtils;
 
     @InjectMocks
     private UserProfileService service;
@@ -39,7 +39,7 @@ class UserProfileServiceTest {
         service.generatePassword();
 
         // then
-        verify(passwordGenerator).generatePassword();
+        verify(passwordUtils).generatePassword();
     }
 
     @Test
@@ -52,7 +52,7 @@ class UserProfileServiceTest {
         service.hashPassword(password);
 
         // then
-        verify(passwordGenerator).hashPassword(password);
+        verify(passwordUtils).hashPassword(password);
     }
 
     @Test
@@ -159,6 +159,6 @@ class UserProfileServiceTest {
         service.isPasswordCorrect(inputPassword, storedPassword);
 
         // then
-        verify(passwordGenerator).isPasswordCorrect(inputPassword, storedPassword);
+        verify(passwordUtils).isPasswordCorrect(inputPassword, storedPassword);
     }
 }
