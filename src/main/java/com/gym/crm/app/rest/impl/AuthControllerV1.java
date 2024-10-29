@@ -9,6 +9,7 @@ import com.gym.crm.app.rest.AuthController;
 import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;
 import com.gym.crm.app.rest.model.ChangePasswordRequest;
 import com.gym.crm.app.rest.model.UserCredentials;
+import com.gym.crm.app.security.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.gym.crm.app.rest.AuthUtil.getAuthenticatedUser;
+import static com.gym.crm.app.security.AuthenticatedUserUtil.getAuthenticatedUser;
 
 @RestController
 @RequestMapping("${api.base-path}")
@@ -35,6 +36,7 @@ import static com.gym.crm.app.rest.AuthUtil.getAuthenticatedUser;
 public class AuthControllerV1 implements AuthController {
 
     private final ServiceFacade service;
+    private final JwtService jwtService;
     private final ChangePasswordValidator changePasswordValidator;
     private final UserCredentialsValidator userCredentialsValidator;
     private final ActivateDeactivateProfileValidator activateDeactivateProfileValidator;
@@ -98,7 +100,7 @@ public class AuthControllerV1 implements AuthController {
     }
 
     private void accessToken(String username, HttpHeaders headers) {
-        String token = service.generateAccessToken(username);
+        String token = jwtService.generateToken(username);
         headers.set("Authorization", "Bearer " + token);
     }
 }

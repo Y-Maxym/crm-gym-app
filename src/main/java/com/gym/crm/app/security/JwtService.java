@@ -1,4 +1,4 @@
-package com.gym.crm.app.service.common;
+package com.gym.crm.app.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -14,7 +14,6 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class JwtService {
-
     private final SecretKey key = Jwts.SIG.HS256.key().build();
 
     @Value("${jwt.access.duration}")

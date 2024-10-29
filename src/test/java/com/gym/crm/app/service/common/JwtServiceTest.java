@@ -1,5 +1,6 @@
 package com.gym.crm.app.service.common;
 
+import com.gym.crm.app.security.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,6 @@ import static org.junit.Assert.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class JwtServiceTest {
-
     private final Duration duration = Duration.ofHours(1);
 
     @InjectMocks

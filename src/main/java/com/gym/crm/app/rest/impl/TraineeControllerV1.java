@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.gym.crm.app.rest.AuthUtil.getAuthenticatedUser;
+import static com.gym.crm.app.security.AuthenticatedUserUtil.getAuthenticatedUser;
 
 @RestController
 @RequestMapping("${api.base-path}/trainees")

@@ -3,9 +3,8 @@ package com.gym.crm.app.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gym.crm.app.rest.exception.ErrorCode;
 import com.gym.crm.app.rest.exception.ErrorResponse;
-import com.gym.crm.app.service.common.JwtService;
+import com.gym.crm.app.security.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +26,6 @@ import static java.util.Objects.nonNull;
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
-
     private static final String INVALID_ACCESS_TOKEN = "Invalid access token";
     private static final String ACCESS_TOKEN_HAS_EXPIRED = "Access token has expired";
 
@@ -37,32 +35,55 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
-
+                                    @NonNull FilterChain filterChain) throws IOException, ServletException {
         final String authorization = request.getHeader("Authorization");
+        authenticateUser(authorization, response);
+
+        filterChain.doFilter(request, response);
+    }
+
+    private void authenticateUser(String authorization, HttpServletResponse response) throws IOException {
         try {
-            if (nonNull(authorization) && authorization.startsWith("Bearer ")) {
-                String token = authorization.substring(7);
-                String username = jwtService.extractUsername(token);
-
-                if (nonNull(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                    Authentication authentication = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            userDetails.getPassword(),
-                            userDetails.getAuthorities()
-                    );
-
-                    if (jwtService.isValid(token, username))
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
+            if (!isPresentValidToken(authorization)) {
+                return;
             }
-            filterChain.doFilter(request, response);
-        } catch (SignatureException e) {
-            writeUnauthorizedResponse(response, INVALID_ACCESS_TOKEN, ErrorCode.INVALID_ACCESS_TOKEN.getCode());
+
+            String token = extractToken(authorization);
+            String username = jwtService.extractUsername(token);
+
+            if (shouldAuthenticate(username)) {
+                authenticateUserWithToken(username, token);
+            }
         } catch (ExpiredJwtException e) {
             writeUnauthorizedResponse(response, ACCESS_TOKEN_HAS_EXPIRED, ErrorCode.EXPIRED_ACCESS_TOKEN.getCode());
+        } catch (Exception e) {
+            writeUnauthorizedResponse(response, INVALID_ACCESS_TOKEN, ErrorCode.INVALID_ACCESS_TOKEN.getCode());
+        }
+    }
+
+    private boolean isPresentValidToken(String authorization) {
+        return nonNull(authorization) && authorization.startsWith("Bearer ");
+    }
+
+    private String extractToken(String authorization) {
+        return authorization.substring(7);
+    }
+
+    private boolean shouldAuthenticate(String username) {
+        return nonNull(username) && SecurityContextHolder.getContext().getAuthentication() == null;
+    }
+
+    private void authenticateUserWithToken(String username, String token) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+        if (jwtService.isValid(token, username)) {
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    userDetails.getPassword(),
+                    userDetails.getAuthorities()
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
     }
 

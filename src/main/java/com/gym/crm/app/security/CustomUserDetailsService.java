@@ -1,4 +1,4 @@
-package com.gym.crm.app.service.common;
+package com.gym.crm.app.security;
 
 import com.gym.crm.app.exception.AuthenticationException;
 import com.gym.crm.app.exception.EntityValidationException;
@@ -7,7 +7,6 @@ import com.gym.crm.app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         return retrieveUserByUsername(username);
     }
 

@@ -3,7 +3,7 @@ package com.gym.crm.app.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gym.crm.app.rest.exception.ErrorCode;
 import com.gym.crm.app.rest.model.ErrorResponse;
-import com.gym.crm.app.service.common.JwtService;
+import com.gym.crm.app.security.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
@@ -32,7 +32,6 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class JwtFilterTest {
-
     private static final String AUTHORIZATION = "Bearer valid.token.here";
     private static final String TOKEN = "valid.token.here";
     private static final String USERNAME = "testUser";

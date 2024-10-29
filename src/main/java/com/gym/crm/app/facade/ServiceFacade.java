@@ -40,9 +40,8 @@ import com.gym.crm.app.service.TrainerService;
 import com.gym.crm.app.service.TrainingService;
 import com.gym.crm.app.service.TrainingTypeService;
 import com.gym.crm.app.service.UserService;
-import com.gym.crm.app.service.common.AuthService;
+import com.gym.crm.app.security.AuthService;
 import com.gym.crm.app.service.common.BindingResultsService;
-import com.gym.crm.app.service.common.JwtService;
 import com.gym.crm.app.service.common.UserProfileService;
 import com.gym.crm.app.service.search.TraineeTrainingSearchFilter;
 import com.gym.crm.app.service.search.TrainerTrainingSearchFilter;
@@ -90,7 +89,6 @@ public class ServiceFacade {
     private final GetTraineeTrainingsMapper getTraineeTrainingsMapper;
     private final TrainingTypeMapper trainingTypeMapper;
     private final AuthService authService;
-    private final JwtService jwtService;
 
     public UserCredentials createTrainerProfile(TrainerCreateRequest request, BindingResult bindingResult) {
         bindingResultsService.handle(bindingResult, EntityPersistException::new, "Trainer creation error", TRAINER_CREATE_ERROR.getCode());
@@ -288,10 +286,6 @@ public class ServiceFacade {
         user = user.toBuilder().password(hashedPassword).build();
 
         userService.update(user);
-    }
-
-    public String generateAccessToken(String username) {
-        return jwtService.generateToken(username);
     }
 
     private void checkCredentials(String username, String password, User sessionUser) {
