@@ -1,6 +1,7 @@
 package com.gym.crm.app.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gym.crm.app.filter.JwtFilter;
 import com.gym.crm.app.filter.MetricsFilter;
 import com.gym.crm.app.filter.RestLoggingFilter;
 import com.gym.crm.app.filter.TransactionLoggingFilter;
@@ -19,8 +20,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.context.SecurityContextRepository;
 
 import java.util.List;
 
@@ -35,6 +34,7 @@ public class SecurityConfig {
     private static final List<String> EXCLUDED_URLS = List.of("/api/v1/login", "/api/v1/trainees/register", "/api/v1/trainers/register",
             "/swagger-ui", "/v1/api-docs", "/actuator/prometheus");
 
+    private final JwtFilter jwtFilter;
     private final MetricsFilter metricsFilter;
     private final RestLoggingFilter restLoggingFilter;
     private final TransactionLoggingFilter transactionLoggingFilter;
@@ -51,13 +51,14 @@ public class SecurityConfig {
                         .requestMatchers(EXCLUDED_URLS.toArray(new String[0])).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(((request, response, authException) ->
                                 authenticationFailureHandler().onAuthenticationFailure(request, response, authException))))
                 .addFilterBefore(metricsFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(transactionLoggingFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(restLoggingFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -77,10 +78,5 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManagerBean(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class).build();
-    }
-
-    @Bean
-    public SecurityContextRepository securityContextRepository() {
-        return new HttpSessionSecurityContextRepository();
     }
 }

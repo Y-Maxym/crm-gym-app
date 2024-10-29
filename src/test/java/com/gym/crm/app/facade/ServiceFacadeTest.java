@@ -34,6 +34,7 @@ import com.gym.crm.app.service.TrainingTypeService;
 import com.gym.crm.app.service.UserService;
 import com.gym.crm.app.service.common.AuthService;
 import com.gym.crm.app.service.common.BindingResultsService;
+import com.gym.crm.app.service.common.JwtService;
 import com.gym.crm.app.service.common.UserProfileService;
 import com.gym.crm.app.service.search.TraineeTrainingSearchFilter;
 import com.gym.crm.app.service.search.TrainerTrainingSearchFilter;
@@ -60,6 +61,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.atLeastOnce;
@@ -128,6 +130,9 @@ class ServiceFacadeTest {
 
     @Mock
     private TrainingTypeService trainingTypeService;
+
+    @Mock
+    private JwtService jwtService;
 
     @InjectMocks
     private ServiceFacade serviceFacade;
@@ -670,5 +675,23 @@ class ServiceFacadeTest {
 
         // when && then
         assertThrows(AuthenticationException.class, () -> ReflectionTestUtils.invokeMethod(serviceFacade, "checkUsername", username, user));
+    }
+
+    @Test
+    @DisplayName("Test generate access token functionality")
+    void givenUsername_whenGenerateAccessToken_thenGenerateAccessTokenIsReturned() {
+        // given
+        String username = "John.Doe";
+        String generatedToken = "token";
+
+        given(jwtService.generateToken(anyString()))
+                .willReturn(generatedToken);
+
+        // when
+        String actual = serviceFacade.generateAccessToken(username);
+
+        // then
+        assertThat(actual).isEqualTo(generatedToken);
+        verify(jwtService).generateToken(anyString());
     }
 }
