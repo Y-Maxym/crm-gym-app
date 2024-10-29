@@ -25,3 +25,5 @@ databaseChangeLog:
       file: db/changelog/2024-10-10-create-serial-number-sequence.yaml
   - include:
       file: db/changelog/2024-10-21-drop-serial-number-sequence.yaml
+  - include:
+      file: db/changelog/2024-10-29-create-refresh-token-table.yaml

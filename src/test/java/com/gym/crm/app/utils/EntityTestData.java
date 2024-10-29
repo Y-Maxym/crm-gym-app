@@ -1,5 +1,6 @@
 package com.gym.crm.app.utils;
 
+import com.gym.crm.app.entity.RefreshToken;
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
 import com.gym.crm.app.entity.Training;
@@ -16,6 +17,7 @@ import com.gym.crm.app.rest.model.UpdateTrainerProfileRequest;
 import com.gym.crm.app.rest.model.UserCredentials;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class EntityTestData {
@@ -425,5 +427,25 @@ public class EntityTestData {
     public static List<TrainerProfileOnlyUsername> getInvalidListTrainerProfileOnlyUsernames() {
         return List.of(new TrainerProfileOnlyUsername().username("invalid"),
                 new TrainerProfileOnlyUsername().username("invalid"));
+    }
+
+    public static RefreshToken getTransientValidRefreshToken() {
+        return RefreshToken.builder()
+                .token("token")
+                .user(getTransientUserEmilyDavis())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .expiryDate(LocalDateTime.now().plusDays(7))
+                .build();
+    }
+
+    public static RefreshToken getExpiredRefreshToken() {
+        return RefreshToken.builder()
+                .token("token")
+                .user(getTransientUserEmilyDavis())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .expiryDate(LocalDateTime.now().minusDays(7))
+                .build();
     }
 }

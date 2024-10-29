@@ -59,4 +59,13 @@ public interface AuthController {
     ResponseEntity<?> activateDeactivateProfile(String username,
                                                 ActivateDeactivateProfileRequest request,
                                                 BindingResult bindingResult);
+
+    @Parameter(name = "token", description = "Refresh token", required = true)
+    @Operation(summary = "Refresh access token", description = "Refresh access token")
+    @ApiResponse(responseCode = "200", description = "Successfully refresh access token")
+    @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    @ApiResponse(responseCode = "403", description = "Access forbidden", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    ResponseEntity<?> refreshAccessToken(String token);
 }

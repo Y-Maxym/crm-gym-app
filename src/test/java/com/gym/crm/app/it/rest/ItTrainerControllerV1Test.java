@@ -7,14 +7,12 @@ import com.gym.crm.app.rest.model.UpdateTrainerProfileRequest;
 import com.gym.crm.app.rest.model.UserCredentials;
 import com.gym.crm.app.utils.EntityTestData;
 import org.hamcrest.CoreMatchers;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -47,13 +45,6 @@ public class ItTrainerControllerV1Test extends AbstractItTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    private MockHttpSession session;
-
-    @BeforeEach
-    public void setup() {
-        session = new MockHttpSession();
-    }
 
     @Test
     @DisplayName("Test register trainer functionality")
@@ -97,7 +88,7 @@ public class ItTrainerControllerV1Test extends AbstractItTest {
     void givenAuthenticateUser_whenGetTrainer_thenSuccessfulResponse() throws Exception {
         // given
         UserCredentials credentials = EntityTestData.getValidEmilyDavisAuthCredentials();
-        login(credentials);
+        String token = login(credentials);
 
         String username = "Emily.Davis";
 
@@ -107,7 +98,7 @@ public class ItTrainerControllerV1Test extends AbstractItTest {
                 .toUriString();
 
         ResultActions result = mvc.perform(get(uri)
-                .session(session));
+                .header("Authorization", token));
 
         // then
         result.andDo(MockMvcResultHandlers.print())
@@ -121,7 +112,7 @@ public class ItTrainerControllerV1Test extends AbstractItTest {
     void givenAuthenticateUserAndInvalidUsername_whenGetTrainer_thenSuccessfulResponse() throws Exception {
         // given
         UserCredentials credentials = EntityTestData.getValidEmilyDavisAuthCredentials();
-        login(credentials);
+        String token = login(credentials);
 
         String username = "invalid";
 
@@ -131,7 +122,7 @@ public class ItTrainerControllerV1Test extends AbstractItTest {
                 .toUriString();
 
         ResultActions result = mvc.perform(get(uri)
-                .session(session));
+                .header("Authorization", token));
 
         // then
         result.andDo(MockMvcResultHandlers.print())
@@ -145,7 +136,7 @@ public class ItTrainerControllerV1Test extends AbstractItTest {
     void givenValidRequest_whenUpdateTrainer_thenSuccessfulResponse() throws Exception {
         // given
         UserCredentials credentials = EntityTestData.getValidEmilyDavisAuthCredentials();
-        login(credentials);
+        String token = login(credentials);
 
         UpdateTrainerProfileRequest request = EntityTestData.getValidUpdateTrainerProfileRequest();
         String username = "Emily.Davis";
@@ -158,7 +149,7 @@ public class ItTrainerControllerV1Test extends AbstractItTest {
         ResultActions result = mvc.perform(put(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
-                .session(session));
+                .header("Authorization", token));
 
         // then
         result.andDo(MockMvcResultHandlers.print())
@@ -170,7 +161,7 @@ public class ItTrainerControllerV1Test extends AbstractItTest {
     void givenInvalidRequest_whenUpdateTrainer_thenSuccessfulResponse() throws Exception {
         // given
         UserCredentials credentials = EntityTestData.getValidEmilyDavisAuthCredentials();
-        login(credentials);
+        String token = login(credentials);
 
         UpdateTrainerProfileRequest request = EntityTestData.getInvalidTrainerProfileRequest();
         String username = "Emily.Davis";
@@ -183,7 +174,7 @@ public class ItTrainerControllerV1Test extends AbstractItTest {
         ResultActions result = mvc.perform(put(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
-                .session(session));
+                .header("Authorization", token));
 
         // then
         result.andDo(MockMvcResultHandlers.print())
@@ -198,7 +189,7 @@ public class ItTrainerControllerV1Test extends AbstractItTest {
     void givenInvalidUsername_whenUpdateTrainer_thenSuccessfulResponse() throws Exception {
         // given
         UserCredentials credentials = EntityTestData.getValidEmilyDavisAuthCredentials();
-        login(credentials);
+        String token = login(credentials);
 
         UpdateTrainerProfileRequest request = EntityTestData.getValidUpdateTrainerProfileRequest();
         String username = "John.Doe";
@@ -211,7 +202,7 @@ public class ItTrainerControllerV1Test extends AbstractItTest {
         ResultActions result = mvc.perform(put(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
-                .session(session));
+                .header("Authorization", token));
 
         // then
         result.andDo(MockMvcResultHandlers.print())
@@ -225,7 +216,7 @@ public class ItTrainerControllerV1Test extends AbstractItTest {
     void givenValidUsername_whenGetTrainersNotAssigned_thenSuccessfulResponse() throws Exception {
         // given
         UserCredentials credentials = EntityTestData.getValidEmilyDavisAuthCredentials();
-        login(credentials);
+        String token = login(credentials);
 
         String username = "John.Doe";
 
@@ -235,7 +226,7 @@ public class ItTrainerControllerV1Test extends AbstractItTest {
                 .toUriString();
 
         ResultActions result = mvc.perform(get(uri)
-                .session(session));
+                .header("Authorization", token));
 
         // then
         result.andDo(MockMvcResultHandlers.print())
@@ -255,8 +246,7 @@ public class ItTrainerControllerV1Test extends AbstractItTest {
                 .buildAndExpand(username)
                 .toUriString();
 
-        ResultActions result = mvc.perform(put(uri)
-                .session(session));
+        ResultActions result = mvc.perform(put(uri));
 
         // then
         result.andDo(MockMvcResultHandlers.print())
@@ -265,10 +255,11 @@ public class ItTrainerControllerV1Test extends AbstractItTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("Unauthorized")));
     }
 
-    private void login(UserCredentials userCredentials) throws Exception {
-        mvc.perform(post("/api/v1/login")
+    private String login(UserCredentials userCredentials) throws Exception {
+        ResultActions result = mvc.perform(post("/api/v1/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(userCredentials))
-                .session(session));
+                .content(objectMapper.writeValueAsString(userCredentials)));
+
+        return result.andReturn().getResponse().getHeader("Authorization");
     }
 }

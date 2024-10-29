@@ -5,14 +5,12 @@ import com.gym.crm.app.it.AbstractItTest;
 import com.gym.crm.app.rest.model.UserCredentials;
 import com.gym.crm.app.utils.EntityTestData;
 import org.hamcrest.CoreMatchers;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -40,23 +38,16 @@ public class ItTrainingTypeControllerV1Test extends AbstractItTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private MockHttpSession session;
-
-    @BeforeEach
-    public void setup() {
-        session = new MockHttpSession();
-    }
-
     @Test
     @DisplayName("Test get all training types functionality")
     void whenGetAllTrainingTypes_thenSuccessfulResponse() throws Exception {
         // given
         UserCredentials credentials = EntityTestData.getValidJohnDoeAuthCredentials();
-        login(credentials);
+        String token = login(credentials);
 
         // when
         ResultActions result = mvc.perform(get("/api/v1/training-types")
-                .session(session));
+                .header("Authorization", token));
 
         // then
         result.andDo(MockMvcResultHandlers.print())
@@ -70,8 +61,7 @@ public class ItTrainingTypeControllerV1Test extends AbstractItTest {
     @DisplayName("Test get all training types by unauthorized user functionality")
     void givenUnauthorizedUser_whenGetAllTrainingTypes_thenSuccessfulResponse() throws Exception {
         // when
-        ResultActions result = mvc.perform(get("/api/v1/training-types")
-                .session(session));
+        ResultActions result = mvc.perform(get("/api/v1/training-types"));
 
         // then
         result.andDo(MockMvcResultHandlers.print())
@@ -81,10 +71,11 @@ public class ItTrainingTypeControllerV1Test extends AbstractItTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.containsString("Unauthorized")));
     }
 
-    private void login(UserCredentials userCredentials) throws Exception {
-        mvc.perform(post("/api/v1/login")
+    private String login(UserCredentials userCredentials) throws Exception {
+        ResultActions result = mvc.perform(post("/api/v1/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(userCredentials))
-                .session(session));
+                .content(objectMapper.writeValueAsString(userCredentials)));
+
+        return result.andReturn().getResponse().getHeader("Authorization");
     }
 }

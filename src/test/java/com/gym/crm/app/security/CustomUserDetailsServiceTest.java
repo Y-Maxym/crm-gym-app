@@ -1,4 +1,4 @@
-package com.gym.crm.app.service.common;
+package com.gym.crm.app.security;
 
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.AuthenticationException;
