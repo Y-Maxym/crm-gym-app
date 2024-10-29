@@ -64,7 +64,7 @@ class ItAuthenticationFilterTest extends AbstractItTest {
         result.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        assertThat(session.getAttribute("user")).isNotNull();
+        assertThat(session.getAttribute("SPRING_SECURITY_CONTEXT")).isNotNull();
     }
 
     @Test

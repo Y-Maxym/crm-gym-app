@@ -11,19 +11,19 @@ public class UserProfileService {
 
     private static final String USERNAME_TEMPLATE = "%s.%s";
 
-    private final PasswordGenerator passwordGenerator;
+    private final PasswordUtils passwordUtils;
     private final UserRepository repository;
 
     public String generatePassword() {
-        return passwordGenerator.generatePassword();
+        return passwordUtils.generatePassword();
     }
 
     public String hashPassword(String password) {
-        return passwordGenerator.hashPassword(password);
+        return passwordUtils.hashPassword(password);
     }
 
     public boolean isPasswordCorrect(String inputPassword, String storedPassword) {
-        return passwordGenerator.isPasswordCorrect(inputPassword, storedPassword);
+        return passwordUtils.isPasswordCorrect(inputPassword, storedPassword);
     }
 
     @Transactional(readOnly = true)

@@ -1,40 +1,29 @@
 package com.gym.crm.app.service.common;
 
-import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.AuthenticationException;
-import com.gym.crm.app.exception.EntityValidationException;
-import com.gym.crm.app.service.UserService;
+import com.gym.crm.app.rest.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-
-import static com.gym.crm.app.rest.exception.ErrorCode.INVALID_USERNAME_OR_PASSWORD;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
-    private static final String INVALID_USERNAME_OR_PASSWORD1 = "Invalid username or password";
+    private static final String INVALID_USERNAME_OR_PASSWORD = "Invalid username or password";
 
-    private final UserService userService;
-    private final UserProfileService profileService;
+    private final AuthenticationManager authenticationManager;
 
-    public User authenticate(String username, String password) {
-        User foundUser = retrieveUserByUsername(username);
-
-        String storedPassword = foundUser.getPassword();
-
-        if (!profileService.isPasswordCorrect(password, storedPassword)) {
-            throw new AuthenticationException(INVALID_USERNAME_OR_PASSWORD1, INVALID_USERNAME_OR_PASSWORD.getCode());
-        }
-
-        return foundUser;
-    }
-
-    private User retrieveUserByUsername(String username) {
+    public Authentication authenticate(String username, String password) {
         try {
-            return userService.findByUsername(username);
-        } catch (EntityValidationException e) {
-            throw new AuthenticationException(INVALID_USERNAME_OR_PASSWORD1, INVALID_USERNAME_OR_PASSWORD.getCode(), e);
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(username, password);
+
+            return authenticationManager.authenticate(authToken);
+        } catch (Exception e) {
+            throw new AuthenticationException(INVALID_USERNAME_OR_PASSWORD, ErrorCode.INVALID_USERNAME_OR_PASSWORD.getCode(), e);
         }
     }
 }
