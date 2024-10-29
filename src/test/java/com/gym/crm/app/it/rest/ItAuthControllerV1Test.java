@@ -7,14 +7,12 @@ import com.gym.crm.app.rest.model.ChangePasswordRequest;
 import com.gym.crm.app.rest.model.UserCredentials;
 import com.gym.crm.app.utils.EntityTestData;
 import org.hamcrest.CoreMatchers;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -44,13 +42,6 @@ public class ItAuthControllerV1Test extends AbstractItTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    private MockHttpSession session;
-
-    @BeforeEach
-    public void setup() {
-        session = new MockHttpSession();
-    }
 
     @Test
     @DisplayName("Test login by valid user functionality")
@@ -92,11 +83,11 @@ public class ItAuthControllerV1Test extends AbstractItTest {
     void givenAuthenticatedUser_whenLogout_thenSuccessResponse() throws Exception {
         // given
         UserCredentials credentials = EntityTestData.getValidJohnDoeAuthCredentials();
-        login(credentials);
+        String token = login(credentials);
 
         // when
         ResultActions result = mvc.perform(get("/api/v1/logout")
-                .session(session));
+                .header("Authorization", token));
 
         // then
         result.andDo(MockMvcResultHandlers.print())
@@ -108,7 +99,7 @@ public class ItAuthControllerV1Test extends AbstractItTest {
     void givenValidRequest_whenChangePassword_thenSuccessResponse() throws Exception {
         // given
         UserCredentials credentials = EntityTestData.getValidEmilyDavisAuthCredentials();
-        login(credentials);
+        String token = login(credentials);
 
         ChangePasswordRequest request = EntityTestData.getValidChangePasswordRequest();
 
@@ -116,7 +107,7 @@ public class ItAuthControllerV1Test extends AbstractItTest {
         ResultActions result = mvc.perform(post("/api/v1/change-password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
-                .session(session));
+                .header("Authorization", token));
 
         // then
         result.andDo(MockMvcResultHandlers.print())
@@ -128,7 +119,7 @@ public class ItAuthControllerV1Test extends AbstractItTest {
     void givenInvalidRequest_whenChangePassword_thenSuccessResponse() throws Exception {
         // given
         UserCredentials credentials = EntityTestData.getValidJohnDoeAuthCredentials();
-        login(credentials);
+        String token = login(credentials);
 
         ChangePasswordRequest request = EntityTestData.getInvalidChangePasswordRequest();
 
@@ -136,7 +127,7 @@ public class ItAuthControllerV1Test extends AbstractItTest {
         ResultActions result = mvc.perform(post("/api/v1/change-password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
-                .session(session));
+                .header("Authorization", token));
 
         // then
         result.andDo(MockMvcResultHandlers.print())
@@ -151,7 +142,7 @@ public class ItAuthControllerV1Test extends AbstractItTest {
     void givenValidRequest_whenActivateProfile_thenSuccessResponse() throws Exception {
         // given
         UserCredentials credentials = EntityTestData.getValidJohnDoeAuthCredentials();
-        login(credentials);
+        String token = login(credentials);
 
         String username = "John.Doe";
         ActivateDeactivateProfileRequest request = EntityTestData.getActivateProfileRequest();
@@ -164,7 +155,7 @@ public class ItAuthControllerV1Test extends AbstractItTest {
         ResultActions result = mvc.perform(patch(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
-                .session(session));
+                .header("Authorization", token));
 
         // then
         result.andDo(MockMvcResultHandlers.print())
@@ -176,7 +167,7 @@ public class ItAuthControllerV1Test extends AbstractItTest {
     void givenInvalidUser_whenActivateProfile_thenSuccessResponse() throws Exception {
         // given
         UserCredentials credentials = EntityTestData.getValidJohnDoeAuthCredentials();
-        login(credentials);
+        String token = login(credentials);
 
         String username = "Emily.Davis";
         ActivateDeactivateProfileRequest request = EntityTestData.getActivateProfileRequest();
@@ -189,7 +180,7 @@ public class ItAuthControllerV1Test extends AbstractItTest {
         ResultActions result = mvc.perform(patch(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
-                .session(session));
+                .header("Authorization", token));
 
         // then
         result.andDo(MockMvcResultHandlers.print())
@@ -203,7 +194,7 @@ public class ItAuthControllerV1Test extends AbstractItTest {
     void givenValidRequest_whenDeactivateProfile_thenSuccessResponse() throws Exception {
         // given
         UserCredentials credentials = EntityTestData.getValidJohnDoeAuthCredentials();
-        login(credentials);
+        String token = login(credentials);
 
         String username = "John.Doe";
         ActivateDeactivateProfileRequest request = EntityTestData.getDeactivateProfileRequest();
@@ -216,17 +207,18 @@ public class ItAuthControllerV1Test extends AbstractItTest {
         ResultActions result = mvc.perform(patch(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
-                .session(session));
+                .header("Authorization", token));
 
         // then
         result.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
-    private void login(UserCredentials userCredentials) throws Exception {
-        mvc.perform(post("/api/v1/login")
+    private String login(UserCredentials userCredentials) throws Exception {
+        ResultActions result = mvc.perform(post("/api/v1/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(userCredentials))
-                .session(session));
+                .content(objectMapper.writeValueAsString(userCredentials)));
+
+        return result.andReturn().getResponse().getHeader("Authorization");
     }
 }

@@ -3,6 +3,7 @@ package com.gym.crm.app.service.common;
 import com.gym.crm.app.exception.AuthenticationException;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.rest.exception.ErrorCode;
+import com.gym.crm.app.security.AuthService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -62,3 +62,7 @@ api:
 security:
   password:
     length: 10
+
+jwt:
+  access:
+    duration: 15m

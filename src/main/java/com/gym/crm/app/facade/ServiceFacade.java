@@ -40,7 +40,7 @@ import com.gym.crm.app.service.TrainerService;
 import com.gym.crm.app.service.TrainingService;
 import com.gym.crm.app.service.TrainingTypeService;
 import com.gym.crm.app.service.UserService;
-import com.gym.crm.app.service.common.AuthService;
+import com.gym.crm.app.security.AuthService;
 import com.gym.crm.app.service.common.BindingResultsService;
 import com.gym.crm.app.service.common.UserProfileService;
 import com.gym.crm.app.service.search.TraineeTrainingSearchFilter;

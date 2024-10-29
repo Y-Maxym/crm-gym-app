@@ -9,15 +9,13 @@ import com.gym.crm.app.rest.AuthController;
 import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;
 import com.gym.crm.app.rest.model.ChangePasswordRequest;
 import com.gym.crm.app.rest.model.UserCredentials;
+import com.gym.crm.app.security.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
@@ -38,10 +36,10 @@ import static com.gym.crm.app.security.AuthenticatedUserUtil.getAuthenticatedUse
 public class AuthControllerV1 implements AuthController {
 
     private final ServiceFacade service;
+    private final JwtService jwtService;
     private final ChangePasswordValidator changePasswordValidator;
     private final UserCredentialsValidator userCredentialsValidator;
     private final ActivateDeactivateProfileValidator activateDeactivateProfileValidator;
-    private final SecurityContextRepository securityContextRepository;
 
     @InitBinder("changePasswordRequest")
     public void initChangePasswordValidatorBinder(WebDataBinder binder) {
@@ -64,19 +62,18 @@ public class AuthControllerV1 implements AuthController {
                                    BindingResult bindingResult,
                                    HttpServletRequest request,
                                    HttpServletResponse response) {
-        Authentication authentication = service.authenticate(credentials, bindingResult);
+        service.authenticate(credentials, bindingResult);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        securityContextRepository.saveContext(SecurityContextHolder.getContext(), request, response);
+        String username = credentials.getUsername();
+        HttpHeaders headers = new HttpHeaders();
+        accessToken(username, headers);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).build();
     }
 
     @Override
     @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        session.invalidate();
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -100,5 +97,10 @@ public class AuthControllerV1 implements AuthController {
         service.activateDeactivateProfile(username, request, bindingResult, sessionUser);
 
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    private void accessToken(String username, HttpHeaders headers) {
+        String token = jwtService.generateToken(username);
+        headers.set("Authorization", "Bearer " + token);
     }
 }
