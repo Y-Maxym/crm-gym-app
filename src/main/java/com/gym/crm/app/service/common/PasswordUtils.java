@@ -3,6 +3,7 @@ package com.gym.crm.app.service.common;
 import com.gym.crm.app.exception.PasswordOperationException;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKeyFactory;
@@ -13,7 +14,7 @@ import java.util.Base64;
 import static com.gym.crm.app.rest.exception.ErrorCode.HASHED_ERROR;
 
 @Component
-public class PasswordGenerator {
+public class PasswordUtils implements PasswordEncoder {
 
     private static final char[] LOWERCASE_LETTERS = {'a', 'z'};
     private static final char[] UPPER_LETTERS = {'A', 'Z'};
@@ -75,5 +76,15 @@ public class PasswordGenerator {
         } catch (Exception e) {
             throw new PasswordOperationException(HASHED_EXCEPTION, HASHED_ERROR.getCode(), e);
         }
+    }
+
+    @Override
+    public String encode(CharSequence rawPassword) {
+        return hashPassword(rawPassword.toString());
+    }
+
+    @Override
+    public boolean matches(CharSequence rawPassword, String encodedPassword) {
+        return isPasswordCorrect(rawPassword.toString(), encodedPassword);
     }
 }

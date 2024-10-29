@@ -32,6 +32,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -578,7 +579,7 @@ class ItServiceFacadeTest extends AbstractItTest {
         BindingResult bindingResult = new BeanPropertyBindingResult(credentials, "userCredentials");
 
         // when
-        User actual = serviceFacade.authenticate(credentials, bindingResult);
+        Authentication actual = serviceFacade.authenticate(credentials, bindingResult);
 
         // then
         assertThat(actual).isNotNull();

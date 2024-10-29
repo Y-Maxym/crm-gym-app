@@ -20,19 +20,19 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mockStatic;
 
 @ExtendWith(MockitoExtension.class)
-class PasswordGeneratorTest {
+class PasswordUtilsTest {
 
     @InjectMocks
-    private PasswordGenerator generator;
+    private PasswordUtils utils;
 
     @RepeatedTest(10)
     @DisplayName("Test generate password with valid length and contains allowed characters")
     public void whenGeneratePassword_thenPasswordIsGenerated() {
         // given
-        ReflectionTestUtils.setField(generator, "passwordLength", 100);
+        ReflectionTestUtils.setField(utils, "passwordLength", 100);
 
         // when
-        String password = generator.generatePassword();
+        String password = utils.generatePassword();
 
         // then
         assertThat(password).matches("[a-zA-Z0-9]+");
@@ -45,7 +45,7 @@ class PasswordGeneratorTest {
         String password = "password";
 
         // when
-        String hashedPassword = generator.hashPassword(password);
+        String hashedPassword = utils.hashPassword(password);
 
         String[] parts = hashedPassword.split(":");
         String salt = parts[0];
@@ -63,13 +63,13 @@ class PasswordGeneratorTest {
         // given
         String plainPassword = "mySecurePassword";
 
-        String salt = ReflectionTestUtils.invokeMethod(generator, "generateSalt");
-        String hashedPassword = ReflectionTestUtils.invokeMethod(generator, "hashPassword", plainPassword, salt);
+        String salt = ReflectionTestUtils.invokeMethod(utils, "generateSalt");
+        String hashedPassword = ReflectionTestUtils.invokeMethod(utils, "hashPassword", plainPassword, salt);
 
         String storedPassword = "%s:%s".formatted(salt, hashedPassword);
 
         // when
-        boolean result = generator.isPasswordCorrect(plainPassword, storedPassword);
+        boolean result = utils.isPasswordCorrect(plainPassword, storedPassword);
 
         // then
         assertThat(result).isTrue();
@@ -89,7 +89,7 @@ class PasswordGeneratorTest {
 
         // when
         PasswordOperationException ex = assertThrows(PasswordOperationException.class, () -> {
-            ReflectionTestUtils.invokeMethod(generator, "hashPassword", plainPassword, salt);
+            ReflectionTestUtils.invokeMethod(utils, "hashPassword", plainPassword, salt);
         });
         Throwable cause = ex.getCause();
 
@@ -99,4 +99,6 @@ class PasswordGeneratorTest {
 
         mockStatic.close();
     }
+
+
 }

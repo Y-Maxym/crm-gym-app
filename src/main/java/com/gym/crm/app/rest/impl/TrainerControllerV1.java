@@ -2,6 +2,8 @@ package com.gym.crm.app.rest.impl;
 
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.facade.ServiceFacade;
+import com.gym.crm.app.facade.validator.CreateTrainerValidator;
+import com.gym.crm.app.facade.validator.UpdateTrainerValidator;
 import com.gym.crm.app.rest.TrainerController;
 import com.gym.crm.app.rest.model.GetTrainerProfileResponse;
 import com.gym.crm.app.rest.model.TrainerCreateRequest;
@@ -9,9 +11,6 @@ import com.gym.crm.app.rest.model.TrainerProfileWithUsername;
 import com.gym.crm.app.rest.model.UpdateTrainerProfileRequest;
 import com.gym.crm.app.rest.model.UpdateTrainerProfileResponse;
 import com.gym.crm.app.rest.model.UserCredentials;
-import com.gym.crm.app.facade.validator.CreateTrainerValidator;
-import com.gym.crm.app.facade.validator.UpdateTrainerValidator;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.gym.crm.app.rest.SessionUtil.getSessionUser;
+import static com.gym.crm.app.rest.AuthUtil.getAuthenticatedUser;
 
 @RestController
 @RequestMapping("${api.base-path}/trainers")
@@ -71,9 +70,8 @@ public class TrainerControllerV1 implements TrainerController {
     @PutMapping("/{username}")
     public ResponseEntity<UpdateTrainerProfileResponse> updateTrainerProfile(@PathVariable String username,
                                                                              @RequestBody @Validated UpdateTrainerProfileRequest request,
-                                                                             BindingResult bindingResult,
-                                                                             HttpServletRequest httpServletRequest) {
-        User sessionUser = getSessionUser(httpServletRequest);
+                                                                             BindingResult bindingResult) {
+        User sessionUser = getAuthenticatedUser();
         UpdateTrainerProfileResponse profile = service.updateTrainerProfile(username, request, bindingResult, sessionUser);
 
         return ResponseEntity.status(HttpStatus.OK).body(profile);

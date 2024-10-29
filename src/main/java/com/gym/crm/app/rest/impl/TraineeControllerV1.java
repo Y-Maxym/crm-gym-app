@@ -2,6 +2,8 @@ package com.gym.crm.app.rest.impl;
 
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.facade.ServiceFacade;
+import com.gym.crm.app.facade.validator.CreateTraineeValidator;
+import com.gym.crm.app.facade.validator.UpdateTraineeValidator;
 import com.gym.crm.app.rest.TraineeController;
 import com.gym.crm.app.rest.model.GetTraineeProfileResponse;
 import com.gym.crm.app.rest.model.TraineeCreateRequest;
@@ -10,9 +12,6 @@ import com.gym.crm.app.rest.model.TrainerProfileWithUsername;
 import com.gym.crm.app.rest.model.UpdateTraineeProfileRequest;
 import com.gym.crm.app.rest.model.UpdateTraineeProfileResponse;
 import com.gym.crm.app.rest.model.UserCredentials;
-import com.gym.crm.app.facade.validator.CreateTraineeValidator;
-import com.gym.crm.app.facade.validator.UpdateTraineeValidator;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.gym.crm.app.rest.SessionUtil.getSessionUser;
+import static com.gym.crm.app.rest.AuthUtil.getAuthenticatedUser;
 
 @RestController
 @RequestMapping("${api.base-path}/trainees")
@@ -73,9 +72,8 @@ public class TraineeControllerV1 implements TraineeController {
     @PutMapping("/{username}")
     public ResponseEntity<UpdateTraineeProfileResponse> updateTraineeProfile(@PathVariable String username,
                                                                              @RequestBody @Validated UpdateTraineeProfileRequest request,
-                                                                             BindingResult bindingResult,
-                                                                             HttpServletRequest httpServletRequest) {
-        User sessionUser = getSessionUser(httpServletRequest);
+                                                                             BindingResult bindingResult) {
+        User sessionUser = getAuthenticatedUser();
         UpdateTraineeProfileResponse profile = service.updateTraineeProfile(username, request, bindingResult, sessionUser);
 
         return ResponseEntity.status(HttpStatus.OK).body(profile);
@@ -83,9 +81,8 @@ public class TraineeControllerV1 implements TraineeController {
 
     @Override
     @DeleteMapping("/{username}")
-    public ResponseEntity<?> deleteTraineeProfile(@PathVariable String username,
-                                                  HttpServletRequest httpServletRequest) {
-        User sessionUser = getSessionUser(httpServletRequest);
+    public ResponseEntity<?> deleteTraineeProfile(@PathVariable String username) {
+        User sessionUser = getAuthenticatedUser();
         service.deleteTraineeProfileByUsername(username, sessionUser);
 
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -94,9 +91,8 @@ public class TraineeControllerV1 implements TraineeController {
     @Override
     @PutMapping("/{username}/trainers")
     public ResponseEntity<List<TrainerProfileWithUsername>> updateTraineeTrainerList(@PathVariable String username,
-                                                                                     @RequestBody List<TrainerProfileOnlyUsername> request,
-                                                                                     HttpServletRequest httpServletRequest) {
-        User sessionUser = getSessionUser(httpServletRequest);
+                                                                                     @RequestBody List<TrainerProfileOnlyUsername> request) {
+        User sessionUser = getAuthenticatedUser();
         List<TrainerProfileWithUsername> trainers = service.updateTraineesTrainerList(username, request, sessionUser);
 
         return ResponseEntity.status(HttpStatus.OK).body(trainers);

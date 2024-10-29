@@ -4,3 +4,4 @@ logging:
   level:
     com.gym.crm.app: info
     root: info
+    org.springframework.security: debug

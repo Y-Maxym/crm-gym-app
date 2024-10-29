@@ -13,6 +13,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 
 @Entity
 @Table(
@@ -26,7 +30,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public final class User {
+public final class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,4 +51,9 @@ public final class User {
 
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
 }
