@@ -1,8 +1,8 @@
-package com.gym.crm.app.validator;
+package com.gym.crm.app.facade.validator;
 
-import com.gym.crm.app.facade.validator.UserCredentialsValidator;
+import com.gym.crm.app.facade.validator.CreateTrainingValidator;
+import com.gym.crm.app.rest.model.AddTrainingRequest;
 import com.gym.crm.app.rest.model.TrainerCreateRequest;
-import com.gym.crm.app.rest.model.UserCredentials;
 import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,23 +13,23 @@ import org.springframework.validation.ObjectError;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class UserCredentialsValidatorTest {
+class CreateTrainingValidatorTest {
 
     private Errors errors;
 
-    private UserCredentialsValidator validator;
+    private CreateTrainingValidator validator;
 
     @BeforeEach
     void setUp() {
-        validator = new UserCredentialsValidator();
+        validator = new CreateTrainingValidator();
     }
 
     @Test
     @DisplayName("Test valid request functionality")
     void givenValidRequest_whenValidate_thenNoErrors() {
         // given
-        UserCredentials request = EntityTestData.getValidJohnDoeAuthCredentials();
-        errors = new BeanPropertyBindingResult(request, "userCredentials");
+        AddTrainingRequest request = EntityTestData.getValidTrainingRequest();
+        errors = new BeanPropertyBindingResult(request, "addTrainingRequest");
 
         // when
         validator.validate(request, errors);
@@ -42,23 +42,27 @@ class UserCredentialsValidatorTest {
     @DisplayName("Test null fields functionality")
     void givenNullRequest_whenValidate_thenHasErrors() {
         // given
-        UserCredentials request = EntityTestData.getNullAuthCredentials();
-        errors = new BeanPropertyBindingResult(request, "userCredentials");
+        AddTrainingRequest request = EntityTestData.getInvalidTrainingRequest();
+        errors = new BeanPropertyBindingResult(request, "addTrainingRequest");
 
         // when
         validator.validate(request, errors);
 
         // then
-        assertThat(errors.getErrorCount()).isEqualTo(2);
+        assertThat(errors.getErrorCount()).isEqualTo(5);
         assertThat(errors.getFieldErrors()).extracting(ObjectError::getCode)
-                .contains("username.empty.error", "password.empty.error");
+                .contains("trainee.username.empty.error",
+                        "trainer.username.empty.error",
+                        "training.name.empty.error",
+                        "training.date.empty.error",
+                        "training.duration.empty.error");
     }
 
     @Test
-    @DisplayName("Test supports user credentials request functionality")
+    @DisplayName("Test supports Trainee request functionality")
     void whenSupports_thenReturnsTrue() {
         // when
-        boolean actual = validator.supports(UserCredentials.class);
+        boolean actual = validator.supports(AddTrainingRequest.class);
 
         // then
         assertThat(actual).isTrue();
@@ -78,17 +82,19 @@ class UserCredentialsValidatorTest {
     @DisplayName("Test fields longer than 100 chars functionality")
     void givenLongLastName_whenValidate_thenHasErrors() {
         // given
-        UserCredentials request = EntityTestData.getValidJohnDoeAuthCredentials();
-        request.setUsername("long".repeat(100));
-        request.setPassword("long".repeat(100));
-        errors = new BeanPropertyBindingResult(request, "userCredentials");
+        AddTrainingRequest request = EntityTestData.getValidTrainingRequest();
+        request.setTraineeUsername("long".repeat(100));
+        request.setTrainerUsername("long".repeat(100));
+        request.setTrainingName("long".repeat(100));
+        errors = new BeanPropertyBindingResult(request, "addTrainingRequest");
 
         // when
         validator.validate(request, errors);
 
         // then
-        assertThat(errors.getErrorCount()).isEqualTo(2);
+        assertThat(errors.getErrorCount()).isEqualTo(3);
         assertThat(errors.getFieldErrors()).extracting(ObjectError::getCode)
-                .containsExactly("username.length.error", "password.length.error");
+                .containsExactly("trainee.username.length.error", "trainer.username.length.error", "training.name.length.error");
     }
+
 }

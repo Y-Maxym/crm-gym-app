@@ -37,23 +37,21 @@ public class JwtFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws IOException, ServletException {
         final String authorization = request.getHeader("Authorization");
-        authenticateUser(authorization, response);
 
-        filterChain.doFilter(request, response);
-    }
+        if (!isPresentValidToken(authorization)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-    private void authenticateUser(String authorization, HttpServletResponse response) throws IOException {
         try {
-            if (!isPresentValidToken(authorization)) {
-                return;
-            }
-
             String token = extractToken(authorization);
             String username = jwtService.extractUsername(token);
 
             if (shouldAuthenticate(username)) {
                 authenticateUserWithToken(username, token);
             }
+
+            filterChain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
             writeUnauthorizedResponse(response, ACCESS_TOKEN_HAS_EXPIRED, ErrorCode.EXPIRED_ACCESS_TOKEN.getCode());
         } catch (Exception e) {

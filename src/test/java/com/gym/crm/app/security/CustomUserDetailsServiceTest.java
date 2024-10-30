@@ -1,10 +1,9 @@
-package com.gym.crm.app.service.common;
+package com.gym.crm.app.security;
 
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.exception.AuthenticationException;
 import com.gym.crm.app.exception.EntityValidationException;
 import com.gym.crm.app.rest.exception.ErrorCode;
-import com.gym.crm.app.security.CustomUserDetailsService;
 import com.gym.crm.app.service.UserService;
 import com.gym.crm.app.utils.EntityTestData;
 import org.junit.jupiter.api.DisplayName;

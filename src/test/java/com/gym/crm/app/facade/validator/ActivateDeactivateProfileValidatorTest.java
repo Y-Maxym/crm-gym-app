@@ -1,4 +1,4 @@
-package com.gym.crm.app.validator;
+package com.gym.crm.app.facade.validator;
 
 import com.gym.crm.app.facade.validator.ActivateDeactivateProfileValidator;
 import com.gym.crm.app.rest.model.ActivateDeactivateProfileRequest;

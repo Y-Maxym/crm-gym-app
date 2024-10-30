@@ -66,3 +66,5 @@ security:
 jwt:
   access:
     duration: 15m
+  refresh:
+    duration: 7d
