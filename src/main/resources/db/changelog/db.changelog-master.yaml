@@ -27,3 +27,5 @@ databaseChangeLog:
       file: db/changelog/2024-10-21-drop-serial-number-sequence.yaml
   - include:
       file: db/changelog/2024-10-29-create-refresh-token-table.yaml
+  - include:
+      file: db/changelog/2024-10-30-create-jwt-black-list-table.yaml

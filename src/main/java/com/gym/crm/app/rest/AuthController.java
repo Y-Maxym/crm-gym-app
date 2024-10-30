@@ -67,5 +67,5 @@ public interface AuthController {
     @ApiResponse(responseCode = "401", description = "Unauthorized access", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "403", description = "Access forbidden", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    ResponseEntity<?> refreshAccessToken(String token);
+    ResponseEntity<?> refreshAccessToken(String token, HttpServletRequest request);
 }

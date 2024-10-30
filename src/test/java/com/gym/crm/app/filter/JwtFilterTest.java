@@ -20,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.io.PrintWriter;
 
@@ -64,19 +63,24 @@ class JwtFilterTest {
 
     @Test
     @DisplayName("Test valid token functionality")
-    @DirtiesContext
     void givenUsername_whenDoFilterInternal_thenSuccess() throws Exception {
         // given
         UserDetails userDetails = mock(UserDetails.class);
 
         given(request.getHeader("Authorization"))
                 .willReturn(AUTHORIZATION);
+        given(jwtService.extractAccessToken(AUTHORIZATION))
+                .willReturn(TOKEN);
         given(jwtService.extractUsername(TOKEN))
                 .willReturn(USERNAME);
+        given(jwtService.isPresentValidAccessToken(AUTHORIZATION))
+                .willReturn(true);
         given(userDetailsService.loadUserByUsername(USERNAME))
                 .willReturn(userDetails);
         given(jwtService.isValid(TOKEN, USERNAME))
                 .willReturn(true);
+        given(request.getRequestURI())
+                .willReturn("/url");
 
         // when
         jwtFilter.doFilterInternal(request, response, filterChain);
@@ -88,7 +92,6 @@ class JwtFilterTest {
 
     @Test
     @DisplayName("Test invalid token functionality")
-    @DirtiesContext
     void givenUsername_whenDoFilterInternal_thenExpiredToken() throws Exception {
         // given
         UserDetails userDetails = mock(UserDetails.class);
@@ -103,6 +106,12 @@ class JwtFilterTest {
                 .willThrow(new SignatureException("invalid token", null));
         given(response.getWriter())
                 .willReturn(printWriter);
+        given(jwtService.isPresentValidAccessToken(AUTHORIZATION))
+                .willReturn(true);
+        given(request.getRequestURI())
+                .willReturn("/url");
+        given(jwtService.extractAccessToken(AUTHORIZATION))
+                .willReturn(TOKEN);
 
         // when
         jwtFilter.doFilterInternal(request, response, filterChain);
@@ -118,7 +127,6 @@ class JwtFilterTest {
 
     @Test
     @DisplayName("Test invalid token functionality")
-    @DirtiesContext
     void givenUsername_whenDoFilterInternal_thenExpired() throws Exception {
         // given
         UserDetails userDetails = mock(UserDetails.class);
@@ -133,6 +141,12 @@ class JwtFilterTest {
                 .willThrow(new ExpiredJwtException(null, null, "token expired"));
         given(response.getWriter())
                 .willReturn(printWriter);
+        given(jwtService.isPresentValidAccessToken(AUTHORIZATION))
+                .willReturn(true);
+        given(request.getRequestURI())
+                .willReturn("/url");
+        given(jwtService.extractAccessToken(AUTHORIZATION))
+                .willReturn(TOKEN);
 
         // when
         jwtFilter.doFilterInternal(request, response, filterChain);

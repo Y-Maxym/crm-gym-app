@@ -1,5 +1,6 @@
 package com.gym.crm.app.utils;
 
+import com.gym.crm.app.entity.JwtBlackToken;
 import com.gym.crm.app.entity.RefreshToken;
 import com.gym.crm.app.entity.Trainee;
 import com.gym.crm.app.entity.Trainer;
@@ -446,6 +447,20 @@ public class EntityTestData {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .expiryDate(LocalDateTime.now().minusDays(7))
+                .build();
+    }
+
+    public static JwtBlackToken getValidJwtBlackToken() {
+        return JwtBlackToken.builder()
+                .expiryDate(LocalDateTime.now().plusDays(7))
+                .token("token")
+                .build();
+    }
+
+    public static JwtBlackToken getExpiredJwtBlackToken() {
+        return JwtBlackToken.builder()
+                .expiryDate(LocalDateTime.now().minusDays(7))
+                .token("expired_token")
                 .build();
     }
 }

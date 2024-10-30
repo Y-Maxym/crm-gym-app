@@ -1,10 +1,13 @@
 package com.gym.crm.app.security;
 
+import com.gym.crm.app.exception.AccessTokenException;
+import com.gym.crm.app.repository.JwtBlackTokenRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -12,10 +15,16 @@ import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class JwtServiceTest {
     private final Duration duration = Duration.ofHours(1);
+
+    @Mock
+    private JwtBlackTokenRepository blackTokenRepository;
 
     @InjectMocks
     private JwtService jwtService;
@@ -59,16 +68,21 @@ class JwtServiceTest {
         String username = "test";
         ReflectionTestUtils.setField(jwtService, "duration", Duration.ofMillis(1));
 
+        given(blackTokenRepository.existsByToken(any()))
+                .willReturn(false);
+
         // when & then
-        assertThrows(ExpiredJwtException.class, () -> {
+        AccessTokenException ex = assertThrows(AccessTokenException.class, () -> {
             String actual = jwtService.generateToken(username);
             Thread.sleep(100);
             jwtService.isValid(actual, username);
         });
+
+        assertThat(ex.getCause()).isInstanceOf(ExpiredJwtException.class);
     }
 
     @Test
-    @DisplayName("Test expired token functionality")
+    @DisplayName("Test is valid token by invalid username functionality")
     void givenToken_whenIsValid_thenTokenIsInvalid() {
         // given
         String username = "test";
@@ -80,5 +94,82 @@ class JwtServiceTest {
 
         // then
         assertThat(isValid).isFalse();
+    }
+
+    @Test
+    @DisplayName("Test isPresentValidAccessToken functionality with valid token")
+    void givenValidAuthorizationHeader_whenIsPresentValidAccessToken_thenReturnsTrue() {
+        // given
+        String authorization = "Bearer validToken";
+
+        // when
+        boolean result = jwtService.isPresentValidAccessToken(authorization);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("Test isPresentValidAccessToken functionality with invalid token")
+    void givenInvalidAuthorizationHeader_whenIsPresentValidAccessToken_thenReturnsFalse() {
+        // given
+        String authorization = "InvalidToken";
+
+        // when
+        boolean result = jwtService.isPresentValidAccessToken(authorization);
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    @DisplayName("Test extractAccessToken functionality with valid token")
+    void givenAuthorizationHeader_whenExtractAccessToken_thenReturnsToken() {
+        // given
+        String authorization = "Bearer validToken";
+
+        // when
+        String token = jwtService.extractAccessToken(authorization);
+
+        // then
+        assertThat(token).isEqualTo("validToken");
+    }
+
+    @Test
+    @DisplayName("Test isTokenBlacklisted functionality with blacklisted token")
+    void givenBlacklistedToken_whenIsTokenBlacklisted_thenReturnsTrue() {
+        // given
+        String token = "blacklistedToken";
+        given(blackTokenRepository.existsByToken(token)).willReturn(true);
+
+        // when
+        boolean isBlacklisted = jwtService.isTokenBlacklisted(token);
+
+        // then
+        assertThat(isBlacklisted).isTrue();
+    }
+
+    @Test
+    @DisplayName("Test isTokenBlacklisted functionality with non-blacklisted token")
+    void givenNonBlacklistedToken_whenIsTokenBlacklisted_thenReturnsFalse() {
+        // given
+        String token = "nonBlacklistedToken";
+        given(blackTokenRepository.existsByToken(token)).willReturn(false);
+
+        // when
+        boolean isBlacklisted = jwtService.isTokenBlacklisted(token);
+
+        // then
+        assertThat(isBlacklisted).isFalse();
+    }
+
+    @Test
+    @DisplayName("Test removing expired tokens functionality")
+    void whenRemoveExpiredTokens_thenDeleteExpiredTokensCalled() {
+        // when
+        jwtService.removeExpiredTokens();
+
+        // then
+        verify(blackTokenRepository).deleteByExpiryDateBefore(any());
     }
 }

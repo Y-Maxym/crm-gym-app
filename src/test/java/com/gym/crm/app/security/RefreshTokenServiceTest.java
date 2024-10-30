@@ -132,4 +132,17 @@ class RefreshTokenServiceTest {
         verify(repository).findUsernameByToken(refreshToken.getToken());
     }
 
+    @Test
+    @DisplayName("Test delete by token functionality")
+    void givenToken_whenDeleteByToken_thenRepositoryDeleteCalled() {
+        // given
+        String token = "valid_token";
+
+        // when
+        refreshTokenService.deleteByToken(token);
+
+        // then
+        verify(repository).deleteByToken(token);
+    }
+
 }
