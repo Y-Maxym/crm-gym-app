@@ -1,8 +1,6 @@
 package com.gym.crm.app.security;
 
-import com.gym.crm.app.exception.AccessTokenException;
 import com.gym.crm.app.repository.JwtBlackTokenRepository;
-import io.jsonwebtoken.ExpiredJwtException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +12,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -63,7 +60,7 @@ class JwtServiceTest {
 
     @Test
     @DisplayName("Test expired token functionality")
-    void givenExpiredToken_whenIsValid_thenTokenIsExpired() {
+    void givenExpiredToken_whenIsValid_thenTokenIsExpired() throws Exception {
         // given
         String username = "test";
         ReflectionTestUtils.setField(jwtService, "duration", Duration.ofMillis(1));
@@ -72,13 +69,11 @@ class JwtServiceTest {
                 .willReturn(false);
 
         // when & then
-        AccessTokenException ex = assertThrows(AccessTokenException.class, () -> {
-            String actual = jwtService.generateToken(username);
-            Thread.sleep(100);
-            jwtService.isValid(actual, username);
-        });
+        String token = jwtService.generateToken(username);
+        Thread.sleep(100);
+        Boolean actual = jwtService.isValid(token, username);
 
-        assertThat(ex.getCause()).isInstanceOf(ExpiredJwtException.class);
+        assertThat(actual).isFalse();
     }
 
     @Test

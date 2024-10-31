@@ -41,6 +41,7 @@ dependencies {
     implementation "io.jsonwebtoken:jjwt-jackson:$jwtVersion"
     implementation "io.jsonwebtoken:jjwt-impl:$jwtVersion"
     implementation "io.jsonwebtoken:jjwt-api:$jwtVersion"
+    implementation 'com.auth0:java-jwt:4.4.0'
 
     implementation 'org.liquibase:liquibase-core'
     runtimeOnly 'org.postgresql:postgresql'

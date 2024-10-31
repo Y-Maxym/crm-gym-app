@@ -1,9 +1,8 @@
 package com.gym.crm.app.security;
 
+import com.auth0.jwt.JWT;
 import com.gym.crm.app.entity.JwtBlackToken;
-import com.gym.crm.app.exception.AccessTokenException;
 import com.gym.crm.app.repository.JwtBlackTokenRepository;
-import com.gym.crm.app.rest.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +23,6 @@ import static java.util.Objects.nonNull;
 @Service
 @RequiredArgsConstructor
 public class JwtService {
-    private static final String INVALID_ACCESS_TOKEN = "Invalid access token";
-
     private final SecretKey key = Jwts.SIG.HS256.key().build();
     private final JwtBlackTokenRepository blackTokenRepository;
 
@@ -50,16 +47,12 @@ public class JwtService {
     }
 
     private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+        return JWT.decode(token).getExpiresAt();
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        try {
-            final Claims claims = extractAllClaims(token);
-            return claimsResolver.apply(claims);
-        } catch (Exception e) {
-            throw new AccessTokenException(INVALID_ACCESS_TOKEN, ErrorCode.INVALID_ACCESS_TOKEN.getCode(), e);
-        }
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
     }
 
     private Claims extractAllClaims(String token) {
