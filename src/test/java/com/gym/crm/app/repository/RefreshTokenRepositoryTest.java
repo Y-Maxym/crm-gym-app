@@ -103,9 +103,9 @@ class RefreshTokenRepositoryTest extends AbstractTestRepository<RefreshTokenRepo
 
         // when
         repository.deleteByToken(expected.getToken());
-        Optional<RefreshToken> actual = repository.findByToken(expected.getToken());
 
         // then
+        Optional<RefreshToken> actual = repository.findByToken(expected.getToken());
         assertThat(actual.isEmpty()).isTrue();
     }
 }

@@ -52,13 +52,13 @@ class JwtServiceTest {
         // given
         String username = "test";
         ReflectionTestUtils.setField(jwtService, "duration", duration);
-        String actual = jwtService.generateToken(username);
+        String token = jwtService.generateToken(username);
 
         // when
-        String extractedUsername = jwtService.extractUsername(actual);
+        String actual = jwtService.extractUsername(token);
 
         // then
-        assertThat(extractedUsername).isEqualTo(username);
+        assertThat(actual).isEqualTo(username);
     }
 
     @Test
@@ -89,11 +89,11 @@ class JwtServiceTest {
         ReflectionTestUtils.setField(jwtService, "duration", duration);
 
         // when
-        String actual = jwtService.generateToken(username);
-        Boolean isValid = jwtService.isValid(actual, "another username");
+        String token = jwtService.generateToken(username);
+        Boolean actual = jwtService.isValid(token, "another username");
 
         // then
-        assertThat(isValid).isFalse();
+        assertThat(actual).isFalse();
     }
 
     @Test

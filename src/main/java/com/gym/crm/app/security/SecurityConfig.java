@@ -31,8 +31,8 @@ import static com.gym.crm.app.rest.exception.ErrorCode.UNAUTHORIZED_ERROR;
 public class SecurityConfig {
 
     private static final String UNAUTHORIZED_MESSAGE = "Unauthorized";
-    private static final List<String> EXCLUDED_URLS = List.of("/api/v1/login", "/api/v1/refresh", "/api/v1/trainees/register", "/api/v1/trainers/register",
-            "/swagger-ui", "/v1/api-docs", "/actuator/prometheus");
+    private static final List<String> EXCLUDED_URLS = List.of("/api/v1/login", "/api/v1/refresh",
+            "/api/v1/trainees/register", "/api/v1/trainers/register", "/actuator/prometheus");
 
     private final JwtFilter jwtFilter;
     private final MetricsFilter metricsFilter;
@@ -49,6 +49,7 @@ public class SecurityConfig {
                 .userDetailsService(userDetailsService)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(EXCLUDED_URLS.toArray(new String[0])).permitAll()
+                        .requestMatchers("/swagger-ui", "/v1/api-docs").hasAnyRole("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
