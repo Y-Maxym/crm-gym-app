@@ -72,5 +72,20 @@ The application is fully covered with unit tests, using **JUnit** and **Mockito*
 - **Line Coverage**: ![Coverage](.github/badges/jacoco.svg)
 - **Branch Coverage**: ![Branches](.github/badges/branches.svg)
 
+## Testing with Postman
+
+You can use Postman to test the API endpoints of this application. A Postman collection is provided for your convenience.
+
+### Postman Collection
+
+The Postman collection can be found in the `src/test/resources` directory, specifically in the file [Postman Collection](src/test/resources/gym-crm-app.postman_collection.json). To use it:
+
+1. Open Postman.
+2. Click on "Import" in the upper left corner.
+3. Select "Upload Files" and choose the Postman collection file from `src/test/resources`.
+4. Once imported, you can run the requests in the collection to test the API.
+
+Feel free to modify the requests as needed for your testing purposes.
+
 ## License
 This project is open-source and available under the [MIT License](LICENSE).
