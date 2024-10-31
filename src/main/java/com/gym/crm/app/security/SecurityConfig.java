@@ -2,6 +2,7 @@ package com.gym.crm.app.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gym.crm.app.filter.JwtFilter;
+import com.gym.crm.app.filter.LoginAttemptFilter;
 import com.gym.crm.app.filter.MetricsFilter;
 import com.gym.crm.app.filter.RestLoggingFilter;
 import com.gym.crm.app.filter.TransactionLoggingFilter;
@@ -37,6 +38,7 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final MetricsFilter metricsFilter;
     private final RestLoggingFilter restLoggingFilter;
+    private final LoginAttemptFilter loginAttemptFilter;
     private final TransactionLoggingFilter transactionLoggingFilter;
     private final UserDetailsService userDetailsService;
 
@@ -59,6 +61,7 @@ public class SecurityConfig {
                 .addFilterBefore(metricsFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(transactionLoggingFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(restLoggingFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(loginAttemptFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
