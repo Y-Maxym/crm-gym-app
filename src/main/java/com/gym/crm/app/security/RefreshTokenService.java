@@ -55,4 +55,9 @@ public class RefreshTokenService {
     public String findUsernameByToken(String token) {
         return repository.findUsernameByToken(token);
     }
+
+    @Transactional
+    public void deleteByToken(String token) {
+        repository.deleteByToken(token);
+    }
 }

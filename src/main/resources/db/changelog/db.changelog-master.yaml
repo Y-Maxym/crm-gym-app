@@ -33,3 +33,5 @@ databaseChangeLog:
       file: db/changelog/2024-10-30-create-user-role-table.yaml
   - include:
       file: db/changelog/2024-10-30-insert-initial-data.yaml
+  - include:
+      file: db/changelog/2024-10-30-create-jwt-black-list-table.yaml

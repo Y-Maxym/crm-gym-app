@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 import static java.util.Objects.nonNull;
 
@@ -28,6 +29,7 @@ import static java.util.Objects.nonNull;
 public class JwtFilter extends OncePerRequestFilter {
     private static final String INVALID_ACCESS_TOKEN = "Invalid access token";
     private static final String ACCESS_TOKEN_HAS_EXPIRED = "Access token has expired";
+    private static final List<String> EXCLUDED_URLS = List.of("/api/v1/refresh");
 
     private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
@@ -38,13 +40,13 @@ public class JwtFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws IOException, ServletException {
         final String authorization = request.getHeader("Authorization");
 
-        if (!isPresentValidToken(authorization)) {
+        if (!isPresentValidToken(authorization) || hasExcludedUrl(request)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
-            String token = extractToken(authorization);
+            String token = jwtService.extractAccessToken(authorization);
             String username = jwtService.extractUsername(token);
 
             if (shouldAuthenticate(username)) {
@@ -60,11 +62,7 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private boolean isPresentValidToken(String authorization) {
-        return nonNull(authorization) && authorization.startsWith("Bearer ");
-    }
-
-    private String extractToken(String authorization) {
-        return authorization.substring(7);
+        return jwtService.isPresentValidAccessToken(authorization);
     }
 
     private boolean shouldAuthenticate(String username) {
@@ -83,6 +81,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
+    }
+
+    private boolean hasExcludedUrl(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+
+        return EXCLUDED_URLS.stream()
+                .anyMatch(uri::startsWith);
     }
 
     private void writeUnauthorizedResponse(HttpServletResponse response, String message, Integer code) throws IOException {

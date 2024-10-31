@@ -102,6 +102,25 @@ public class ItAuthControllerV1Test extends AbstractItTest {
     }
 
     @Test
+    @DisplayName("Test logout functionality with cookies")
+    void givenAuthenticatedUser_whenLogoutWithCookies_thenSuccessResponse() throws Exception {
+        // given
+        UserCredentials credentials = EntityTestData.getValidJohnDoeAuthCredentials();
+        ResultActions login = login(credentials);
+        String accessToken = getAccessToken(login);
+        String refreshToken = getRefreshToken(login);
+
+        // when
+        ResultActions result = mvc.perform(get("/api/v1/logout")
+                .header("Authorization", accessToken)
+                .cookie(new Cookie("refreshToken", refreshToken)));
+
+        // then
+        result.andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
     @DisplayName("Test change password by valid request functionality")
     void givenValidRequest_whenChangePassword_thenSuccessResponse() throws Exception {
         // given
@@ -232,10 +251,12 @@ public class ItAuthControllerV1Test extends AbstractItTest {
         // given
         UserCredentials credentials = EntityTestData.getValidJohnDoeAuthCredentials();
         ResultActions login = login(credentials);
+        String accessToken = getAccessToken(login);
         String refreshToken = getRefreshToken(login);
 
         // when
         ResultActions result = mvc.perform(post("/api/v1/refresh")
+                .header("Authorization", accessToken)
                 .cookie(new Cookie("refreshToken", refreshToken)));
 
         // then

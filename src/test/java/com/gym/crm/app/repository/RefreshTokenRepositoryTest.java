@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.annotation.Rollback;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 
 import java.util.Optional;
 
@@ -92,5 +91,21 @@ class RefreshTokenRepositoryTest extends AbstractTestRepository<RefreshTokenRepo
 
         // then
         assertThat(actual).isNull();
+    }
+
+    @Test
+    @DisplayName("Test delete refresh token by token functionality")
+    public void givenToken_whenDeleteByToken_thenTokenIsDeleted() {
+        // given
+        RefreshToken expected = EntityTestData.getTransientValidRefreshToken();
+        entityManager.persist(expected.getUser());
+        entityManager.persist(expected);
+
+        // when
+        repository.deleteByToken(expected.getToken());
+
+        // then
+        Optional<RefreshToken> actual = repository.findByToken(expected.getToken());
+        assertThat(actual.isEmpty()).isTrue();
     }
 }

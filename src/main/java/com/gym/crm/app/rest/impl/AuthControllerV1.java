@@ -2,6 +2,7 @@ package com.gym.crm.app.rest.impl;
 
 import com.gym.crm.app.entity.User;
 import com.gym.crm.app.facade.ServiceFacade;
+import com.gym.crm.app.facade.validator.AccessTokenValidator;
 import com.gym.crm.app.facade.validator.ActivateDeactivateProfileValidator;
 import com.gym.crm.app.facade.validator.ChangePasswordValidator;
 import com.gym.crm.app.facade.validator.RefreshTokenValidator;
@@ -12,6 +13,7 @@ import com.gym.crm.app.rest.model.ChangePasswordRequest;
 import com.gym.crm.app.rest.model.UserCredentials;
 import com.gym.crm.app.security.JwtService;
 import com.gym.crm.app.security.RefreshTokenService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +33,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
+
 import static com.gym.crm.app.security.AuthenticatedUserUtil.addRefreshTokenToCookies;
 import static com.gym.crm.app.security.AuthenticatedUserUtil.deleteCookie;
 import static com.gym.crm.app.security.AuthenticatedUserUtil.deleteHeader;
 import static com.gym.crm.app.security.AuthenticatedUserUtil.getAuthenticatedUser;
+import static java.util.Objects.isNull;
 
 @RestController
 @RequestMapping("${api.base-path}")
@@ -48,6 +53,7 @@ public class AuthControllerV1 implements AuthController {
     private final UserCredentialsValidator userCredentialsValidator;
     private final ActivateDeactivateProfileValidator activateDeactivateProfileValidator;
     private final RefreshTokenValidator refreshTokenValidator;
+    private final AccessTokenValidator accessTokenValidator;
 
     @InitBinder("changePasswordRequest")
     public void initChangePasswordValidatorBinder(WebDataBinder binder) {
@@ -83,9 +89,14 @@ public class AuthControllerV1 implements AuthController {
     @Override
     @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
+        String authorization = request.getHeader("Authorization");
+
+        invalidateAccessToken(authorization);
+        invalidateRefreshToken(request);
+
         HttpHeaders headers = new HttpHeaders();
-        deleteCookie("refreshToken", headers);
         deleteHeader("Authorization", headers);
+        deleteCookie("refreshToken", headers);
 
         return ResponseEntity.status(HttpStatus.OK).headers(headers).build();
     }
@@ -113,11 +124,15 @@ public class AuthControllerV1 implements AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshAccessToken(@CookieValue(name = "refreshToken", required = false)
-                                                String token) {
+                                                String token,
+                                                HttpServletRequest request) {
+        String authorization = request.getHeader("Authorization");
         refreshTokenValidator.validate(token);
+        accessTokenValidator.validate(authorization);
+
+        invalidateAccessToken(authorization);
 
         String username = refreshTokenService.findUsernameByToken(token);
-
         HttpHeaders headers = new HttpHeaders();
         accessToken(username, headers);
         refreshToken(username, headers);
@@ -133,5 +148,25 @@ public class AuthControllerV1 implements AuthController {
     private void refreshToken(String username, HttpHeaders headers) {
         String token = refreshTokenService.generateToken(username);
         addRefreshTokenToCookies(token, headers);
+    }
+
+    private void invalidateAccessToken(String authorization) {
+        String token = jwtService.extractAccessToken(authorization);
+        jwtService.addTokenToBlackList(token);
+    }
+
+    private void invalidateRefreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (isNull(cookies) || cookies.length == 0) {
+            return;
+        }
+
+        String token = Arrays.stream(cookies)
+                .filter(c -> "refreshToken".equals(c.getName()))
+                .map(Cookie::getValue)
+                .findFirst()
+                .orElse(null);
+
+        refreshTokenService.deleteByToken(token);
     }
 }
