@@ -35,14 +35,15 @@ public class RestLoggingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
+        CustomContentCachingRequestWrapper requestWrapper = new CustomContentCachingRequestWrapper(request);
+        ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
+
         if (hasExcludedUrl(request)) {
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(requestWrapper, responseWrapper);
             return;
         }
 
         String transactionId = MDC.get("transactionId");
-        CustomContentCachingRequestWrapper requestWrapper = new CustomContentCachingRequestWrapper(request);
-        ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
 
         logRequestDetails(requestWrapper, transactionId);
 
